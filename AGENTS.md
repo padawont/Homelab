@@ -2,11 +2,15 @@
 
 This repository documents my homelab infrastructure, configuration, and knowledge. It serves as the primary reference for restoring the homelab in case of failure and for tracking changes over time.
 
+Upstream org-wide knowledge base: [RunicEngines/knowledge-base](https://github.com/RunicEngines/knowledge-base)
+
 ## External File Loading
 
 When working on a specific section, use your Read tool to load the corresponding AGENTS.md file on demand:
 
 - @knowledge/AGENTS.md — categorization rules, topic folder structure, audit expectations
+- @configs/AGENTS.md — node-role structure, per-node config layout
+- @changelog/AGENTS.md — changelog naming and content format
 
 Do NOT preemptively load all references — load them on a need-to-know basis when relevant to the current task.
 
@@ -29,20 +33,30 @@ Homelab/
 ├── devbox.json        # Devbox environment
 ├── .gitignore
 │
-├── configs/           # Software & infrastructure configuration
-│   ├── nixos/         # NixOS machine configs
-│   └── kubernetes/    # Kubernetes manifests (actual YAML)
+├── configs/           # Per-node cluster configuration
+│   ├── node-main/     # Main node (K3s server, Longhorn storage)
+│   │   ├── kubernetes/ # K8s manifests (actual YAML)
+│   │   ├── OS/         # OS-level config (NixOS, network, packages)
+│   │   └── README.md
+│   ├── node-extra/    # Extra / worker nodes
+│   │   ├── kubernetes/
+│   │   └── OS/
+│   ├── AGENTS.md      # Config section rules
+│   └── README.md
 │
-├── knowledge/         # Reference documentation
+├── knowledge/         # Reference documentation (software & tools only)
 │   ├── kubernetes/    # K8s knowledge (architecture, resources, tools)
 │   ├── operations/    # CI/CD, infrastructure, deployment
 │   ├── tooling/       # Developer tools, editors, build systems
 │   ├── technology/    # Languages, frameworks, platforms
 │   ├── design/        # Architecture patterns, documentation standards
 │   ├── hardware/      # Server specs, network topology, storage, SBCs
-│   └── AGENTS.md      # Knowledge section rules
+│   ├── AGENTS.md      # Knowledge section rules
+│   └── README.md
 │
-└── changelog/         # Decision history (numbered entries)
+└── changelog/         # Change history (simple records)
+    ├── AGENTS.md      # Changelog section rules
+    └── README.md
 ```
 
 ## Directory Naming
@@ -65,9 +79,8 @@ Additional `.md` files are optional.
 | `exploring` | Knowledge | Under investigation |
 | `proposed` | Knowledge | Ready for review |
 | `accepted` | Knowledge | Approved |
-| `final` | Changelog only | Final decision recorded |
 | `completed` | Knowledge | Fully resolved |
-| `cancelled` | Changelog only | Abandoned |
+| `cancelled` | All | Abandoned |
 | `superseded` | All | Replaced by newer content |
 
 ## Cross-Linking Convention

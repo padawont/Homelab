@@ -1,6 +1,8 @@
 # Knowledge Section
 
-Knowledge contains the technical reference documentation for the homelab infrastructure. Notes must be comprehensive enough for AI agents to use as references for actual work.
+Knowledge contains reference documentation about software and tools used in the homelab. Notes must be comprehensive enough for AI agents to use as references for actual work.
+
+This section is NOT for homelab-specific configuration — those go in `configs/`. Knowledge entries may cross-reference configs and may lead to creating or updating config entries.
 
 ## Categorization
 
@@ -55,6 +57,15 @@ Do NOT split when the topic is genuinely a single concept — one focused file i
 All atomic `.md` files must include in frontmatter:
 - `sources` — URLs of where this note is based on
 - `last_audit_date` — date of the last accuracy review
+- `related_configs` — paths to relevant configs in `configs/` (optional)
+
+## Cross-Referencing Configs
+
+When a knowledge entry describes a tool or concept that has a corresponding configuration in the homelab:
+1. Add the config path in the `related_configs` frontmatter field
+2. Consider creating or updating the relevant config entry if one doesn't exist yet
+
+For example, a knowledge note about Longhorn should link to `configs/node-main/OS/` where the iSCSI and storage config lives.
 
 ## Status Lifecycle
 

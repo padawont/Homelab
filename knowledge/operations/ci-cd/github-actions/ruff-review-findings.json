@@ -1,0 +1,90 @@
+{
+  "document": "knowledge/operations/ci-cd/github-actions/python-run-ruff.md",
+  "section": "knowledge",
+  "status": "needs-review",
+  "findings": [
+    {
+      "severity": "error",
+      "category": "accuracy",
+      "claim": "`uv sync --dev` syncs dev dependencies",
+      "expected": "No `--dev` flag exists for `uv sync`. The `dev` group is synced by default; use `--no-dev` to exclude or `--only-dev` to install only dev dependencies.",
+      "actual": "Document uses `uv sync --dev` at line 53 -- this flag does not exist in uv's CLI",
+      "source": "https://docs.astral.sh/uv/concepts/projects/sync/#syncing-development-dependencies",
+      "line_ref": "knowledge/operations/ci-cd/github-actions/python-run-ruff.md:53"
+    },
+    {
+      "severity": "warning",
+      "category": "deprecation",
+      "claim": "Use `astral-sh/setup-uv@v5`",
+      "expected": "Current version is v8.2.0 (latest); recommended pinned version is v8.1.0. The action stopped publishing major-version-only tags starting from v8.0.0 for security reasons.",
+      "actual": "Document references `@v5` at lines 26, 34, 42, 52, 61 -- 3 major versions behind current",
+      "source": "https://github.com/astral-sh/setup-uv (README shows usage of v8.1.0; releases show v8.2.0 latest)",
+      "line_ref": "knowledge/operations/ci-cd/github-actions/python-run-ruff.md:26"
+    },
+    {
+      "severity": "info",
+      "category": "deprecation",
+      "claim": "Use `actions/checkout@v4`",
+      "expected": "Current major version is v6 (v6.0.3 as of 2026-06-02). The `@v4` tag still works and is still used in Ruff's own docs, but v6 is available.",
+      "actual": "Document uses `@v4` at line 25 -- not technically wrong but could be updated to `@v5` or `@v6`",
+      "source": "https://github.com/actions/checkout/releases (v6.0.3 latest)",
+      "line_ref": "knowledge/operations/ci-cd/github-actions/python-run-ruff.md:25"
+    },
+    {
+      "severity": "info",
+      "category": "accuracy",
+      "claim": "Code examples show `astral-sh/setup-uv` without preceding `actions/checkout`",
+      "expected": "All examples after 'Basic Lint Check' omit `actions/checkout`. While `setup-uv` doesn't strictly require checkout, most real-world workflows need it. Consistency would be beneficial.",
+      "actual": "Lines 33-65 omit checkout step; only the first example (line 25) includes it",
+      "source": "https://docs.astral.sh/ruff/integrations/#github-actions (Ruff's own examples include checkout before setup-uv)",
+      "line_ref": "knowledge/operations/ci-cd/github-actions/python-run-ruff.md:33-65"
+    },
+    {
+      "severity": "info",
+      "category": "cross-reference",
+      "claim": "See Also links to python-run-mypy.md and python-run-pytest.md",
+      "expected": "Both files exist at `./python-run-mypy.md` and `./python-run-pytest.md`",
+      "actual": "Both files exist and are valid",
+      "source": "Verified on disk",
+      "line_ref": "knowledge/operations/ci-cd/github-actions/python-run-ruff.md:78-79"
+    }
+  ],
+  "confirmed_accurate": [
+    {
+      "claim": "`uvx ruff check` runs Ruff linter via uvx",
+      "source": "https://docs.astral.sh/ruff/linter/#ruff-check"
+    },
+    {
+      "claim": "`uvx ruff check --fix` applies auto-fixes",
+      "source": "https://docs.astral.sh/ruff/linter/#ruff-check"
+    },
+    {
+      "claim": "`uvx ruff format --check` checks formatting without modifying files",
+      "source": "https://docs.astral.sh/ruff/formatter/#ruff-format"
+    },
+    {
+      "claim": "`uv run ruff check` runs ruff when it's a project dependency",
+      "source": "https://docs.astral.sh/uv/reference/cli/#uv-run"
+    },
+    {
+      "claim": "`--output-format=github` produces GitHub Actions annotations",
+      "source": "https://docs.astral.sh/ruff/settings/#output-format"
+    },
+    {
+      "claim": "Pin ruff version in pyproject.toml for reproducible CI",
+      "source": "https://docs.astral.sh/ruff/configuration/"
+    },
+    {
+      "claim": "Run lint before tests to fail fast",
+      "source": "Established CI best practice, matches Ruff's own CI recommendations"
+    }
+  ],
+  "frontmatter": {
+    "valid": true,
+    "fields_present": ["title", "status", "author", "date", "tags", "sources", "last_audit_date"],
+    "status": "draft (valid for knowledge lifecycle: draft → exploring → accepted → completed / superseded)",
+    "tags": ["python", "ruff", "linting", "uv"] — all valid kebab-case,
+    "dates": "2026-06-09 and 2026-06-09 — both valid calendar dates"
+  },
+  "summary": "Found 1 error (invalid `uv sync --dev` flag), 1 warning (outdated setup-uv version @v5), and 2 informational items. All Ruff CLI commands and flags are confirmed accurate against official documentation."
+}

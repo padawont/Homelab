@@ -1,0 +1,253 @@
+apiVersion: v1
+items:
+- apiVersion: v1
+  kind: Node
+  metadata:
+    annotations:
+      alpha.kubernetes.io/provided-node-ip: 192.168.111.10
+      csi.volume.kubernetes.io/nodeid: '{"driver.longhorn.io":"nixos"}'
+      flannel.alpha.coreos.com/backend-data: '{"VNI":1,"VtepMAC":"8a:ee:3b:05:2b:68"}'
+      flannel.alpha.coreos.com/backend-type: vxlan
+      flannel.alpha.coreos.com/kube-subnet-manager: "true"
+      flannel.alpha.coreos.com/public-ip: 192.168.111.10
+      k3s.io/hostname: nixos
+      k3s.io/internal-ip: 192.168.111.10
+      k3s.io/node-args: '["server","--disable","traefik","--disable","servicelb"]'
+      k3s.io/node-config-hash: Q5LRHL2PCD3C33SRUXA6C2F5OFBYUTI2U4YJNM6JAULA6FOIJ3HA====
+      k3s.io/node-env: '{}'
+      management.cattle.io/pod-limits: '{"cpu":"500m","memory":"770Mi"}'
+      management.cattle.io/pod-requests: '{"cpu":"2130m","memory":"268Mi","pods":"38"}'
+      node.alpha.kubernetes.io/ttl: "0"
+      volumes.kubernetes.io/controller-managed-attach-detach: "true"
+    creationTimestamp: "2026-07-12T16:30:43Z"
+    finalizers:
+    - wrangler.cattle.io/node
+    labels:
+      beta.kubernetes.io/arch: amd64
+      beta.kubernetes.io/instance-type: k3s
+      beta.kubernetes.io/os: linux
+      kubernetes.io/arch: amd64
+      kubernetes.io/hostname: nixos
+      kubernetes.io/os: linux
+      node-role.kubernetes.io/control-plane: "true"
+      node.kubernetes.io/instance-type: k3s
+    name: nixos
+    resourceVersion: "810787"
+    uid: 931bbd02-a5b9-43f8-9f64-17d1a0c1c0e1
+  spec:
+    podCIDR: 10.42.0.0/24
+    podCIDRs:
+    - 10.42.0.0/24
+    providerID: k3s://nixos
+  status:
+    addresses:
+    - address: 192.168.111.10
+      type: InternalIP
+    - address: nixos
+      type: Hostname
+    allocatable:
+      cpu: "16"
+      ephemeral-storage: "99834798412"
+      hugepages-1Gi: "0"
+      hugepages-2Mi: "0"
+      memory: 32217748Ki
+      pods: "110"
+    capacity:
+      cpu: "16"
+      ephemeral-storage: 102626232Ki
+      hugepages-1Gi: "0"
+      hugepages-2Mi: "0"
+      memory: 32217748Ki
+      pods: "110"
+    conditions:
+    - lastHeartbeatTime: "2026-07-14T18:45:25Z"
+      lastTransitionTime: "2026-07-12T16:30:43Z"
+      message: kubelet has sufficient memory available
+      reason: KubeletHasSufficientMemory
+      status: "False"
+      type: MemoryPressure
+    - lastHeartbeatTime: "2026-07-14T18:45:25Z"
+      lastTransitionTime: "2026-07-12T16:30:43Z"
+      message: kubelet has no disk pressure
+      reason: KubeletHasNoDiskPressure
+      status: "False"
+      type: DiskPressure
+    - lastHeartbeatTime: "2026-07-14T18:45:25Z"
+      lastTransitionTime: "2026-07-12T16:30:43Z"
+      message: kubelet has sufficient PID available
+      reason: KubeletHasSufficientPID
+      status: "False"
+      type: PIDPressure
+    - lastHeartbeatTime: "2026-07-14T18:45:25Z"
+      lastTransitionTime: "2026-07-12T16:30:43Z"
+      message: kubelet is posting ready status
+      reason: KubeletReady
+      status: "True"
+      type: Ready
+    daemonEndpoints:
+      kubeletEndpoint:
+        Port: 10250
+    features:
+      supplementalGroupsPolicy: true
+    images:
+    - names:
+      - docker.io/rancher/rancher@sha256:5d0354e95d55f92da0f3c0fdcf59c07dacfe5bda886aac5273da4ca98c8c1376
+      - docker.io/rancher/rancher:v2.14.3
+      sizeBytes: 912911550
+    - names:
+      - docker.io/rancher/rancher-agent@sha256:58875a3be35284420b18ff4a13f38b2f3f7f25e9b119f9c0d934853f800f4a14
+      - docker.io/rancher/rancher-agent:v2.14.3
+      sizeBytes: 610244057
+    - names:
+      - docker.io/longhornio/longhorn-instance-manager@sha256:7dc270841c8a8855b9c7b192b53db05b6268318648108cea4b00c2e88eb85cbb
+      - docker.io/longhornio/longhorn-instance-manager:v1.12.0
+      sizeBytes: 483344496
+    - names:
+      - docker.io/longhornio/longhorn-engine@sha256:bc4a49e8f2b6b4bcdde0f6e465c0b0ac94acf6198840f9db039bedbbae67e905
+      - docker.io/longhornio/longhorn-engine:v1.12.0
+      sizeBytes: 163963438
+    - names:
+      - docker.io/rancher/fleet@sha256:1fb0c5b16302cb86f809d0901d44cfcf53fd3e24dd1842c9d4b55f54305efa9d
+      - docker.io/rancher/fleet:v0.15.4
+      sizeBytes: 128407682
+    - names:
+      - docker.io/longhornio/longhorn-manager@sha256:fd245bae2e8254ed475073410f8462e95fab8783dd12d1c084777b5ab53bfb86
+      - docker.io/longhornio/longhorn-manager:v1.12.0
+      sizeBytes: 120162752
+    - names:
+      - quay.io/metallb/frr-k8s@sha256:1cb06fb2d5538c9f9b20d3adf00da8d1e6cb0166bc15df8add0d9efe578641a4
+      - quay.io/metallb/frr-k8s:v0.0.25
+      sizeBytes: 119558058
+    - names:
+      - docker.io/longhornio/longhorn-share-manager@sha256:cb9d6863e4c694d82ab35f91184d9555c536ed292dad0c7dec94cb655e05787e
+      - docker.io/longhornio/longhorn-share-manager:v1.12.0
+      sizeBytes: 111793347
+    - names:
+      - docker.io/rancher/shell@sha256:f2326fe57fd60b11543dc04718d3fa56dad975a89b60c7550fceac9c22269a60
+      - docker.io/rancher/shell:v0.7.1
+      sizeBytes: 110550386
+    - names:
+      - quay.io/frrouting/frr@sha256:8745af1f9bbbc26ab11d99ccdf35e07aa3427a199749bef0cd6bb5132bb130df
+      - quay.io/frrouting/frr:10.4.3
+      sizeBytes: 90663535
+    - names:
+      - docker.io/rancher/local-path-provisioner@sha256:1eba82e9c386038b4af6d69cca7519fac738c28c42735ed48ce70c882ad0d80f
+      - docker.io/rancher/local-path-provisioner:v0.0.36
+      sizeBytes: 89390500
+    - names:
+      - docker.io/longhornio/longhorn-ui@sha256:3870d52a2b0aa44e7f8a30d744cfe38a1a0bd130226d3f5d08795e76361ff0b7
+      - docker.io/longhornio/longhorn-ui:v1.12.0
+      sizeBytes: 75280835
+    - names:
+      - quay.io/metallb/speaker@sha256:16561e96531e1852d5c229ad7fae6e994dcfa983ff7f4de6b6208b34a4e2ddbc
+      - quay.io/metallb/speaker:v0.16.1
+      sizeBytes: 71900363
+    - names:
+      - docker.io/rancher/klipper-helm@sha256:aa6dc50066508ce3940f511c318b810046c4f336c5c5edd3469c2f146a13731b
+      - docker.io/rancher/klipper-helm:v0.10.0-build20260513
+      sizeBytes: 61161558
+    - names:
+      - docker.io/rancher/cluster-api-controller@sha256:5a8d2dedd8ec0ef5fbc1f9831f0fe864093a747883020d6ed1f20d9f7272db04
+      - docker.io/rancher/cluster-api-controller:v1.12.7
+      sizeBytes: 40618987
+    - names:
+      - docker.io/longhornio/csi-attacher@sha256:a814aa4784197116983ea13e376fc691e000a390de9d0b9fca2bc4a2fb7c4a1f
+      - docker.io/longhornio/csi-attacher:v4.12.0
+      sizeBytes: 38607714
+    - names:
+      - docker.io/longhornio/csi-snapshotter@sha256:df4ba2075c00c5193821d43caf11c6f6556310247723365e9916e409799ce029
+      - docker.io/longhornio/csi-snapshotter:v8.5.0-20260514
+      sizeBytes: 37633373
+    - names:
+      - docker.io/longhornio/csi-resizer@sha256:7f203c1f195445e8ca8be258cd6179c284885a6c1b5287e6c0e33870e9083f8a
+      - docker.io/longhornio/csi-resizer:v2.1.0-20260514
+      sizeBytes: 37600021
+    - names:
+      - quay.io/metallb/controller@sha256:f51ab515de9ccd20dc3dccb093e48df8adddac019326c456f449e55ba91b6420
+      - quay.io/metallb/controller:v0.16.1
+      sizeBytes: 37274900
+    - names:
+      - docker.io/longhornio/csi-provisioner@sha256:05c4017e4df7f8f690d6578f975f1eba94624d1b6a675d88c5f508ab6a27152b
+      - docker.io/longhornio/csi-provisioner:v5.3.0-20260514
+      sizeBytes: 34179359
+    - names:
+      - docker.io/rancher/turtles@sha256:09836593228daaa7ab957fecadfd69532ab9832330d032d3288df6eda8d1a991
+      - docker.io/rancher/turtles:v0.26.3
+      sizeBytes: 33816105
+    - names:
+      - docker.io/rancher/fleet-agent@sha256:71f502ad36268d972136cce82176e7c2b59aba0da4e3ce74da48751ddbddd4d6
+      - docker.io/rancher/fleet-agent:v0.15.4
+      sizeBytes: 28118736
+    - names:
+      - docker.io/rancher/rancher-webhook@sha256:950352603e35617aa6c80c41d1ef4030ef8724bd264a04c58610cc093dbabc1c
+      - docker.io/rancher/rancher-webhook:v0.10.7
+      sizeBytes: 26108028
+    - names:
+      - docker.io/rancher/mirrored-coredns-coredns@sha256:b21d26b915e10acb5bc78715c1e8b6047ab2675389b2bcc18b3a6499d90e74c0
+      - docker.io/rancher/mirrored-coredns-coredns:1.14.3
+      sizeBytes: 23543069
+    - names:
+      - docker.io/rancher/mirrored-metrics-server@sha256:b2d2efaf5ac3b366ed0f839d2412a2c4279d4fc2a2a733f12c52133faed36c41
+      - docker.io/rancher/mirrored-metrics-server:v0.8.1
+      sizeBytes: 22550016
+    - names:
+      - quay.io/jetstack/cert-manager-controller@sha256:771a117d226da28fb1fa600281a615fcf648ac743e56c6a9012d592c78a04995
+      - quay.io/jetstack/cert-manager-controller:v1.16.3
+      sizeBytes: 21200633
+    - names:
+      - quay.io/jetstack/cert-manager-webhook@sha256:c86dd3ad1efd98889f3d79c6aaa3e43a76e103fa8c27f207c3cb88452aff95e4
+      - quay.io/jetstack/cert-manager-webhook:v1.16.3
+      sizeBytes: 18204442
+    - names:
+      - quay.io/jetstack/cert-manager-cainjector@sha256:9c8cc638ca9724d60da2dc293f863bad53608d23bac3c0eda64bba097990ba16
+      - quay.io/jetstack/cert-manager-cainjector:v1.16.3
+      sizeBytes: 15438090
+    - names:
+      - docker.io/longhornio/livenessprobe@sha256:d0cb76b565ba9d36da0dc2b38e2b6a49a0ae4fe067b03086110682f32c600318
+      - docker.io/longhornio/livenessprobe:v2.19.0
+      sizeBytes: 14770279
+    - names:
+      - docker.io/longhornio/csi-node-driver-registrar@sha256:29f7cfd519008fe8f8dff5e79db43f70d65c43a89c08f1bafbb199ca90df79f0
+      - docker.io/longhornio/csi-node-driver-registrar:v2.17.0
+      sizeBytes: 14640199
+    - names:
+      - docker.io/rancher/system-upgrade-controller@sha256:e0d507b4d5db41d2b02e545d3693de16ec1f89159fcb11153e690aa5dd1d2641
+      - docker.io/rancher/system-upgrade-controller:v0.19.1
+      sizeBytes: 14588070
+    - names:
+      - quay.io/jetstack/cert-manager-startupapicheck@sha256:587ac889826b20485249e064e3f047d729b91dfe5e7d0c26ec1b4fb4e1539abd
+      - quay.io/jetstack/cert-manager-startupapicheck:v1.16.3
+      sizeBytes: 14107691
+    - names:
+      - docker.io/rancher/mirrored-pause@sha256:74c4244427b7312c5b901fe0f67cbc53683d06f4f24c6faee65d4182bf0fa893
+      - docker.io/rancher/mirrored-pause:3.6
+      sizeBytes: 301463
+    nodeInfo:
+      architecture: amd64
+      bootID: 79ea9554-214f-4b69-b12a-c2f4ba84f7de
+      containerRuntimeVersion: containerd://2.2.3-k3s1
+      kernelVersion: 6.18.34
+      kubeProxyVersion: ""
+      kubeletVersion: v1.35.5+k3s1
+      machineID: fe396ec01b7847d9875229f09bb8dc17
+      operatingSystem: linux
+      osImage: NixOS 26.05 (Yarara)
+      swap:
+        capacity: 8589930496
+      systemUUID: 5ac219f5-19ea-c185-71f5-fc349765e969
+    runtimeHandlers:
+    - features:
+        recursiveReadOnlyMounts: true
+        userNamespaces: true
+      name: ""
+    - features:
+        recursiveReadOnlyMounts: true
+        userNamespaces: true
+      name: runc
+    - features:
+        recursiveReadOnlyMounts: false
+        userNamespaces: false
+      name: runhcs-wcow-process
+kind: List
+metadata:
+  resourceVersion: ""

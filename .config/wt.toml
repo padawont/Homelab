@@ -1,0 +1,24 @@
+# ADR 0006 — Worktrunk project config for knowledge-base
+# https://github.com/RunicEngines/knowledge-base/blob/main/adr/0006-use-worktrunk-for-opencode-sessions/overview.md
+
+[post-start]
+copy = "wt step copy-ignored"
+
+[pre-switch]
+validate = """
+  echo "{{ branch }}" | grep -qE '^(feat|fix|docs|chore|refactor|test|perf|build|ci|ideas|knowledge|research|adr|proposals)/([0-9]+(-[0-9]+)*-)?[a-z0-9]+(-[a-z0-9]+)*$' || {
+    echo "ERROR: Branch name must follow ADR 0002: {type}/{issue}-{kebab-description}"
+    echo "  Valid types: feat, fix, docs, chore, refactor, test, perf, build, ci, ideas, knowledge, research, adr, proposals"
+    echo "  Issue number is optional (see ADR 0002 Section 1)"
+    exit 1
+  }
+"""
+
+[commit.generation]
+template-append = """
+- Use conventional commits (feat:, fix:, docs:, chore:)
+- Reference relevant issue numbers in the body
+"""
+
+
+

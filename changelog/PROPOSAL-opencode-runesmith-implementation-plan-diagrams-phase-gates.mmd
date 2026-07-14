@@ -1,0 +1,23 @@
+flowchart LR
+    Start([Request]) --> PG[Plan Gate]
+    PG -->|Pass| IG[Implement Gate]
+    PG -->|Fail| RP[Re-plan]
+    RP --> PG
+    IG -->|Pass| RG[Review Gate]
+    IG -->|Fail| RP
+    RG -->|Pass| TG[Test Gate]
+    RG -->|Fail| IG
+    TG -->|Pass| DG[Deploy Gate]
+    TG -->|Fail| IG
+    DG -->|Pass| Done([Complete])
+    DG -->|Fail| RB[Rollback / Diagnose]
+
+    style Start fill:#1967d2,color:#fff
+    style Done fill:#34a853,color:#fff
+    style RB fill:#ea4335,color:#fff
+    style PG fill:#e8f0fe,stroke:#1967d2
+    style IG fill:#e8f0fe,stroke:#1967d2
+    style RG fill:#e8f0fe,stroke:#1967d2
+    style TG fill:#e8f0fe,stroke:#1967d2
+    style DG fill:#e8f0fe,stroke:#1967d2
+    style RP fill:#fce8e6,stroke:#ea4335

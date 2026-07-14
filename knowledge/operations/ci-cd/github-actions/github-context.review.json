@@ -1,0 +1,89 @@
+{
+  "document": "knowledge/operations/ci-cd/github-actions/github-context.md",
+  "section": "knowledge",
+  "status": "needs-review",
+  "findings": [
+    {
+      "severity": "error",
+      "category": "accuracy",
+      "claim": "`github.run_id` type is `number`",
+      "expected": "Official docs declare type as `string` (line 178: `| github.run_id | string | ...`)",
+      "actual": "Document Field Reference table says `number` at line 49",
+      "source": "https://docs.github.com/en/actions/learn-github-actions/contexts#github-context",
+      "line_ref": "knowledge/operations/ci-cd/github-actions/github-context.md:49"
+    },
+    {
+      "severity": "error",
+      "category": "accuracy",
+      "claim": "`github.run_number` type is `number`",
+      "expected": "Official docs declare type as `string` (line 179: `| github.run_number | string | ...`)",
+      "actual": "Document Field Reference table says `number` at line 50",
+      "source": "https://docs.github.com/en/actions/learn-github-actions/contexts#github-context",
+      "line_ref": "knowledge/operations/ci-cd/github-actions/github-context.md:50"
+    },
+    {
+      "severity": "warning",
+      "category": "accuracy",
+      "claim": "`github.job` description is \"Current job name\"",
+      "expected": "Official docs: \"The `job_id` of the current job.\" — the `job_id` is the YAML map key (e.g., `build`), not the optional display name set via `jobs.<job_id>.name`. This is a semantic distinction: `job_id` is not the same as the job's display name.",
+      "actual": "Document says \"Current job name\" at line 52, conflating `job_id` with the display name",
+      "source": "https://docs.github.com/en/actions/learn-github-actions/contexts#github-context",
+      "line_ref": "knowledge/operations/ci-cd/github-actions/github-context.md:52"
+    }
+  ],
+  "skill_results": [
+    {
+      "skill": "kb-frontmatter-validate",
+      "valid": true,
+      "details": {
+        "status": "draft (valid for knowledge lifecycle)",
+        "tags": ["github-actions", "context", "github"] — all valid kebab-case,
+        "sources": "present — 1 URL entry",
+        "last_audit_date": "2026-06-09 — valid calendar date",
+        "no_template_comments": true
+      }
+    },
+    {
+      "skill": "kb-cross-link-check",
+      "valid": true,
+      "links": [
+        {
+          "field": "See Also",
+          "path": "knowledge/operations/ci-cd/github-actions/env-context.md",
+          "status": "ok"
+        },
+        {
+          "field": "See Also",
+          "path": "knowledge/operations/ci-cd/github-actions/needs-context.md",
+          "status": "ok"
+        },
+        {
+          "field": "See Also",
+          "path": "knowledge/operations/ci-cd/github-actions/vars-context.md",
+          "status": "ok"
+        }
+      ],
+      "note": "Cross-links are in the body (See Also section), not in frontmatter fields. All resolved successfully."
+    },
+    {
+      "skill": "kb-status-transition",
+      "valid": "not-applicable",
+      "details": "No status transition requested. Current status is `draft`. No transition to validate."
+    }
+  ],
+  "correct_claims": [
+    "`github.repository` — string, format `owner/repo` ✅",
+    "`github.repository_owner` — string, repository owner ✅",
+    "`github.ref` — string, full ref like `refs/heads/main` ✅",
+    "`github.ref_name` — string, short ref like `main` ✅",
+    "`github.ref_type` — string, `branch` or `tag` ✅",
+    "`github.sha` — string, commit SHA ✅",
+    "`github.actor` — string, user who triggered run ✅",
+    "`github.event_name` — string, event type ✅",
+    "`github.workflow` — string, workflow name ✅",
+    "`github.token` — string, GITHUB_TOKEN value ✅",
+    "Event payload access via `github.event.pull_request.title` and `github.event.number` examples ✅",
+    "Code examples are syntactically correct YAML ✅"
+  ],
+  "summary": "Found 2 type errors (run_id, run_number incorrectly typed as `number` instead of `string`) and 1 description inaccuracy (github.job described as 'job name' when it's actually the `job_id`). Cross-links all resolve correctly. Frontmatter is valid. Source URL is correct and resolves."
+}

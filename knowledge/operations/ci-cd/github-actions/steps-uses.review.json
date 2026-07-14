@@ -1,0 +1,90 @@
+{
+  "document": "knowledge/operations/ci-cd/github-actions/steps-uses.md",
+  "section": "knowledge",
+  "status": "needs-review",
+  "findings": [
+    {
+      "severity": "warning",
+      "category": "version",
+      "claim": "Example uses actions/checkout@v4",
+      "expected": "Document should reference actions/checkout@v6 (current major version v6.0.3, released 2026-06-02)",
+      "actual": "Document references actions/checkout@v4 in the Common Actions example block (line 26) and Source Types table (line 49)",
+      "source": "https://github.com/actions/checkout/tags",
+      "line_ref": "knowledge/operations/ci-cd/github-actions/steps-uses.md:26,49"
+    },
+    {
+      "severity": "warning",
+      "category": "version",
+      "claim": "Example uses astral-sh/setup-uv@v5",
+      "expected": "Document should reference astral-sh/setup-uv@v8 (current major version v8.2.0, released 2026-06-03)",
+      "actual": "Document references astral-sh/setup-uv@v5 (line 31), which is 3 major versions behind",
+      "source": "https://github.com/astral-sh/setup-uv/tags",
+      "line_ref": "knowledge/operations/ci-cd/github-actions/steps-uses.md:31"
+    },
+    {
+      "severity": "warning",
+      "category": "version",
+      "claim": "Example uses actions/setup-node@v4",
+      "expected": "Document should reference actions/setup-node@v6 (current major version v6.4.0, released 2026-04-20)",
+      "actual": "Document references actions/setup-node@v4 (line 34), which is 2 major versions behind",
+      "source": "https://github.com/actions/setup-node/tags",
+      "line_ref": "knowledge/operations/ci-cd/github-actions/steps-uses.md:34"
+    },
+    {
+      "severity": "warning",
+      "category": "version",
+      "claim": "Example uses actions/cache@v4",
+      "expected": "Document should reference actions/cache@v5 (current major version v5.0.5, released 2026-04-13)",
+      "actual": "Document references actions/cache@v4 (line 39), which is 1 major version behind",
+      "source": "https://github.com/actions/cache/tags",
+      "line_ref": "knowledge/operations/ci-cd/github-actions/steps-uses.md:39"
+    },
+    {
+      "severity": "warning",
+      "category": "accuracy",
+      "claim": "Source type {owner}/{repo}@{ref} described as 'GitHub Marketplace'",
+      "expected": "Official docs describe this format as referencing 'a public GitHub repository' — it is not limited to Marketplace actions",
+      "actual": "Document table (line 49) says 'GitHub Marketplace' which excludes actions from non-Marketplace public repos",
+      "source": "https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions#jobsjob_idstepsuses (line 2007-2009)",
+      "line_ref": "knowledge/operations/ci-cd/github-actions/steps-uses.md:49"
+    },
+    {
+      "severity": "warning",
+      "category": "accuracy",
+      "claim": "docker:// format shown as docker://{image} without :{tag}",
+      "expected": "Official format is docker://{image}:{tag} (with tag suffix); docs show docker://alpine:3.8 as example",
+      "actual": "Document format column (line 52) shows docker://{image} missing the :{tag} component, though the example uses docker://alpine:latest (with tag)",
+      "source": "https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions#jobsjob_idstepsuses (lines 2072-2083)",
+      "line_ref": "knowledge/operations/ci-cd/github-actions/steps-uses.md:52"
+    }
+  ],
+  "skill_results": [
+    {
+      "skill": "kb-frontmatter-validate",
+      "valid": true,
+      "details": "All frontmatter fields valid: status=draft (valid for knowledge), tags are kebab-case, dates are valid calendar dates, sources present, last_audit_date present and recent"
+    },
+    {
+      "skill": "kb-cross-link-check",
+      "valid": true,
+      "links": [
+        {"field": "See Also (body)", "path": "./steps-run.md", "status": "ok", "message": "File exists at knowledge/operations/ci-cd/github-actions/steps-run.md"},
+        {"field": "See Also (body)", "path": "./actions-marketplace.md", "status": "ok", "message": "File exists at knowledge/operations/ci-cd/github-actions/actions-marketplace.md"}
+      ]
+    },
+    {
+      "skill": "kb-status-transition",
+      "valid": true,
+      "current_status": "draft",
+      "message": "Current status 'draft' is valid starting state for knowledge lifecycle (draft → exploring → accepted → completed / superseded)"
+    },
+    {
+      "skill": "source-url-validation",
+      "valid": true,
+      "source_url": "https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions#jobsjob_idstepsuses",
+      "status": "reachable",
+      "message": "Source URL is valid and reachable"
+    }
+  ],
+  "summary": "Found 6 issues: 4 version warnings (all 4 action examples are outdated by 1-3 major versions), 1 description inaccuracy in the source types table, and 1 format omission in the docker:// entry. Cross-links and frontmatter are valid. The source URL is reachable."
+}

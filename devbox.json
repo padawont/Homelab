@@ -1,0 +1,48 @@
+{
+  "$schema": "https://raw.githubusercontent.com/jetify-com/devbox/0.17.3/.schema/devbox.schema.json",
+  "packages": [
+    "jq@latest",
+    "uv@latest",
+    "quarto@latest",
+    "ripgrep@latest",
+    "yamllint@latest",
+    "pandoc@latest",
+    "texlive.combined.scheme-full@latest",
+    "nodejs@latest",
+    "mermaid-cli@latest"
+  ],
+  "shell": {
+    "init_hook": [
+      "bash scripts/install-eisvogel.sh"
+    ],
+    "scripts": {
+      "test": [
+        "echo \"Error: no test specified\" && exit 1"
+      ],
+      "issue-start": [
+        "./scripts/issue-start.sh $1"
+      ],
+      "multiple-issue-start": [
+        "./scripts/multiple-issue-start.sh $@"
+      ],
+      "mmd-render": [
+        "for mmd in \"$@\"; do",
+        "  [ -f \"$mmd\" ] && mmdc -i \"$mmd\" -o \"${mmd%.mmd}.svg\" -w 600 -b white",
+        "done"
+      ],
+      "proposal-render": [
+        "proposal_dir=\"proposals/$1\"",
+        "echo \"Rendering proposal: $proposal_dir\"",
+        "if [ -d \"$proposal_dir/diagrams\" ]; then",
+        "  for mmd in \"$proposal_dir\"/diagrams/*.mmd; do",
+        "    [ -f \"$mmd\" ] && mmdc -i \"$mmd\" -o \"${mmd%.mmd}.svg\" -w 600 -b white",
+        "    [ -f \"$mmd\" ] && mmdc -i \"$mmd\" -o \"${mmd%.mmd}.pdf\" -w 600 -f",
+        "  done",
+        "fi",
+        "version=$(grep '^version:' \"$proposal_dir/overview.md\" | head -1 | sed 's/.*: //')",
+        "pandoc \"$proposal_dir/overview.md\" -f markdown -t pdf --pdf-engine=xelatex --resource-path=\"$proposal_dir\" --data-dir=. --template eisvogel --listings --lua-filter=scripts/svg-to-pdf.lua -V numbersections=true -V secnumdepth=3 -V titlepage=true -V toc-own-page=true -V colorlinks=true -V linkcolor=blue -V urlcolor=blue -o \"$proposal_dir/$(basename $1)-v$version.pdf\""
+      ]
+    }
+  }
+}
+

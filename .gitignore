@@ -1,0 +1,13 @@
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+*~
+._*
+
+# Quarto intermediates
+/.quarto/
+/_site/
+/_freeze/
+/.quarto/
+

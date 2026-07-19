@@ -1,0 +1,2 @@
+.validation/summary.md
+.validation/validate-configs.md

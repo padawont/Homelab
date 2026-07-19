@@ -1,0 +1,33 @@
+# ref: .research/kiwix-research.md — Copy job from host path to PVC
+# ref: PR criteria #7-8 — busybox, hostPath /home/nixos/kiwix-zim, restartPolicy Never, backoffLimit 2
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: copy-zim
+  namespace: kiwix
+spec:
+  template:
+    spec:
+      containers:
+      - name: copy
+        image: busybox
+        command:
+        - sh
+        - -c
+        - |
+          cp -v /host-zim/*.zim /data/ && ls -lh /data/
+        volumeMounts:
+        - name: host-zim
+          mountPath: /host-zim
+        - name: data
+          mountPath: /data
+      volumes:
+      - name: host-zim
+        hostPath:
+          path: /home/nixos/kiwix-zim
+          type: Directory
+      - name: data
+        persistentVolumeClaim:
+          claimName: kiwix-data
+      restartPolicy: Never
+  backoffLimit: 2

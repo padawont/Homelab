@@ -2,10 +2,34 @@
 
 Documentation and configuration for my homelab infrastructure. Primary use: backup and recovery if something goes wrong, and tracking changes over time.
 
-## Structure
+## 4-Phase Pipeline
 
-| Section | Purpose |
+Content flows through a defined pipeline: research and reference → configuration and decisions → deployment → cluster state monitoring.
+
+| Phase | Directory | Purpose |
+|---|---|---|
+| 1 — Knowledge | `knowledge/` | Homelab-relevant reference docs, hardware specs, design patterns |
+| 2 — Configs + ADR | `configs-and-adr/` | Node configs, K8s manifests, architecture decisions |
+| 3 — Deployment | `deployment/` | CI/CD pipelines, deployment procedures, Helm values |
+| 4 — Status | `status/` | Cluster state snapshots, version inventory, health |
+
+## How Content Flows
+
+```
+Knowledge ──informs──► Configs + ADR ──deploys──► Deployment ──reports──► Status
+```
+
+- **Knowledge** entries about a tool lead to creating or updating **configs**
+- **ADRs** document why a particular config or technology was chosen
+- **Deployment** procedures reference configs and produce status snapshots
+- **Status** feeds back into knowledge (e.g., "version X has a bug, upgrade to Y")
+
+## Quick Start
+
+| You want to... | Go to |
 |---|---|
-| `configs/` | Software & infrastructure configuration (NixOS, Kubernetes manifests) |
-| `knowledge/` | Reference documentation (Kubernetes, operations, hardware, tooling) |
-| `changelog/` | Decision history and change tracking |
+| Understand a technology | `knowledge/<category>/<topic>/` |
+| Find or update configs | `configs-and-adr/node-<role>/` |
+| See how something is deployed | `deployment/procedures/` or `deployment/pipelines/` |
+| Check current cluster state | `status/` — auto-generated snapshots |
+| Know why a decision was made | `configs-and-adr/adr/` |

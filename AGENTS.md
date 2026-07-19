@@ -2,6 +2,8 @@
 
 This repository documents my homelab infrastructure, configuration, and knowledge. It serves as the primary reference for restoring the homelab in case of failure and for tracking changes over time.
 
+Content flows through a 4-phase pipeline: **knowledge** → **configs-and-adr** → **deployment** → **status**.
+
 Upstream org-wide knowledge base: [RunicEngines/knowledge-base](https://github.com/RunicEngines/knowledge-base)
 
 ## External File Loading
@@ -9,8 +11,9 @@ Upstream org-wide knowledge base: [RunicEngines/knowledge-base](https://github.c
 When working on a specific section, use your Read tool to load the corresponding AGENTS.md file on demand:
 
 - @knowledge/AGENTS.md — categorization rules, topic folder structure, audit expectations
-- @configs/AGENTS.md — node-role structure, per-node config layout
-- @changelog/AGENTS.md — changelog naming and content format
+- @configs-and-adr/AGENTS.md — node-role structure, per-node config layout, ADR conventions
+- @deployment/AGENTS.md — pipeline config format, procedure template, manifests boundary
+- @status/AGENTS.md — snapshot naming, CI generation guidelines
 
 Do NOT preemptively load all references — load them on a need-to-know basis when relevant to the current task.
 
@@ -27,37 +30,59 @@ Skills must never duplicate content from AGENTS.md files. If a fact or rule exis
 
 ```
 Homelab/
-├── AGENTS.md          # This file — root instructions
-├── README.md          # Project overview
-├── opencode.json      # opencode config
-├── devbox.json        # Devbox environment
+├── AGENTS.md              # This file — root instructions
+├── README.md              # Project overview + pipeline explanation
+├── opencode.json          # opencode config
+├── devbox.json            # Devbox environment
 ├── .gitignore
 │
-├── configs/           # Per-node cluster configuration
-│   ├── node-main/     # Main node (K3s server, Longhorn storage)
-│   │   ├── kubernetes/ # K8s manifests (actual YAML)
-│   │   ├── OS/         # OS-level config (NixOS, network, packages)
-│   │   └── README.md
-│   ├── node-extra/    # Extra / worker nodes
-│   │   ├── kubernetes/
-│   │   └── OS/
-│   ├── AGENTS.md      # Config section rules
-│   └── README.md
+├── knowledge/             # Phase 1: Reference documentation (homelab-relevant only)
+│   ├── AGENTS.md          # Knowledge section rules
+│   ├── README.md
+│   ├── kubernetes/        # K8s architecture, resources, tools
+│   ├── operations/        # CI/CD, NixOS, dev environments, hardware tooling
+│   ├── technology/        # Languages, frameworks, platforms
+│   ├── hardware/          # Server specs, network topology, storage, SBCs
+│   └── design/            # Architecture patterns, documentation standards
 │
-├── knowledge/         # Reference documentation (software & tools only)
-│   ├── kubernetes/    # K8s knowledge (architecture, resources, tools)
-│   ├── operations/    # CI/CD, infrastructure, deployment
-│   ├── tooling/       # Developer tools, editors, build systems
-│   ├── technology/    # Languages, frameworks, platforms
-│   ├── design/        # Architecture patterns, documentation standards
-│   ├── hardware/      # Server specs, network topology, storage, SBCs
-│   ├── AGENTS.md      # Knowledge section rules
-│   └── README.md
+├── configs-and-adr/       # Phase 2: Configurations + Architecture Decisions
+│   ├── AGENTS.md          # Configs + ADR section rules
+│   ├── README.md
+│   ├── adr/               # Homelab-specific Architecture Decision Records (MADR format)
+│   ├── node-main/         # node-1: K3s server, Longhorn storage, Rancher management
+│   │   ├── kubernetes/    # Actual K8s manifests (deployments, services, configmaps, etc.)
+│   │   └── OS/            # NixOS configs, network settings, installed packages
+│   └── node-extra/        # Future worker nodes
+│       ├── kubernetes/
+│       └── OS/
 │
-└── changelog/         # Change history (simple records)
-    ├── AGENTS.md      # Changelog section rules
-    └── README.md
+├── deployment/            # Phase 3: Deployment pipelines, procedures, Helm values
+│   ├── AGENTS.md          # Deployment section rules
+│   ├── README.md
+│   ├── pipelines/         # CI/CD configs (GitHub Actions workflows, ArgoCD app sets)
+│   ├── procedures/        # Step-by-step deployment guides
+│   └── manifests/         # Helm values, Kustomize overlays, ArgoCD application manifests
+│
+└── status/                # Phase 4: Cluster state snapshots
+    ├── AGENTS.md          # Status section rules
+    ├── README.md
+    ├── workloads/         # Active deployments, services, ingress, replicas
+    ├── hardware/          # CPU, memory, storage utilization snapshots
+    ├── versions/          # Software version inventory (K3s, Longhorn, Rancher, etc.)
+    └── generated/         # CI-generated reports — gitignored by default, snapshots committed on update
 ```
+
+## Issue Template Directive
+
+All new issues MUST follow the section structure defined in [issue #1](https://github.com/padawont/Homelab/issues/1):
+
+- Description
+- Objectives
+- Scope / Out of Scope
+- Good Examples / Bad Examples
+- Pipeline
+- Definition of Done
+- Validations
 
 ## Directory Naming
 
@@ -87,8 +112,7 @@ Additional `.md` files are optional.
 
 Use frontmatter fields to link between sections:
 - `related_knowledge: []` — links to knowledge/ topics
-- `related_configs: []` — links to configs/ paths
-- `replaces: ""` / `replaced-by: ""` — in changelog entries (relative paths)
+- `related_configs: []` — links to configs-and-adr/ paths
 
 ## GitHub Etiquettes
 

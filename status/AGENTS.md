@@ -79,7 +79,7 @@ domain: kubernetes | nixos
 | File | Path | Last Applied | Status |
 |---|---|---|---|
 
-- `Last Applied` is populated during deployment (timestamp or CI run ID)
+- `Last Applied` is populated during deployment (date-only ISO-8601 format: `YYYY-MM-DD`). No time-of-day component.
 - `Status` values: `Present`, `Modified`, `Missing`
 
 ## Frontmatter Template (hardware / versions)

@@ -2,21 +2,28 @@
 snapshot_date: 2026-07-19
 domain: nixos
 updated_by: manual-2026-07-19
-related_adrs: []
+related_adrs:
+  - configs-and-adr/adr/0001-restructure-into-4-phase-pipeline.md
 ---
 
 # Current NixOS ADRs
 
 ```mermaid
 stateDiagram-v2
-    [*] --> Proposed: New ADR
-    Proposed --> Accepted: Approved
-    Accepted --> Superseded: Replaced
-    Accepted --> Deprecated: Abandoned
+    [*] --> adr0001: governed by
+    adr0001 --> Accepted
 
-    note right of [*]
-        No NixOS ADRs yet.
-        Add entries here as ADRs are created.
+    state "ADR 0001 — Restructure into 4-Phase Pipeline" as adr0001 {
+        state "NixOS Configs" as nixos_configs {
+            configuration.nix
+            hardware-configuration.nix
+        }
+        adr0001 --> nixos_configs
+    }
+
+    note right of adr0001
+        No NixOS-specific ADRs exist yet.
+        OS config is governed by ADR 0001.
     end note
 ```
 
@@ -25,7 +32,6 @@ stateDiagram-v2
 | State | Meaning |
 |---|---|
 | `[*]` | Initial creation |
-| `Proposed` | Under review |
 | `Accepted` | Approved and currently in effect |
-| `Deprecated` | No longer relevant, not replaced |
+| `Deprecated` | No longer relevant |
 | `Superseded` | Replaced by a newer ADR |

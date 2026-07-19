@@ -13,7 +13,7 @@ When working on a specific section, use your Read tool to load the corresponding
 - @knowledge/AGENTS.md — categorization rules, topic folder structure, audit expectations
 - @configs-and-adr/AGENTS.md — node-role structure, per-node config layout, ADR conventions
 - @deployment/AGENTS.md — pipeline config format, procedure template, manifests boundary
-- @status/AGENTS.md — snapshot naming, CI generation guidelines
+- @status/AGENTS.md — current ADR/config registry, Mermaid diagram rules, deployment-phase updates
 
 Do NOT preemptively load all references — load them on a need-to-know basis when relevant to the current task.
 
@@ -63,13 +63,17 @@ Homelab/
 │   ├── procedures/        # Step-by-step deployment guides
 │   └── manifests/         # Helm values, Kustomize overlays, ArgoCD application manifests
 │
-└── status/                # Phase 4: Cluster state snapshots
+└── status/                # Phase 4: Live ADR and config registry
     ├── AGENTS.md          # Status section rules
     ├── README.md
-    ├── workloads/         # Active deployments, services, ingress, replicas
+    ├── current-adr/       # Live ADR state diagrams (Mermaid)
+    │   ├── kubernetes.md  #   K8s-related ADR statuses and workloads
+    │   └── nixos.md       #   NixOS-related ADR statuses
+    ├── current-config/    # Deployed config inventory tables
+    │   ├── kubernetes.md  #   K8s manifest registry
+    │   └── nixos.md       #   NixOS config registry
     ├── hardware/          # CPU, memory, storage utilization snapshots
-    ├── versions/          # Software version inventory (K3s, Longhorn, Rancher, etc.)
-    └── generated/         # CI-generated reports — gitignored by default, snapshots committed on update
+    └── versions/          # Software version inventory (K3s, Longhorn, Rancher, etc.)
 ```
 
 ## Issue Template Directive

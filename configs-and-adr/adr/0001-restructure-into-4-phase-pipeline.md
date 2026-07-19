@@ -21,14 +21,14 @@ Restructure the repository into a 4-phase pipeline that enforces clear content p
 | 1 | `knowledge/` | Research, reference docs, hardware specs (homelab-relevant only) |
 | 2 | `configs-and-adr/` | Node configs, K8s manifests, architecture decisions |
 | 3 | `deployment/` | CI/CD pipelines, deployment procedures, Helm values |
-| 4 | `status/` | Cluster state snapshots, version inventory, health |
+| 4 | `status/` | Live ADR and config registry, hardware, versions |
 
 Key changes:
 - Renamed `configs/` → `configs-and-adr/` to include architecture decision records
 - Removed `changelog/`, `.research/`, `.validation/` (content relocated or deleted)
-- Created `deployment/` and `status/` directories with subdirectory scaffolding
+- Created `deployment/` and `status/` directories with subdirectory scaffolding (later revised: `workloads/` and `generated/` replaced by `current-adr/` and `current-config/`)
 - Collapsed `knowledge/tooling/` into `knowledge/operations/` for homelab-relevant content; flagged generic tooling for weekly upstream pruning
-- Added `.gitignore` entry for CI-generated status snapshots
+- Added `.gitignore` entry for CI-generated status snapshots (later removed — `generated/` directory deleted in favor of `current-adr/` and `current-config/`)
 
 ## Consequences
 

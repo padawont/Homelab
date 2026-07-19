@@ -11,6 +11,5 @@ Thumbs.db
 /_freeze/
 /.quarto/
 
-# CI-generated status snapshots (committed only by CI)
-status/generated/
+# CI-generated status snapshots — removed; status now uses current-adr/ and current-config/
 

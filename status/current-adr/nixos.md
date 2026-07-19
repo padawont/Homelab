@@ -1,7 +1,7 @@
 ---
 snapshot_date: 2026-07-19
 domain: nixos
-updated_by: ""
+updated_by: manual-2026-07-19
 related_adrs: []
 ---
 

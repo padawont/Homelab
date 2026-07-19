@@ -1,7 +1,7 @@
 ---
 snapshot_date: 2026-07-19
 domain: kubernetes
-updated_by: ""
+updated_by: manual-2026-07-19
 related_adrs:
   - configs-and-adr/adr/0001-restructure-into-4-phase-pipeline.md
 ---
@@ -21,7 +21,7 @@ stateDiagram-v2
     note right of adr0001
         Covers the entire repo restructure
         including K8s config placement.
-        Current as of 2026-07-19.
+        Verified on 2026-07-19 by issue #3 snapshot.
     end note
 ```
 

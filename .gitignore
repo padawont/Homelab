@@ -11,3 +11,6 @@ Thumbs.db
 /_freeze/
 /.quarto/
 
+# CI-generated status snapshots (committed only by CI)
+status/generated/
+

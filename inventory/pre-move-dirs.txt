@@ -1,0 +1,10 @@
+.
+./changelog
+./.config
+./configs
+./.git
+./inventory
+./knowledge
+./.opencode
+./.research
+./.validation

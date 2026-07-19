@@ -1,0 +1,12 @@
+configs/AGENTS.md
+configs/node-main/kubernetes/bookstack.yaml
+configs/node-main/kubernetes/cluster-state.yaml
+configs/node-main/kubernetes/extras.yaml
+configs/node-main/kubernetes/k3s-kubeconfig.yaml
+configs/node-main/kubernetes/kiwix-copy-job.yaml
+configs/node-main/kubernetes/kiwix.yaml
+configs/node-main/kubernetes/nodes.yaml
+configs/node-main/OS/configuration.nix
+configs/node-main/OS/hardware-configuration.nix
+configs/node-main/OS/README.md
+configs/README.md

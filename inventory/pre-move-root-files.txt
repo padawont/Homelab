@@ -1,0 +1,6 @@
+./AGENTS.md
+./devbox.json
+./devbox.lock
+./.gitignore
+./opencode.json
+./README.md

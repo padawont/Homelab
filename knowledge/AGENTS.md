@@ -1,8 +1,8 @@
 # Knowledge Section
 
-Knowledge contains reference documentation about software and tools used in the homelab. Notes must be comprehensive enough for AI agents to use as references for actual work.
+Knowledge contains reference documentation about technologies, tools, and hardware used in the homelab. Notes must be comprehensive enough for AI agents to use as references for actual work.
 
-This section is NOT for homelab-specific configuration — those go in `configs/`. Knowledge entries may cross-reference configs and may lead to creating or updating config entries.
+This section is NOT for homelab-specific configuration — those go in `configs-and-adr/`. Knowledge entries may cross-reference configs and may lead to creating or updating config entries.
 
 ## Categorization
 
@@ -16,12 +16,11 @@ knowledge/<category>/<topic>/
 
 | Category | Description |
 |---|---|
-| `kubernetes/` | K8s architecture, resources, tools (Cilium, Helm, k3d, k9s, Rancher) |
-| `operations/` | Deployment, CI/CD, NixOS infrastructure |
-| `tooling/` | Developer tools, dev environments, version control |
-| `technology/` | Languages, frameworks, platforms |
-| `design/` | Architecture patterns, documentation standards |
+| `kubernetes/` | K8s architecture, resources, tools (Cilium, Helm, k3d, k9s, Rancher, Kiwix) |
+| `operations/` | CI/CD, NixOS, dev environments (devbox, direnv, worktrunk), hardware CLI tools |
+| `technology/` | Languages, frameworks, platforms (homelab-deployed only) |
 | `hardware/` | Server specs, network topology, storage, SBCs |
+| `design/` | Architecture patterns, documentation standards |
 
 ### Examples
 
@@ -57,7 +56,7 @@ Do NOT split when the topic is genuinely a single concept — one focused file i
 All atomic `.md` files must include in frontmatter:
 - `sources` — URLs of where this note is based on
 - `last_audit_date` — date of the last accuracy review
-- `related_configs` — paths to relevant configs in `configs/` (optional)
+- `related_configs` — paths to relevant configs in `configs-and-adr/` (optional)
 
 ## Cross-Referencing Configs
 
@@ -65,7 +64,11 @@ When a knowledge entry describes a tool or concept that has a corresponding conf
 1. Add the config path in the `related_configs` frontmatter field
 2. Consider creating or updating the relevant config entry if one doesn't exist yet
 
-For example, a knowledge note about Longhorn should link to `configs/node-main/OS/` where the iSCSI and storage config lives.
+For example, a knowledge note about Longhorn should link to `configs-and-adr/node-main/OS/` where the iSCSI and storage config lives.
+
+## Weekly Generic Content Pruning
+
+Generic tooling documentation (FastAPI, FastMCP, Pydantic-AI, pytest, type-checkers, opencode ecosystem) that belongs in the upstream `RunicEngines/knowledge-base` is flagged in `inventory/curator-report.md` and pruned on a recurring weekly schedule. This initial restructure flags but does not delete these files.
 
 ## Status Lifecycle
 

@@ -1,0 +1,3 @@
+service: forgejo
+trigger: manual
+target: node-1

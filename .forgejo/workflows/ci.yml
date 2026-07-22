@@ -1,0 +1,8 @@
+name: CI
+on: [push, pull_request]
+jobs:
+  dagger:
+    runs-on: docker
+    steps:
+      - uses: actions/checkout@v4
+      - run: dagger call test --source=.

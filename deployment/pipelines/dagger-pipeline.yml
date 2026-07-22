@@ -1,0 +1,3 @@
+service: dagger
+trigger: manual
+target: node-1 (devbox)

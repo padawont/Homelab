@@ -1,0 +1,81 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: dagger
+
+---
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: dagger-engine
+  namespace: dagger
+  labels:
+    app: dagger-engine
+spec:
+  selector:
+    matchLabels:
+      app: dagger-engine
+  template:
+    metadata:
+      labels:
+        app: dagger-engine
+    spec:
+      nodeSelector:
+        kubernetes.io/hostname: node-1
+      containers:
+        - name: engine
+          image: registry.dagger.io/engine:v0.21.4
+          ports:
+            - containerPort: 1234
+              name: engine-api
+          env:
+            - name: DAGGER_ENGINE_PORT
+              value: "1234"
+          volumeMounts:
+            - name: buildkit-cache
+              mountPath: /var/lib/buildkit
+          securityContext:
+            privileged: true
+            capabilities:
+              add:
+                - SYS_ADMIN
+          resources:
+            requests:
+              memory: "512Mi"
+              cpu: "500m"
+            limits:
+              memory: "2Gi"
+              cpu: "2"
+      volumes:
+        - name: buildkit-cache
+          persistentVolumeClaim:
+            claimName: dagger-cache
+
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: dagger-cache
+  namespace: dagger
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 10Gi
+  storageClassName: longhorn
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: dagger-engine
+  namespace: dagger
+spec:
+  selector:
+    app: dagger-engine
+  ports:
+    - port: 1234
+      targetPort: 1234
+      name: engine-api

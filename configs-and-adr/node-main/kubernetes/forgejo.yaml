@@ -1,0 +1,171 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: forgejo
+
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: forgejo-data
+  namespace: forgejo
+spec:
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: longhorn
+  resources:
+    requests:
+      storage: 10Gi
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: forgejo
+  namespace: forgejo
+  labels:
+    app: forgejo
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: forgejo
+  template:
+    metadata:
+      labels:
+        app: forgejo
+    spec:
+      securityContext:
+        fsGroup: 1000
+        seccompProfile:
+          type: RuntimeDefault
+      initContainers:
+      - name: init-permissions
+        image: codeberg.org/forgejo/forgejo:16
+        securityContext:
+          runAsUser: 0
+        command:
+        - sh
+        - -c
+        - chown 1000:1000 /data
+        volumeMounts:
+        - name: data
+          mountPath: /data
+      containers:
+      - name: forgejo
+        image: codeberg.org/forgejo/forgejo:16
+        env:
+        - name: USER_UID
+          value: "1000"
+        - name: USER_GID
+          value: "1000"
+        - name: FORGEJO__server__DOMAIN
+          value: "192.168.111.103"
+        - name: FORGEJO__server__ROOT_URL
+          value: "http://192.168.111.103"
+        - name: FORGEJO__server__HTTP_PORT
+          value: "3000"
+        - name: FORGEJO__server__SSH_PORT
+          value: "2222"
+        - name: FORGEJO__server__START_SSH_SERVER
+          value: "true"
+        - name: FORGEJO__server__SSH_LISTEN_PORT
+          value: "2222"
+        - name: FORGEJO__actions__ENABLED
+          value: "true"
+        - name: FORGEJO__actions__DEFAULT_ACTIONS_URL
+          value: "https://data.forgejo.org"
+        ports:
+        - containerPort: 3000
+          name: http
+        - containerPort: 2222
+          name: ssh
+        volumeMounts:
+        - name: data
+          mountPath: /data
+        resources:
+          requests:
+            cpu: 200m
+            memory: 256Mi
+          limits:
+            cpu: 1000m
+            memory: 1Gi
+        livenessProbe:
+          httpGet:
+            path: /
+            port: 3000
+          initialDelaySeconds: 60
+          periodSeconds: 20
+        readinessProbe:
+          httpGet:
+            path: /
+            port: 3000
+          initialDelaySeconds: 30
+          periodSeconds: 10
+      volumes:
+      - name: data
+        persistentVolumeClaim:
+          claimName: forgejo-data
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: forgejo
+  namespace: forgejo
+  labels:
+    app: forgejo
+spec:
+  type: LoadBalancer
+  loadBalancerIP: 192.168.111.103
+  ports:
+  - port: 80
+    targetPort: 3000
+    name: http
+  selector:
+    app: forgejo
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: forgejo-ssh
+  namespace: forgejo
+  labels:
+    app: forgejo
+spec:
+  type: NodePort
+  ports:
+  - port: 2222
+    targetPort: 2222
+    name: ssh
+    nodePort: 30022
+  selector:
+    app: forgejo
+
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: forgejo
+  namespace: forgejo
+spec:
+  podSelector:
+    matchLabels:
+      app: forgejo
+  policyTypes:
+  - Ingress
+  ingress:
+  - from:
+    - namespaceSelector:
+        matchLabels:
+          kubernetes.io/metadata.name: metallb-system
+    - namespaceSelector:
+        matchLabels:
+          kubernetes.io/metadata.name: rancher
+    ports:
+    - port: 3000
+      protocol: TCP
+    - port: 2222
+      protocol: TCP

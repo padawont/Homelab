@@ -16,5 +16,6 @@ Deployed manifests on node-main (node-1):
 | `kiwix.yaml` | Deployment + Service + PVC | kiwix | — | Present |
 | `kiwix-copy-job.yaml` | Job | kiwix | — | Present |
 | `extras.yaml` | Various | — | — | Present |
+| `forgejo.yaml` | Deployment + Service + PVC + Ingress + NetworkPolicy + SealedSecret | forgejo | — | Present |
 
 *Last Applied dates and Status are populated during deployment phase.*

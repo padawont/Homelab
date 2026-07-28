@@ -1,0 +1,21 @@
+# Harvester CSI Driver — Rancher Integration Values
+# Deploy on guest K3s/RKE2 clusters provisioned via Harvester node driver
+global:
+  cattle:
+    clusterName: "guest-cluster-name"
+
+# CSI Driver configuration
+storageClass:
+  allowVolumeExpansion: true
+  enabled: true
+  # For single-node Harvester, set replica count to 1
+  parameters:
+    numberOfReplicas: "1"
+    migratable: "false"
+
+# Cloud Provider configuration
+cloudProvider:
+  enabled: true
+  global:
+    cattle:
+      clusterName: "guest-cluster-name"

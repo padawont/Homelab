@@ -1,0 +1,35 @@
+# Opens for writing
+#   /dev/sda
+#   /dev/sdb
+#   /dev/sdc
+#   /dev/sdd
+scheme_version: 1
+token: "CHANGE-ME-CLUSTER-TOKEN"
+os:
+  hostname: harvester
+  ssh_authorized_keys:
+    - "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAI... CHANGE-ME user@host"
+  ntp_servers:
+    - "0.pool.ntp.org"
+  dns_nameservers:
+    - "192.168.111.1"
+install:
+  mode: create
+  management_interface:
+    interfaces:
+      - name: ens192
+    method: static
+    ip: 192.168.111.51/24
+    gateway: 192.168.111.1
+  device: /dev/sda
+  vip: 192.168.111.51
+  vip_mode: static
+  cluster_pod_cidr: 10.52.0.0/16
+  cluster_service_cidr: 10.53.0.0/16
+  cluster_dns: 10.53.0.10
+  role: management
+  skipchecks: false
+  harvester:
+    storage_class:
+      replica_count: 1
+  wipe_all_disks: true

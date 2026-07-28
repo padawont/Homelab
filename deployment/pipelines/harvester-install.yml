@@ -1,0 +1,37 @@
+# Pipeline metadata: harvester
+# trigger: workflow_dispatch + schedule (weekly)
+# target: node-main
+---
+name: Harvester Validate
+on:
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: Target environment
+        required: true
+        default: production
+        type: choice
+        options:
+          - production
+  schedule:
+    - cron: '0 6 * * 0'  # Weekly Sunday morning — check for upgrades
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Validate YAML manifests
+        run: |
+          yamllint deployment/manifests/harvester/
+
+      - name: Validate procedure links
+        run: |
+          grep -oP '\([^)]+\)' deployment/procedures/deploy-harvester.md | tr -d '()' | while read link; do
+            if [ ! -f "$link" ] && [[ ! "$link" =~ ^https?:// ]]; then
+              echo "Broken link: $link"
+              exit 1
+            fi
+          done

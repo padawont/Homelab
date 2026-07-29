@@ -1,0 +1,47 @@
+# Pipeline metadata: pterodactyl
+# trigger: workflow_dispatch + schedule (monthly)
+# target: node-main (pterodactyl-vm)
+---
+name: Pterodactyl Validate
+on:
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: Target environment
+        required: true
+        default: production
+        type: choice
+        options:
+          - production
+  schedule:
+    - cron: '0 6 1 * *'  # Monthly — check for Panel + Wings upgrades
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Validate YAML manifests
+        run: |
+          yamllint deployment/manifests/pterodactyl/
+
+      - name: Validate procedure links
+        run: |
+          grep -oP '\([^)]+\)' deployment/procedures/deploy-pterodactyl.md | tr -d '()' | while read link; do
+            if [ ! -f "$link" ] && [[ ! "$link" =~ ^https?:// ]]; then
+              echo "Broken link: $link"
+              exit 1
+            fi
+          done
+
+      - name: Check for Panel releases
+        run: |
+          LATEST=$(curl -s https://api.github.com/repos/pterodactyl/panel/releases/latest | jq -r '.tag_name')
+          echo "Latest Panel release: $LATEST"
+
+      - name: Check for Wings releases
+        run: |
+          LATEST=$(curl -s https://api.github.com/repos/pterodactyl/wings/releases/latest | jq -r '.tag_name')
+          echo "Latest Wings release: $LATEST"

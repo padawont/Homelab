@@ -15,10 +15,6 @@ Thumbs.db
 # DevSpace cache
 .devspace/
 
-# Obsidian workspace (user-specific)
-.obsidian/workspace.json
-.obsidian/graph.json
-
 # Secrets
 **/secrets/
 **/*.secret

@@ -12,7 +12,8 @@ Reusable document templates for all sections. Copy, don't edit.
 | Research alternatives index | `./Templates/research/alternatives.md` | `./03_Research/` |
 | Research alternative | `./Templates/research/alternative.md` | `./03_Research/` |
 | ADR | `./Templates/adr/adr.md` | `./04_ADRs/` |
-| Implementation | `./Templates/implementations/service.md` | `./05_Implementations/` |
+| Implementation overview | `./Templates/implementations/service.md` | `./05_Implementations/` |
+| Implementation rollback | `./Templates/implementations/rollback.md` | `./05_Implementations/` |
 | GitHub Issue | `./Templates/tasks/issue.md` | For creating new GitHub issues |
 
 ## Conventions

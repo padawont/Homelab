@@ -25,5 +25,3 @@ node: ""
 ## Configuration
 
 ## Operations
-
-## Rollback

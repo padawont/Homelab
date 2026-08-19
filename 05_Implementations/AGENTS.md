@@ -29,6 +29,7 @@ Example:
 05_Implementations/node-main/
 └── traefik/
     ├── overview.md
+    ├── rollback.md
     └── configs/
         ├── deployment.yaml
         ├── service.yaml
@@ -105,15 +106,26 @@ Env vars, config files, secrets references (point to `configs/`)
 ## Operations
 
 Backup, restore, update, monitoring commands.
+```
 
-## Rollback
+Rollback is documented separately in `rollback.md`, not in `overview.md`.
 
-How to revert the deployment.
+## Structure of rollback.md
+
+Copy from `./Templates/implementations/rollback.md`. Required for every implementation, including platform bootstraps (e.g. Kubernetes reset/teardown as rollback).
+
+```
+# {Service Name} — Rollback
+
+## Prerequisites
+## Rollback steps
+## Verification
 ```
 
 ## Conventions
 
 - One folder per service under the relevant node
 - Link back to governing ADR and relevant Knowledge notes via `related_docs`
-- Document rollback before deploy
+- Every folder ships `overview.md` + `rollback.md` (+ `configs/` where applicable)
+- Rollback procedure lives in `rollback.md`, documented before deploy
 - `active` → `retired` transition: move entire service folder to `./06_Archive/implementations/`

@@ -104,3 +104,4 @@ draft → accepted
 - **Cross-linking**: use relative paths from repo root (e.g. `./02_Knowledge/technologies/kubernetes/ingress.md`)
 - **Templates**: always copy from `Templates/` — never edit in place
 - **Archive**: moved content is purged after 31 days
+- **Relevance over completeness**: include only information relevant to running it in a homelab. Do not include technology history, origin stories, or sales/marketing points

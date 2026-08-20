@@ -14,12 +14,23 @@ last_audit_date: YYYY-MM-DD
 
 # {Title}
 
-<!-- Final analysis using ideas as context and bounded by knowledge. This is the basis for ADRs. -->
+## Goal
 
-## Context
+<!-- What question am I answering? Which idea(s) sparked this? -->
 
-## Findings
+## Alternatives
 
-## Analysis
+<!-- See ./alternatives.md for a full index of all technologies considered.
+Each alternative has its own file: ./alternative-{name}.md -->
 
-## Recommendations
+## Plan for ADR
+
+<!-- - Recommended technology and why
+- How it fits into the existing homelab
+- Architecture overview
+- Dependencies and integration points
+- Risks and mitigation -->
+
+## Recommendation
+
+<!-- **approve** / **reject** -->

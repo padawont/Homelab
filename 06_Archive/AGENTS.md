@@ -25,7 +25,6 @@ Example:
 │       └── old-service/
 │           ├── overview.md
 │           └── configs/
-└── templates/
 ```
 
 All names in kebab-case. Each subfolder mirrors the source section's internal structure.

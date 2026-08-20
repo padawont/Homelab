@@ -12,9 +12,10 @@ replaced-by: ""
 history: ""
 sources: []
 references: []
+related_docs: []
 ---
 
-# ADR {NNNN}: {Title}
+# ADR-{NNNN}: {Title}
 
 ## Context and Problem Statement
 

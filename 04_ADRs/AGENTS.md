@@ -38,6 +38,7 @@ replaced-by: ""
 history: ""
 sources: []
 references: []
+related_docs: []
 ---
 ```
 
@@ -58,7 +59,10 @@ replaced-by: ""
 history: "PR #42 — discussion and approval"
 sources: []
 references:
-  - "https://doc.traefik.io/traefik/"
+  - url: "https://doc.traefik.io/traefik/"
+    title: "Traefik documentation"
+related_docs:
+  - "./03_Research/ingress-comparison/overview.md"
 ---
 ```
 

@@ -37,6 +37,22 @@ Proposal = how-we-work; Projects/Tasks = registry/index updates
 - **Projects/Tasks** — registry index updates via chore template (non-pipeline bookkeeping).
 - **Implementation** — requires accepted ADR + knowledge; every folder ships `overview.md` + `rollback.md` (+ `configs/`).
 
+### Per-topic acceptance criteria
+
+| Topic | Core acceptance criteria |
+|---|---|
+| Idea | status `accepted`; ready to promote to Knowledge |
+| Knowledge | atomic note(s) ≤150 lines; valid frontmatter; every `sources[]` URL live; `last_audit_date` set; passes knowledge review |
+| Research | `overview.md` + ≥3 `alternative-*.md` files; ≥1 knowledge/online source; detailed enough to write the ADR directly; passes research review |
+| ADR | filename `{issue}-{kebab}.md`; `adr` = issue number; ≥2 mermaid diagrams; links to Research; `draft → accepted` gated on review; passes architect review |
+| Proposal | change-log entry recorded; passes proposal review |
+| Implementation | `overview.md` + `rollback.md` + `configs/`; flake with `nixosConfigurations` + deploy target; rollback verified; passes implementation review |
+
+## Sources and Acceptance Criteria rules
+
+- **Sources**: every issue must cite real links — absolute URLs for online sources, `./` repo-relative paths for KB docs. No prose-only sources.
+- **Acceptance Criteria**: always topic-specific and verifiable per the Per-topic acceptance criteria table above — never generic boilerplate.
+
 ## Epic issue template
 
 ```markdown
@@ -51,10 +67,13 @@ Proposal = how-we-work; Projects/Tasks = registry/index updates
 
 ## Out of Scope
 
+## Sources
+<!-- Real links the epic builds on: official docs, KB notes (./ relative). Never prose-only. -->
+
 ## Acceptance Criteria
 - [ ] Sub-issues created as native GitHub sub-issues of this epic
 - [ ] Every sub-issue created from its corresponding issue form template
-- [ ] Each sub-issue carries its own acceptance criteria and passes its section's review pipeline
+- [ ] Each sub-issue carries topic-specific acceptance criteria per the Per-topic table and passes its section's review pipeline
 ```
 
 ## Sub-issue template (from Templates/tasks/issue.md)
@@ -76,10 +95,14 @@ Proposal = how-we-work; Projects/Tasks = registry/index updates
 {folder/path/}
 ```
 ## Sources
+<!-- Links to source documents, specifications, or reference materials this task is based on.
+Use real URLs (absolute for online, ./ for repo-relative). Never plain prose without links. -->
 ## Summary
 ## Instructions
 <!-- per-topic: which agent produces it, template to follow, frontmatter rules, line range, review pipeline -->
 ## Acceptance Criteria
+<!-- Per-issue, specific, verifiable; must be relevant to the topic's actual deliverable
+(see Per-topic acceptance criteria). -->
 ## Parent
 #{epic-number}
 ```
@@ -89,7 +112,7 @@ Proposal = how-we-work; Projects/Tasks = registry/index updates
 1. Ask the user for the epic objective and scope; map it onto the pipeline (which stages are in scope → which topics → which labels).
 2. Draft the epic body from the epic template; confirm the `KB sections covered` checklist.
 3. Create the epic: `gh issue create --title "Epic: {Title}" --body-file epic.md --label epic`.
-4. For each in-scope stage, draft a sub-issue body from the sub-issue template, filled per the per-topic spec (label, template, frontmatter, review pipeline).
+4. For each in-scope stage, draft a sub-issue body from the sub-issue template, filled per the per-topic spec (label, template, frontmatter, review pipeline). Sources must be links (URLs or `./` repo-relative); acceptance criteria must be topic-specific per the Per-topic table.
 5. Create each sub-issue: `gh issue create --title "{Topic}: {Title}" --body-file {id}.md --label {label} --parent {epic-number}`.
 6. Verify: `gh issue view {epic-number} --json sub_issues`.
 

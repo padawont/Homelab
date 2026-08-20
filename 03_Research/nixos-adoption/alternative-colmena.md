@@ -1,6 +1,6 @@
 ---
 title: "Alternative: colmena"
-status: draft
+status: accepted
 author: "padawont"
 date: 2026-08-20
 tags: [nixos, deployment, colmena, flakes]

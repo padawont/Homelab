@@ -1,6 +1,6 @@
 ---
 title: "NixOS adoption and deployment tooling"
-status: draft
+status: accepted
 author: "padawont"
 date: 2026-08-20
 tags: [nixos, deployment, k8s, portability, homelab]

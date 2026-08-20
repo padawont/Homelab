@@ -1,6 +1,6 @@
 ---
 title: "Alternative: NixOps"
-status: draft
+status: accepted
 author: "padawont"
 date: 2026-08-20
 tags: [nixos, deployment, nixops, flakes]

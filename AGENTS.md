@@ -30,7 +30,7 @@ Load on a need-to-know basis — do not load all at once.
 
 ```
 Idea → Knowledge → Research → ADR → Implementation
-                                    └──► Archive
+  └──────┴──────────┴────────┴────────┴──► Archive
 ```
 
 Each step refines the concept further. At any point, if rejected or abandoned, it goes to Archive.
@@ -58,9 +58,9 @@ Each section defines its own frontmatter. See the individual AGENTS.md for exact
 | Section | Key fields |
 |---|---|
 | `01_Ideas/` | `title, status, author, date, tags, technologies, related_ideas` |
-| `02_Knowledge/` | `title, status, author, date, tags, sources[{url,title}], last_audit_date` |
+| `02_Knowledge/` | `title, status, author, date, tags, sources[{url,title}], last_audit_date, related_docs` |
 | `03_Research/` | `title, status, author, date, tags, sources[{knowledge:""}], references[{url,title}], last_audit_date` |
-| `04_ADRs/` | `adr, title, author, status, topic, technology, date, date-proposed, replaces, replaced-by, history, sources, references` |
+| `04_ADRs/` | `adr, title, author, status, topic, technology, date, date-proposed, replaces, replaced-by, history, sources, references, related_docs` |
 | `05_Implementations/` | `title, status, author, date, tags, technologies, related_docs, references, node` |
 | `06_Archive/` | `title, original_location, archived_date, reason, superseded_by` |
 
@@ -81,6 +81,9 @@ Each section defines its own frontmatter. See the individual AGENTS.md for exact
 draft → accepted
   L__> archived
 ```
+
+Exception: `05_Implementations/` uses `draft → active → retired` — live services are
+`active`, decommissioned ones are `retired` (moved to Archive).
 
 ## Git Guidelines
 

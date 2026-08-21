@@ -93,8 +93,7 @@ What question am I answering? Which idea(s) sparked this?
 
 ## Alternatives
 
-See ./alternatives.md for a full index of all technologies considered.
-Each alternative has its own file: ./alternative-traefik.md, ./alternative-nginx.md, etc.
+See ./alternatives.md for a full index; each alternative has its own file (./alternative-traefik.md, ./alternative-nginx.md, etc.)
 
 ## Plan for ADR
 
@@ -142,10 +141,10 @@ Why this was or wasn't selected.
 | NGINX | ./alternative-nginx.md | Rejected — complexity |
 | HAProxy | ./alternative-haproxy.md | Rejected — no k8s CRDs |
 ```
-
 ## Conventions
 
 - Each alternative technology gets its own file under the topic folder
+- Each research topic requires at least 3 `alternative-{name}.md` files
 - Must reference at least one Knowledge note or online source
 - Output must be detailed enough to write the ADR directly from the overview
 - If rejected, move entire topic folder to `./06_Archive/research/`

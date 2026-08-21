@@ -7,6 +7,8 @@ description: Creates GitHub issues and epics for the Homelab PKM pipeline. Use w
 
 Plan and create GitHub epics and pipeline sub-issues on `RunicEngines/knowledge-base` using the `gh` CLI. Native parent/child links are created with `gh issue create --parent <number>` (gh >= 2.94). Every sub-issue is drafted from `Templates/tasks/issue.md` and filled from the per-topic spec below.
 
+Note: GitHub issues/epics for the PKM pipeline live in the separate `RunicEngines/knowledge-base` repo. This `padawont/Homelab` repo holds only the notes; the `gh` commands below always target `RunicEngines/knowledge-base`.
+
 ## The content pipeline
 
 ```
@@ -20,9 +22,9 @@ Proposal = how-we-work; Projects/Tasks = registry/index updates
 | Topic | Label | Template(s) | Frontmatter | Review pipeline |
 |---|---|---|---|---|
 | Idea | `idea` | `Templates/ideas/idea.md` | title, status, author, date, tags, technologies, related_ideas | none (draft → accepted) |
-| Knowledge | `knowledge` | `Templates/knowledge/note.md` | title, status, author, date, tags, sources[{url,title}], last_audit_date | knowledge-agent → kb-editor/kb-tech-lead/kb-architect |
+| Knowledge | `knowledge` | `Templates/knowledge/note.md` | title, status, author, date, tags, sources[{url,title}], last_audit_date, related_docs | knowledge-agent → kb-editor/kb-tech-lead/kb-architect |
 | Research | `research` | `Templates/research/overview.md` + `alternatives.md` + `alternative-*.md` | title, status, author, date, tags, sources[{knowledge}], references[{url,title}], last_audit_date | research review |
-| ADR | `adr` | `Templates/adr/adr.md` | adr, title, author, status, topic, technology, date, date-proposed, replaces, replaced-by, history, sources, references | architect review |
+| ADR | `adr` | `Templates/adr/adr.md` | adr, title, author, status, topic, technology, date, date-proposed, replaces, replaced-by, history, sources, references, related_docs | architect review |
 | Proposal | `proposal` | — | change-log style | proposal review |
 | Projects | — | projects registry index | chore template | — |
 | Implementation | — | `Templates/implementations/service.md` + `rollback.md` | title, status, author, date, tags, technologies, related_docs, references{online,repo}, node | implementation review |
@@ -30,7 +32,7 @@ Proposal = how-we-work; Projects/Tasks = registry/index updates
 ### Topic detail
 
 - **Idea** — freeform capture. No review for draft→accepted; no stale timeout.
-- **Knowledge** — atomic single-concept notes, 100–250 body lines. Frontmatter needs `sources` + `last_audit_date`. Folder ≤3 levels deep, kebab-case.
+- **Knowledge** — atomic single-concept notes, ≤150 lines (incl. frontmatter). Frontmatter needs `sources` + `last_audit_date`. Folder ≤3 levels deep, kebab-case.
 - **Research** — overview + one file per alternative. Must reference ≥1 knowledge note or online source; must be detailed enough to write the ADR directly.
 - **ADR** — MADR format, sequential number, ≥2 mermaid diagrams (internal working + homelab fit). Requires an accepted Research.
 - **Proposal** — how-we-work change log.

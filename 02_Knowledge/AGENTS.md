@@ -50,6 +50,7 @@ sources:
   - url: ""
     title: ""
 last_audit_date: YYYY-MM-DD
+related_docs: []
 ---
 ```
 
@@ -66,6 +67,8 @@ sources:
   - url: "https://kubernetes.io/docs/concepts/services-networking/ingress/"
     title: "Kubernetes Ingress docs"
 last_audit_date: 2026-08-13
+related_docs:
+  - "./05_Implementations/node-main/traefik/overview.md"
 ---
 ```
 

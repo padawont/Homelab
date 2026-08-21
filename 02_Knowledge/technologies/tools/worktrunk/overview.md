@@ -52,11 +52,11 @@ wt switch --create feature-auth
 | Switch worktrees | `wt switch feat` | `cd ../repo.feat` |
 | Create + start agent | `wt switch -c -x claude feat` | `git worktree add -b feat ../repo.feat && cd ../repo.feat && claude` |
 | Clean up | `wt remove` | `git worktree remove` + `git branch -d` |
-| List with status | `wt list` | `git worktree list` (paths only) |
+| List with status | `wt list` | `git worktree list` (paths + branch, no status) |
 
 ### Why it fits the homelab
 
-The repo's own git guidelines assume worktree-style branch workflows (the `knowledge/39-worktrunk` branch-naming example in the root `AGENTS.md`). For parallel opencode/Claude agents editing the homelab repo, each agent gets an isolated worktree with hooks that automate setup (deps, env, dev servers) and an LLM-backed merge/commit path — see `./02_Knowledge/technologies/tools/worktrunk/automation.md`.
+The repo's own git guidelines use worktree-style branch naming (the `knowledge/39-worktrunk` example in the root `AGENTS.md`). Worktrunk is relevant here as a tool for running parallel opencode/Claude agents, each in an isolated worktree with hooks that automate setup (deps, env, dev servers) and an LLM-backed merge/commit path — see `./02_Knowledge/technologies/tools/worktrunk/automation.md`.
 
 ## Sources / Further Reading
 

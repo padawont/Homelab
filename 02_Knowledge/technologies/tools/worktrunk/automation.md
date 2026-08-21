@@ -87,7 +87,7 @@ wt switch -x claude -c feature-b -- 'Fix the pagination bug'
 
 PR workflow: `wt step commit` → `gh pr create` (or `glab mr create`) → merge on the forge → `wt remove`. Local merge: `wt merge` (squash → rebase → fast-forward → cleanup).
 
-Agent plugins (`wt config plugins claude|codex|opencode install`, or `gemini extensions install …`) add activity tracking (🤖 working / 💬 waiting markers in `wt list`; manual via `wt config state marker set`); the Claude, Codex, and OpenCode plugins also add a configuration skill. Claude Code additionally adds worktree isolation (agent-created worktrees route through `wt switch --create`) and a `--format=claude-code` statusline.
+Agent plugins (`wt config plugins claude|codex|opencode install`, or `gemini extensions install …`) add activity tracking (working/waiting status markers in `wt list`; manual via `wt config state marker set`); the Claude, Codex, and OpenCode plugins also add a configuration skill. Claude Code additionally adds worktree isolation (agent-created worktrees route through `wt switch --create`) and a `--format=claude-code` statusline.
 
 ## Sources / Further Reading
 

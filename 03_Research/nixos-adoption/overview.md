@@ -9,6 +9,7 @@ sources:
   - knowledge: "./02_Knowledge/technologies/tools/nixos/flakes.md"
   - knowledge: "./02_Knowledge/technologies/tools/nixos/home-manager.md"
   - knowledge: "./02_Knowledge/technologies/tools/nixos/services-secrets.md"
+  - knowledge: "./02_Knowledge/technologies/tools/nixos-anywhere/overview.md"
 references:
   - url: "https://nixos.org/manual/nixos/stable/"
     title: "NixOS manual"
@@ -20,7 +21,7 @@ references:
     title: "NixOps"
   - url: "https://github.com/Mic92/sops-nix"
     title: "sops-nix"
-last_audit_date: 2026-08-20
+last_audit_date: 2026-08-22
 ---
 
 # NixOS adoption and deployment tooling

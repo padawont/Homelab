@@ -9,7 +9,7 @@ sources:
 references:
   - url: "https://github.com/serokell/deploy-rs"
     title: "deploy-rs"
-last_audit_date: 2026-08-20
+last_audit_date: 2026-08-22
 ---
 
 # Alternative: deploy-rs
@@ -34,7 +34,7 @@ A Rust CLI by Serokell that deploys NixOS configurations from a flake. It evalua
 - No formal releases/tags — rides master or a nixpkgs pin
 - Activation phase is sequential (fine for small fleets)
 - magicRollback can silently revert configs that change SSH networking — must be disabled for such changes
-- Bootstrap gap — cannot install NixOS on an existing Ubuntu host; needs a separate conversion step (e.g. nixos-anywhere or manual install)
+- Bootstrap gap — cannot install NixOS on an existing Ubuntu host; needs a separate conversion step (e.g. nixos-anywhere — see `./02_Knowledge/technologies/tools/nixos-anywhere/overview.md` — or manual install)
 - Thin docs — no dedicated docs site; README + examples
 - No native secret handling — relies on sops-nix/agenix at build time
 

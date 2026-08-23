@@ -18,3 +18,7 @@ Thumbs.db
 # Secrets
 **/secrets/
 **/*.secret
+
+# Nix build outputs
+result
+result-*

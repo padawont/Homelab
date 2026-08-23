@@ -22,3 +22,7 @@ Thumbs.db
 # Nix build outputs
 result
 result-*
+
+# Implementations and archive (machine-specific, not versioned)
+05_Implementations/
+06_Archive/

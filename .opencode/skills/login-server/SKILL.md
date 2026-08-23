@@ -1,43 +1,48 @@
 ---
 name: login-server
-description: Log into and run commands on the homelab server at 192.168.111.16 via SSH. Use when the user asks to connect to, log into, or run remote commands on the server (ssh, scp, remote shell, remote command execution). Credentials come from the SSHPASS environment variable — never hardcode the password.
+description: >
+  Connects to and runs commands on the homelab server 192.168.111.16 over SSH.
+  Trigger when the user asks to ssh in, scp files to/from, or run any remote
+  command on the server. Uses sshpass -e with the SSHPASS env var — never
+  hardcode the password.
 ---
 
 # login-server
 
-SSH access to the homelab server.
+## Steps
 
-## Connection details
+1. Ensure `SSHPASS` is set. If unset, ask the user to export it
+   (`export SSHPASS=runic`) or provide the value. Never put the password in a
+   file.
+2. Ensure `sshpass` is installed. If missing, install it (Arch:
+   `sudo pacman -S sshpass`).
+3. Run the remote command:
+
+   ```bash
+   sshpass -e ssh -o StrictHostKeyChecking=no -o ConnectTimeout=10 runic@192.168.111.16 '<command>'
+   ```
+
+4. To transfer files:
+
+   ```bash
+   sshpass -e scp ./local-file runic@192.168.111.16:/remote/path
+   sshpass -e scp runic@192.168.111.16:/remote/path ./local-file
+   ```
+
+5. If the SSH daemon is down, start it remotely via sudo:
+   `echo "$SSHPASS" | sudo -S systemctl start sshd`.
+
+## Connection table
 
 | Field | Value |
 |---|---|
 | Host | `192.168.111.16` |
 | User | `runic` |
-| Auth | password, read from the `SSHPASS` env var |
+| Auth | password via `SSHPASS` env var |
 
-## Running commands
+## Rules
 
-Use `sshpass -e` so the password is read from the `SSHPASS` environment
-variable instead of appearing in the process list or shell history:
-
-```bash
-sshpass -e ssh -o StrictHostKeyChecking=no -o ConnectTimeout=10 runic@192.168.111.16 '<command>'
-```
-
-## Copying files
-
-`scp` uses the same auth:
-
-```bash
-sshpass -e scp ./local-file runic@192.168.111.16:/remote/path
-sshpass -e scp runic@192.168.111.16:/remote/path ./local-file
-```
-
-## Credentials
-
-- Read the password from the `SSHPASS` environment variable at runtime.
-- If `SSHPASS` is unset, ask the user to export it (`export SSHPASS=runic`)
-  or provide the value; never write the password into any file in the repo.
-- If `sshpass` is missing, install it first (Arch: `sudo pacman -S sshpass`).
-- If the SSH daemon is down on the server, start it with
-  `echo '$PASSWORD' | sudo -S systemctl start sshd`.
+- Always use `sshpass -e` (reads `SSHPASS`) — never the `-p` flag with a plain
+  password in the command line.
+- `echo "$SSHPASS"` uses double quotes so the variable expands.
+- Do not store or log the password anywhere in the repo.

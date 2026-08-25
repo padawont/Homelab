@@ -165,6 +165,11 @@ architectural decisions, library choices, and approach rationale:
 
 #### ADR 0002 Checklist
 
+> [!NOTE]
+> In this repo the ADR 0002 conventions are mirrored in the root `AGENTS.md`
+> (Git Guidelines), which is the local source of truth. ADR 0002 itself lives
+> in the sibling `RunicEngines/knowledge-base` repo and does not exist here.
+
 ```
 ---
 **Checklist before merge:**
@@ -240,5 +245,6 @@ note.
 - [rs-pr-packager SKILL.md](../rs-pr-packager/SKILL.md) — Backward direction (commits → PR body)
 - [rs-issue-to-plan SKILL.md](../rs-issue-to-plan/SKILL.md) — Produces the spec consumed by this skill
 - [rs-scratchpad SKILL.md](../rs-scratchpad/SKILL.md) — Session scratchpad management
-- [ADR 0002: GitHub Etiquettes](../adr/0002-github-etiquettes/overview.md) — The canonical conventions this skill enforces
+- [ADR 0002: GitHub Etiquettes](../adr/0002-github-etiquettes/overview.md) — The canonical conventions this skill enforces (sibling knowledge-base repo)
+- [AGENTS.md Git Guidelines](./AGENTS.md) — local source of truth in this repo
 - [Conventional Commits 1.0.0](https://www.conventionalcommits.org/en/v1.0.0/) — Commit message specification

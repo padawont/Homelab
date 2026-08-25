@@ -190,6 +190,11 @@ Within a single session (same `{session}` path from rs-scratchpad), re-running t
 
 ## ADR 0002 Compliance
 
+> [!NOTE]
+> In this repo the ADR 0002 conventions are mirrored in the root `AGENTS.md`
+> (Git Guidelines), which is the local source of truth. ADR 0002 itself lives
+> in the sibling `RunicEngines/knowledge-base` repo and does not exist here.
+
 When the spec is consumed by a developer or implementation agent:
 
 - **Branch**: `{type}/{issue-number}-{kebab-description}` — e.g., `feat/42-user-registration`
@@ -225,7 +230,8 @@ The agent that loads this skill may invoke the following skills during execution
 
 ## See Also
 
-- [ADR 0002: GitHub Etiquettes](/adr/0002-github-etiquettes/overview.md)
+- [ADR 0002: GitHub Etiquettes](/adr/0002-github-etiquettes/overview.md) — sibling knowledge-base repo
+- [AGENTS.md Git Guidelines](./AGENTS.md) — local source of truth in this repo
 - [rs-discover skill](./rs-discover/SKILL.md)
 - [rs-consult skill](./rs-consult/SKILL.md)
 - [OpenCode Skills Documentation](https://opencode.ai/docs/skills)

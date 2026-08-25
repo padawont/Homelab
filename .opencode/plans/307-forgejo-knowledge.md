@@ -24,7 +24,7 @@ ADR/Implementation stages are follow-ups — so all config blocks must be labele
 └── ci-act-runners.md    # Forgejo Actions / forgejo-runner setup
 ```
 
-6 notes, one concept each, 50–150 lines (frontmatter excluded), all
+6 notes, one concept each, ≤150 lines (frontmatter included), all
 `status: draft`, author `padawont`.
 
 ## Per-note hydration
@@ -94,17 +94,17 @@ ADR/Implementation stages are follow-ups — so all config blocks must be labele
 2. Write notes in dependency order: overview → install-config → operations → migration → security → ci-act-runners. Copy template each time; set frontmatter; label examples `Example — abstract`; cross-link as you go.
 3. Validate with loop-validation: `pkm-researcher` → `pkm-editor` → `pkm-overview` → `pkm-compliance`, looping until clean (7 consecutive clean loops or user stop).
 4. Commit per note (atomic), Conventional Commits: `knowledge(307): add Forgejo overview note`, etc.
-5. PR to `padawont/Homelab` (body: Summary, Changes, Testing Notes, ADR 0002 checklist) closing #307; squash merge.
+5. PR to `padawont/Homelab` (body: Summary, Changes, Testing Notes, AGENTS.md Git Guidelines checklist) closing #307; squash merge.
 6. Post-merge: mark notes `accepted` (reviewed) and close #307.
 
 ## Acceptance criteria (from #307)
 
-- [x] 6 atomic notes, one concept per file, each 50–150 lines
+- [x] 6 atomic notes, one concept per file, each ≤150 lines (frontmatter included)
 - [x] Every planned note enumerated in In Scope + Topic Hierarchy (in issue)
 - [x] Valid knowledge frontmatter; `last_audit_date` set
 - [x] Every `sources[]` URL live (via Researcher)
 - [x] Abstract examples labeled clearly — no fake "real" configs since not deployed
-- [x] Passes knowledge review (pkm-researcher → pkm-editor)
+- [x] Passes knowledge review (loop-validation: pkm-researcher → pkm-editor → pkm-overview → pkm-compliance)
 
 ## Key risk
 

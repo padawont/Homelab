@@ -234,6 +234,11 @@ always includes:
 4. **Warnings** — any non-blocking issues (non-compliant commit messages,
    missing issue number, etc.)
 
+> [!NOTE]
+> In this repo the ADR 0002 conventions are mirrored in the root `AGENTS.md`
+> (Git Guidelines), which is the local source of truth. ADR 0002 itself lives
+> in the sibling `RunicEngines/knowledge-base` repo and does not exist here.
+
 ## ADR 0002 Compliance Checklist
 
 | ADR 0002 §         | Requirement                                                      | Skill Enforcement                                      | Step     |
@@ -260,7 +265,8 @@ loaded and executed independently, and the caller coordinates results.
 
 ## See Also
 
-- [ADR 0002: GitHub Etiquettes](/adr/0002-github-etiquettes/) — The canonical conventions this skill enforces
+- [ADR 0002: GitHub Etiquettes](/adr/0002-github-etiquettes/) — The canonical conventions this skill enforces (sibling knowledge-base repo)
+- [AGENTS.md Git Guidelines](./AGENTS.md) — local source of truth in this repo
 - [Conventional Commits 1.0.0](https://www.conventionalcommits.org/en/v1.0.0/) — Commit message specification
 - [gh Skill](/knowledge/tooling/opencode/skills/gh-case-study.md) — Optional dependency for PR submission
 - [Workflow Skill Patterns](/knowledge/tooling/opencode/skills/workflow-patterns.md) — Cross-cutting workflow conventions

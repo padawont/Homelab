@@ -41,6 +41,12 @@ Proposal = how-we-work; Projects/Tasks = registry index updates
 | Projects | — | projects registry index | chore template | — |
 | Implementation | — | `Templates/implementations/service.md` + `rollback.md` | title, status, author, date, tags, technologies, related_docs, references, node | pkm-editor + pkm-compliance |
 
+> [!NOTE]
+> The review pipeline column lists the minimum/primary reviewers for the
+> issue's drafted content. When files already exist and need validation, the
+> full `loop-validation` pipeline always runs all four agents (Researcher →
+> Editor → Overview → Compliance), regardless of topic.
+
 ### Knowledge atomic breakdown (required)
 
 Knowledge sub-issues MUST decompose the topic into multiple single-concept
@@ -48,7 +54,7 @@ notes before drafting — never a single "mega note" or 2-3 broad files.
 
 - One concept per file (e.g. install, operations, secrets, upgrades, migration
   each get their own note).
-- Target 3–8 notes per sub-issue; each 50–150 lines (frontmatter excluded).
+- Target 3–8 notes per sub-issue; each ≤150 lines (frontmatter included).
 - List EVERY planned note file in the sub-issue body: Topic Hierarchy section
   with a one-line concept next to each file, plus In Scope bullets.
 - Follow-up concept not fitting an existing note → its own new file, never
@@ -109,7 +115,7 @@ notes before drafting — never a single "mega note" or 2-3 broad files.
 | Topic | Core acceptance criteria |
 |---|---|
 | Idea | status `accepted`; ready to promote to Knowledge |
-| Knowledge | 3–8 atomic notes, one concept per file, each 50–150 lines; every planned note enumerated in the issue (In Scope + Topic Hierarchy); valid frontmatter; every `sources[]` URL live; `last_audit_date` set; passes knowledge review |
+| Knowledge | 3–8 atomic notes, one concept per file, each ≤150 lines (frontmatter included); every planned note enumerated in the issue (In Scope + Topic Hierarchy); valid frontmatter; every `sources[]` URL live; `last_audit_date` set; passes knowledge review |
 | Research | `overview.md` + ≥3 `alternative.md` files; ≥1 knowledge/online source; detailed enough to write the ADR directly |
 | ADR | filename `{issue}-{kebab}.md`; `adr` = issue number; ≥2 mermaid diagrams; links to Research; `draft → accepted` gated on review |
 | Proposal | change-log entry recorded |

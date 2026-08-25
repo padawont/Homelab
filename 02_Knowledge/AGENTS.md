@@ -136,7 +136,7 @@ spec:
 
 ## Conventions
 
-- **Atomic notes**: one concept per file. When a file hits 150 lines, split it.
+- **Atomic notes**: one concept per file. When a file hits 150 lines (including frontmatter and blank lines), split it.
 - Both abstract examples and real configs are welcome — label each block as "Example — abstract" or "Example — real config"
 - Set `last_audit_date` on every edit; re-audit weekly
 - Use `related_docs` to cross-link to implementations and vice-versa

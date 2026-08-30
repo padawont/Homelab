@@ -1,6 +1,6 @@
 ---
 title: "Forgejo adoption — self-hosted Git hosting comparison"
-status: draft
+status: accepted
 author: "padawont"
 date: 2026-08-30
 tags: [forgejo, gitea, gitlab, gogs, git, self-hosted, research]

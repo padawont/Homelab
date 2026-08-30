@@ -1,6 +1,6 @@
 ---
 title: "Forgejo — self-hosted Git hosting service"
-status: draft
+status: accepted
 author: "padawont"
 date: 2026-08-23
 tags: [git, forgejo, gitea, self-hosted, code-hosting]

@@ -1,6 +1,6 @@
 ---
 title: "Forgejo Actions and runners (CI/CD)"
-status: draft
+status: accepted
 author: "padawont"
 date: 2026-08-23
 tags: [forgejo, ci, cd, actions, runners, docker]

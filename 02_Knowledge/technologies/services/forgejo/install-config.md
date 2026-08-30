@@ -1,6 +1,6 @@
 ---
 title: "Installing and configuring Forgejo"
-status: draft
+status: accepted
 author: "padawont"
 date: 2026-08-23
 tags: [forgejo, kubernetes, helm, ingress, storage, configuration]
@@ -13,7 +13,7 @@ sources:
     title: "Forgejo configuration cheat sheet"
   - url: "https://forgejo.org/docs/latest/admin/setup/storage/"
     title: "Forgejo storage settings"
-last_audit_date: 2026-08-23
+last_audit_date: 2026-08-25
 related_docs:
   - "./02_Knowledge/technologies/services/forgejo/overview.md"
   - "./02_Knowledge/technologies/services/forgejo/operations.md"
@@ -45,6 +45,7 @@ docker pull codeberg.org/forgejo/forgejo:16
 - The `16` tag tracks the latest minor release of the v16 line; `16.0` tracks
   the latest patch. Swap `codeberg.org` for the mirror `data.forgejo.org`.
 - Rootless variant: `...:16-rootless` (data dir `/var/lib/gitea`, UID/GID 1000).
+- Note: the `:16-rootless` variant stores data under `/var/lib/gitea`, so if you switch from the standard image you must change the volume mount from `/data` to `/var/lib/gitea` (the `/data` mountPath in the manifest below is correct for the non-rootless `:16` image).
 
 ### k3s deployment
 
@@ -142,7 +143,6 @@ serves plain HTTP internally on port 3000; `ROOT_URL` should still advertise the
 `https://` URL so links and OAuth callbacks are correct.
 
 ## Sources / Further Reading
-
 - Installation guide: https://forgejo.org/docs/latest/admin/installation/
 - Docker install (volumes, DB, rootless, NFS): https://forgejo.org/docs/latest/admin/installation/docker/
 - Configuration cheat sheet: https://forgejo.org/docs/latest/admin/config-cheat-sheet/

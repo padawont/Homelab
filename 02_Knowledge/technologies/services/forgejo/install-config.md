@@ -1,6 +1,6 @@
 ---
 title: "Installing and configuring Forgejo"
-status: draft
+status: accepted
 author: "padawont"
 date: 2026-08-23
 tags: [forgejo, kubernetes, helm, ingress, storage, configuration]

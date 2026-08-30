@@ -1,6 +1,6 @@
 ---
 title: "Forgejo operations — backup, restore, upgrades"
-status: draft
+status: accepted
 author: "padawont"
 date: 2026-08-23
 tags: [forgejo, operations, backup, restore, upgrade]

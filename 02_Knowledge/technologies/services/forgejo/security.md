@@ -1,6 +1,6 @@
 ---
 title: "Securing a Forgejo instance"
-status: draft
+status: accepted
 author: "padawont"
 date: 2026-08-23
 tags: [forgejo, security, authentication, ssh, tokens, 2fa]

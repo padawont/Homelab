@@ -9,7 +9,7 @@ sources:
     title: "Forgejo repository mirrors"
   - url: "https://forgejo.org/docs/latest/contributor/repository-migration/"
     title: "Forgejo repository migration internals"
-last_audit_date: 2026-08-23
+last_audit_date: 2026-08-25
 related_docs:
   - "./02_Knowledge/technologies/services/forgejo/overview.md"
   - "./02_Knowledge/technologies/services/forgejo/operations.md"
@@ -76,9 +76,10 @@ empty repo.
 
 ### Upgrade-path note
 
-Forgejo also documents direct upgrades **from Gitea** (up to v1.22) — that is
-an instance upgrade, not a repo migration — see the upgrade guide's from-Gitea
-section and `./02_Knowledge/technologies/services/forgejo/operations.md`.
+Forgejo also documents upgrades **from Gitea** (up to v1.22 included) as a
+two-step path: any Gitea ≤ v1.22.x → Forgejo v10.0.x, then v10.0.x → any newer
+Forgejo (e.g. v16). This is an instance upgrade, not a repo migration — see the
+upgrade guide's from-Gitea section and `./02_Knowledge/technologies/services/forgejo/operations.md`.
 
 ## Sources / Further Reading
 

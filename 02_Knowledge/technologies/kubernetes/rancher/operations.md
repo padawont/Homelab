@@ -13,7 +13,7 @@ sources:
     title: "Helm charts and apps in Rancher"
   - url: "https://ranchermanager.docs.rancher.com/how-to-guides/advanced-user-guides/monitoring-alerting-guides/enable-monitoring"
     title: "Enable monitoring"
-last_audit_date: 2026-08-22
+last_audit_date: 2026-08-25
 related_docs:
   - "./02_Knowledge/technologies/kubernetes/concepts/configmaps.md"
 ---
@@ -32,15 +32,15 @@ management cluster. Because apps are Helm releases, understanding Helm values
 
 ### Cluster upgrades
 
-- **Rancher server upgrade**: `helm upgrade rancher rancher-latest/rancher -n cattle-system -f values.yaml` after reviewing chart options; rolling, reversible with `helm rollback`. Upgrade cert-manager first if the release notes require it.
+- **Rancher server upgrade**: `helm upgrade rancher rancher-stable/rancher -n cattle-system -f values.yaml` after reviewing chart options; rolling, reversible with `helm rollback`. Upgrade cert-manager first if the release notes require it.
 - **Managed k3s/RKE2 cluster upgrades**: from the cluster page pick a new Kubernetes version and trigger the upgrade; Rancher rolls nodes (control-plane first, then workers) using the provisioning operator. In a homelab, test on a non-production cluster first.
 - **Kubernetes without Rancher**: upgrading the k3s binary underneath an imported cluster is possible, but Rancher's cluster state may drift — prefer Rancher-initiated upgrades for provisioned clusters.
 
 Example — abstract Rancher server upgrade:
 
 ```bash
-helm repo update rancher-latest
-helm upgrade rancher rancher-latest/rancher \
+helm repo update rancher-stable
+helm upgrade rancher rancher-stable/rancher \
   --namespace cattle-system \
   --set hostname=rancher.local \
   --set ingress.tls.source=rancher

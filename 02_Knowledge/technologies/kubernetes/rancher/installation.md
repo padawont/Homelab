@@ -13,7 +13,7 @@ sources:
     title: "Rancher Helm chart options"
   - url: "https://ranchermanager.docs.rancher.com/getting-started/installation-and-upgrade/installation-references/tls-settings"
     title: "TLS settings"
-last_audit_date: 2026-08-22
+last_audit_date: 2026-08-25
 related_docs:
   - "./02_Knowledge/technologies/kubernetes/k3s/installation.md"
 ---
@@ -52,14 +52,14 @@ Example — abstract helm bootstrap:
 
 ```bash
 # 1. repo + namespace
-helm repo add rancher-latest https://charts.rancher.com/server/stable
+helm repo add rancher-stable https://releases.rancher.com/server-charts/stable
 kubectl create namespace cattle-system
 
 # 2. cert-manager (must be installed before Rancher)
 kubectl apply -f https://github.com/cert-manager/cert-manager/releases/download/v1.21.1/cert-manager.yaml
 
 # 3. rancher chart
-helm install rancher rancher-latest/rancher \
+helm install rancher rancher-stable/rancher \
   --namespace cattle-system \
   --set hostname=rancher.local \
   --set bootstrapPassword=ChangeMe_Strong \

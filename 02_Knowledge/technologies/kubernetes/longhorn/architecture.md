@@ -7,7 +7,7 @@ tags: [kubernetes, storage, longhorn, architecture]
 sources:
   - url: "https://longhorn.io/docs/1.12.1/concepts/"
     title: "Longhorn architecture and concepts"
-last_audit_date: 2026-08-22
+last_audit_date: 2026-08-25
 related_docs:
   - "./02_Knowledge/technologies/kubernetes/concepts/storage.md"
 ---
@@ -33,14 +33,14 @@ Longhorn is split into a control plane that manages volumes and a data path that
 
 ### Volume / replica model
 
-- A **volume** is a block device made of one **active replica** plus N replica copies. Replicas are stored as sparse files in a dedicated directory on node disks.
-- Writes go to the active replica and are replicated synchronously to the others; reads come from the active replica.
-- If a replica falls behind or is lost, Longhorn **rebuilds** it in the background by copying the delta from the active replica. Rebuild is transparent to the workload and does not require detaching the volume.
+- A **volume** is a block device served by the engine and stored on N replicas (replicas are sparse files in a dedicated directory on node disks).
+- The engine synchronously replicates every write to all healthy replicas; reads are served from the replicas. All replicas are treated equally — there is no "active" replica.
+- If a replica falls behind or is lost, Longhorn **rebuilds** it in the background by syncing from a good replica. Rebuild is transparent to the workload and does not require detaching the volume.
 
 ```text
 Example — abstract
-Workload pod ──> engine (active) ──> replica 1 (node A)
-                             └────> replica 2 (node B)  [rebuild from engine if stale]
+Workload pod ──> engine ──> replica 1 (node A)
+                             └────> replica 2 (node B)  [rebuild from a good replica if stale]
 ```
 
 ## Sources / Further Reading

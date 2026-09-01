@@ -7,7 +7,7 @@ tags: [kubernetes, kubectl, cli]
 sources:
   - url: "https://kubernetes.io/docs/reference/kubectl/"
     title: "kubectl reference documentation"
-last_audit_date: 2026-08-22
+last_audit_date: 2026-08-25
 related_docs:
   - "./02_Knowledge/technologies/kubernetes/k3s/operations.md"
 ---
@@ -42,6 +42,8 @@ Common output flags: `-o wide` (extra fields), `-o yaml` (full manifest),
 
 A context bundles a cluster, user, and namespace. Commands run against the
 current context:
+
+Example — abstract:
 
 ```bash
 kubectl config get-contexts
@@ -81,8 +83,8 @@ kubectl port-forward svc/forgejo-http 3000:3000 -n forgejo
   long sessions faster.
 - Prefer `kubectl apply` (declarative) over `kubectl create/edit` so the repo
   stays the source of truth.
-- For k3s-specific operations (certs, secrets-encrypt), see the linked k3s
-  operations note.
+- For k3s-specific operations (certs, secrets-encrypt), see the k3s CLI docs; for
+  k3s secrets encryption see ./02_Knowledge/technologies/kubernetes/concepts/secrets.md.
 
 ## Sources / Further Reading
 

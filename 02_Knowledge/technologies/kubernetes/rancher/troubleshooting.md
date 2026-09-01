@@ -13,7 +13,7 @@ sources:
     title: "Rancher webhook"
   - url: "https://fleet.rancher.io/troubleshooting"
     title: "Fleet troubleshooting"
-last_audit_date: 2026-08-22
+last_audit_date: 2026-08-25
 related_docs:
   - "./02_Knowledge/technologies/kubernetes/rancher/architecture.md"
 ---
@@ -52,8 +52,11 @@ visible but kubectl from the UI fails; agents crash-loop.
 
 - Agents connect **outbound** to the management server — confirm DNS for the
   hostname resolves from the downstream node and the HTTPS port is reachable.
+- Note: cattle-cluster-agent/cattle-node-agent run in the **downstream** cluster —
+  run these against the downstream cluster's kubeconfig/context (e.g.
+  `kubectl --context <downstream> ...`), not the management cluster.
 - Check agent logs: `kubectl -n cattle-system logs deploy/cattle-cluster-agent`
-  and `kubectl -n cattle-system logs deploy/cattle-node-agent`.
+  and `kubectl -n cattle-system logs ds/cattle-node-agent`.
 - Restart agents after any cert/hostname change: `kubectl -n cattle-system rollout restart deploy/cattle-cluster-agent`.
 - If a cluster is stuck `Waiting`, re-run the registration command (Cluster →
   Edit → Save regenerates agent manifests) or check for a stale

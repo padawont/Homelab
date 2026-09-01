@@ -119,7 +119,7 @@ notes before drafting — never a single "mega note" or 2-3 broad files.
 | Research | `overview.md` + ≥3 `alternative.md` files; ≥1 knowledge/online source; detailed enough to write the ADR directly |
 | ADR | filename `{issue}-{kebab}.md`; `adr` = issue number; ≥2 mermaid diagrams; links to Research; `draft → accepted` gated on review |
 | Proposal | change-log entry recorded |
-| Implementation | `overview.md` + `rollback.md` + `configs/`; flake with `nixosConfigurations` + deploy target; rollback verified |
+| Implementation | `overview.md` + `rollback.md` + nixos flake dir (`05_Implementations/node-main/nixos/`); flake with `nixosConfigurations` + deploy target; rollback verified |
 
 ## Source rules
 

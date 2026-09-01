@@ -21,7 +21,7 @@ references:
     title: "NixOps"
   - url: "https://github.com/Mic92/sops-nix"
     title: "sops-nix"
-last_audit_date: 2026-08-22
+last_audit_date: 2026-08-25
 ---
 
 # NixOS adoption and deployment tooling
@@ -49,7 +49,7 @@ k3s runs on NixOS via the in-tree `services.k3s.enable` nixpkgs module: first-cl
 
 ### Deployment tool (recommended: deploy-rs)
 
-Flake-native Rust tool by Serokell (`deploy.nodes.<name>` declared in the flake), builds in parallel, activation sequential, automatic rollback on activation failure (`autoRollback`) plus `magicRollback` — the node self-rolls-back if it can't be reached within `confirmTimeout`, protecting against breaking SSH. Zero server-side state (single binary + SSH, no agent/DB/daemon) and works transparently with sops-nix (activation-time decrypt). Portability: target hosts are static in the flake, but `hostname`/`ssh-user`/`sudo` are overridable at runtime with `--hostname`, so the same flake pushes the same profile to any node without editing config. Caveats: no formal releases (CLI reports 1.0, packaged in nixpkgs — ride master / pin the packaged version), thin docs, and a bootstrap gap — deploy-rs needs NixOS already installed, so Ubuntu→NixOS conversion is a separate step (nixos-anywhere or manual install). `magicRollback` must be disabled when intentionally changing SSH-relevant config.
+Flake-native Rust tool by Serokell (`deploy.nodes.<name>` declared in the flake), builds in parallel, activation sequential, automatic rollback on activation failure (`autoRollback`) plus `magicRollback` — the node self-rolls-back if it can't be reached within `confirmTimeout`, protecting against breaking SSH. Zero server-side state (single binary + SSH, no agent/DB/daemon) and works transparently with sops-nix (activation-time decrypt). Portability: target hosts are static in the flake, but `hostname`/`ssh-user`/`sudo` are overridable at runtime with `--hostname`, so the same flake pushes the same profile to any node without editing config. Caveats: no formal releases (CLI reports 1.0) — deploy-rs is pinned via the flake input (github:serokell/deploy-rs) and flake.lock, so the version is reproducible; thin docs, and a bootstrap gap — deploy-rs needs NixOS already installed, so Ubuntu→NixOS conversion is a separate step (nixos-anywhere or manual install). `magicRollback` must be disabled when intentionally changing SSH-relevant config.
 
 ### Secrets (recommended: sops-nix)
 
@@ -65,7 +65,7 @@ nixpkgs (pinned flake input), deploy-rs input, sops-nix, the in-tree k3s module,
 
 ### Risks and mitigation
 
-- (a) Ride-master deploy-rs — pin via the nixpkgs-packaged version.
+- (a) No formal releases — pin the flake input (flake.lock) so deploy-rs is reproducible; verify before major flake input bumps.
 - (b) `magicRollback` footgun — disable for SSH-networking changes.
 - (c) Firewall misconfig breaks k3s — explicit port rules for 6443, 8472/UDP, 10250.
 - (d) Store-world-readable secrets — use `tokenFile` / sops-nix.

@@ -15,7 +15,7 @@ sources:
     title: "Agent integration docs"
   - url: "https://worktrunk.dev/tips-patterns/"
     title: "Tips & patterns docs"
-last_audit_date: 2026-08-20
+last_audit_date: 2026-08-25
 related_docs:
   - "./02_Knowledge/technologies/tools/worktrunk/overview.md"
   - "./02_Knowledge/technologies/tools/worktrunk/commands.md"
@@ -32,7 +32,7 @@ Worktrunk automates the worktree lifecycle with hooks, generates commit messages
 
 ### Hooks
 
-Shell commands run at lifecycle events; each has a blocking `pre-` variant (failure aborts the operation) and a background `post-` variant. Ten hooks cover five events: switch, create, commit, merge, remove.
+Shell commands run at lifecycle events; each has a blocking `pre-` variant (failure aborts the operation) and a background `post-` variant. Ten hooks cover five events: switch, start, commit, merge, remove.
 
 | Hook | Purpose |
 |---|---|

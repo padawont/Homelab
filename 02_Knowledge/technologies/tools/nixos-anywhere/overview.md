@@ -11,7 +11,7 @@ sources:
     title: "nixos-anywhere docs"
   - url: "https://nix-community.github.io/nixos-anywhere/requirements.html"
     title: "nixos-anywhere system requirements"
-last_audit_date: 2026-08-22
+last_audit_date: 2026-08-25
 related_docs:
   - "./02_Knowledge/technologies/tools/nixos/flakes.md"
   - "./02_Knowledge/technologies/tools/nixos/overview.md"
@@ -27,7 +27,7 @@ related_docs:
 
 nixos-anywhere is a nix-community tool (MIT licensed, maintained by @Mic92, @Lassulus, @phaer, @Enzime, @a-kenji) that installs NixOS on a remote machine over SSH. The whole install — disk partitioning and formatting, NixOS configuration and installation, and optional extra software/files — is pre-configured, so a single command performs an unattended install with no babysitting. The same stored configuration can be reused to create identical servers anywhere: cloud VMs, bare metal (e.g. Hetzner), or LAN machines.
 
-In this homelab it is the missing bootstrap step of the NixOS migration (#26 cluster): deploy-rs updates an already-installed NixOS, while nixos-anywhere performs the initial Ubuntu→NixOS conversion on a new node.
+In this homelab it is the missing bootstrap step of the NixOS migration (#26 cluster): deploy-rs updates an already-installed NixOS, while nixos-anywhere performs the initial NixOS install (direct-boot against the NixOS installer, per ADR-26).
 
 ## Details
 

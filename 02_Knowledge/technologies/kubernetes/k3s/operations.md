@@ -9,7 +9,7 @@ sources:
     title: "k3s upgrades"
   - url: "https://docs.k3s.io/datastore/backup-restore"
     title: "k3s backup and restore"
-last_audit_date: 2026-08-22
+last_audit_date: 2026-08-25
 related_docs:
   - "./02_Knowledge/technologies/kubernetes/concepts/kubectl.md"
 ---
@@ -43,8 +43,8 @@ k3s state lives in two places:
 
 | Path | Contents |
 |---|---|
-| `/var/lib/rancher/k3s/` | SQLite datastore, manifests, containerd images, local-path PVs, node token |
-| `/etc/rancher/k3s/` | `config.yaml`, `k3s.yaml` (kubeconfig), server token |
+| `/var/lib/rancher/k3s/` | SQLite datastore, manifests, containerd images, local-path PVs, server token (`server/token` / `server/node-token`) |
+| `/etc/rancher/k3s/` | `config.yaml`, `k3s.yaml` (kubeconfig) |
 
 Example — real config (homelab backup snapshot):
 
@@ -58,6 +58,8 @@ Restore: stop k3s (`sudo systemctl stop k3s`), replace the two directories from 
 
 ### Upgrade
 
+Example — abstract:
+
 ```bash
 curl -sfL https://get.k3s.io | sh -s -   # re-runs installer, upgrades in place
 ```
@@ -65,6 +67,8 @@ curl -sfL https://get.k3s.io | sh -s -   # re-runs installer, upgrades in place
 Or upgrade the k3s package on NixOS by bumping the nixpkgs input. Either way, a systemd restart picks up the new binary.
 
 ### systemd service management
+
+Example — abstract:
 
 ```bash
 sudo systemctl status k3s            # server node

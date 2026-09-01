@@ -7,7 +7,7 @@ tags: [kubernetes, networking, services]
 sources:
   - url: "https://kubernetes.io/docs/concepts/services-networking/service/"
     title: "Kubernetes Service documentation"
-last_audit_date: 2026-08-22
+last_audit_date: 2026-08-25
 related_docs:
   - "./02_Knowledge/technologies/kubernetes/concepts/ingress.md"
   - "./02_Knowledge/technologies/kubernetes/concepts/dns.md"
@@ -86,10 +86,10 @@ spec:
 
 - k3s ships kube-proxy (iptables/ipvs) which implements Service load balancing
   — no extra component needed for ClusterIP/NodePort.
-- For LoadBalancer-type Services in a bare-metal homelab, run MetalLB (or use
-  k3s `servicelb` in newer versions) so external IPs are assigned.
-- Ingress rules reference Services by name; see ./02_Knowledge/technologies/kubernetes/concepts/ingress.md for the other half
-  of external traffic.
+- k3s bundles ServiceLB (klipper-lb) as the default LoadBalancer — LoadBalancer
+  Services get a host-port-backed external address automatically. Install MetalLB
+  only if you disable ServiceLB (`--disable=servicelb`) or need a real VIP/anycast LB.
+- Ingress rules reference Services by name; see `./02_Knowledge/technologies/kubernetes/concepts/ingress.md` for the other half of external traffic.
 
 ## Sources / Further Reading
 

@@ -7,7 +7,7 @@ tags: [kubernetes, k3s, troubleshooting, networking, containerd]
 sources:
   - url: "https://docs.k3s.io/known-issues"
     title: "k3s known issues"
-last_audit_date: 2026-08-22
+last_audit_date: 2026-08-25
 related_docs:
   - "./02_Knowledge/technologies/kubernetes/k3s/networking.md"
 ---
@@ -34,18 +34,22 @@ ss -lntup | grep -E '6443|10250'
 # 8472/udp is hard to spot in ss; confirm with: sudo ufw status | grep 8472
 ```
 
-Missing 8472/UDP shows up as flannel pods CrashLooping with VXLAN errors. Missing 10250 makes kubelet unreachable for `kubectl logs`/`exec`.
+Missing 8472/UDP shows up as VXLAN errors in the k3s service logs. Missing 10250 makes kubelet unreachable for `kubectl logs`/`exec`.
 
 ### flannel
 
-Symptom: `kube-flannel` DaemonSet pods CrashLoopBackOff; pod IPs unreachable.
+Symptom: pod IPs unreachable / cross-node traffic fails; VXLAN errors in logs.
+
+Example — abstract:
 
 ```bash
-sudo k3s kubectl get pods -n kube-flannel -o wide
-sudo k3s kubectl logs -n kube-flannel -l app=flannel --tail=50
+sudo journalctl -u k3s | grep -i flannel
+ip addr show flannel.1                 # VXLAN interface exists?
+sudo k3s kubectl get nodes -o wide     # PodCIDR allocated?
+sudo ss -lunp | grep 8472              # 8472/UDP bound
 ```
 
-Common causes: firewall blocks 8472/UDP, node IP changed (k3s cached the old one — restart after fixing `--node-ip`), or interface mismatch on multi-homed hosts.
+Common causes: firewall blocks 8472/UDP, node IP changed (k3s cached the old one — restart after fixing `--node-ip`/`--flannel-iface`), or interface mismatch on multi-homed hosts.
 
 ### Token mismatch
 
@@ -56,6 +60,8 @@ The agent's `K3S_TOKEN` must equal the server's `/var/lib/rancher/k3s/server/nod
 ### containerd / CRI debugging
 
 Symptom: pods stuck in `ContainerCreating` or `ImagePullBackOff`; container runtime errors.
+
+Example — abstract:
 
 ```bash
 sudo k3s crictl ps -a

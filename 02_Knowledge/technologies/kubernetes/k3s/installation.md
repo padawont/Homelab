@@ -9,7 +9,7 @@ sources:
     title: "k3s installation"
   - url: "https://docs.k3s.io/quick-start"
     title: "k3s quick start"
-last_audit_date: 2026-08-22
+last_audit_date: 2026-08-25
 related_docs:
   - "./03_Research/nixos-adoption/overview.md"
   - "./02_Knowledge/technologies/tools/nixos/services-secrets.md"
@@ -49,7 +49,7 @@ The agent needs the server's token (from `/var/lib/rancher/k3s/server/node-token
 
 The in-tree nixpkgs module is the supported route. `nix-community/k3s-nix` is dead (404) — do not use it.
 
-Example — real config (NixOS module, single-node server):
+Example — abstract (recommended tokenFile pattern):
 
 ```nix
 services.k3s = {
@@ -60,9 +60,11 @@ services.k3s = {
 };
 ```
 
-Key options: `role` (`server` | `agent`), `serverAddr` (agent only), `token`/`tokenFile`, `extraFlags`. The module is first-class systemd: `Type=notify`, `Delegate=yes`, and k3s brings its own containerd — no docker dependency. See `./02_Knowledge/technologies/tools/nixos/services-secrets.md` for secret provisioning via sops-nix.
+Key options: `role` (`server` | `agent`), `serverAddr` (agent only), `token`/`tokenFile`, `extraFlags`. Node-main currently runs without `tokenFile` — it uses the auto-generated token (sops-nix skeleton only; see `./04_ADRs/26-adopt-nixos-on-node-main.md`). The module is first-class systemd: `Type=notify`, `Delegate=yes`, and k3s brings its own containerd — no docker dependency. See `./02_Knowledge/technologies/tools/nixos/services-secrets.md` for secret provisioning via sops-nix.
 
 ### Verification
+
+Example — abstract:
 
 ```bash
 sudo k3s kubectl get nodes

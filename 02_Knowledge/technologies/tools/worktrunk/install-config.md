@@ -9,7 +9,7 @@ sources:
     title: "max-sixty/worktrunk GitHub README"
   - url: "https://worktrunk.dev/config/"
     title: "wt config docs"
-last_audit_date: 2026-08-20
+last_audit_date: 2026-08-25
 related_docs:
   - "./02_Knowledge/technologies/tools/worktrunk/overview.md"
   - "./02_Knowledge/technologies/tools/worktrunk/commands.md"
@@ -50,7 +50,7 @@ worktree-path = "{{ repo_path }}/../{{ repo }}.{{ branch | sanitize }}"
 
 # LLM commit message generation
 [commit.generation]
-command = "claude -p --no-session-persistence --model=haiku"
+command = "claude -p --no-session-persistence --model=haiku --tools=''"
 
 # Persistent wt list flags
 [list]

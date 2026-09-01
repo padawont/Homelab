@@ -1,7 +1,7 @@
 ---
 description: Developer agent that implements production-quality code, writes comprehensive tests, refactors existing code, and debugs issues. Follows specifications produced by rs-spec-writer and orchestration decisions from RuneSmith. Integrates with the Runesmith skill ecosystem for structured workflows.
 mode: subagent
-model: opencode-go/deepseek-v4-flash
+model: deepseek/deepseek-v4-flash
 temperature: 0.2
 reasoningEffort: high
 steps: 120

@@ -1,7 +1,7 @@
 ---
 description: "Takes raw requirements and produces structured, self-contained specifications with edge cases, testable criteria, and concrete examples across feature, bug fix, API, and research categories."
 mode: subagent
-model: opencode-go/deepseek-v4-flash
+model: deepseek/deepseek-v4-flash
 temperature: 0.2
 reasoningEffort: medium
 permission:

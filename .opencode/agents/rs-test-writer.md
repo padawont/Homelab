@@ -1,7 +1,7 @@
 ---
 description: "Test writer agent that writes and runs tests (unit, integration) following project conventions. Writes comprehensive test suites covering happy path, edge cases, error conditions, and security boundaries. Runs tests 3x for flakiness detection, diagnoses failures, and produces structured test reports. Leaf agent — never modifies production code, never delegates."
 mode: subagent
-model: opencode-go/deepseek-v4-flash
+model: deepseek/deepseek-v4-flash
 temperature: 0.2
 reasoningEffort: high
 permission:

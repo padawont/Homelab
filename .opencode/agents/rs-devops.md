@@ -1,7 +1,7 @@
 ---
 description: "DevOps agent that manages CI/CD pipelines, Docker configurations, Kubernetes deployments, and security hardening. Scans project infrastructure, generates deployment configs, validates environment variables, audits dependencies, and produces LLM-friendly documentation indexes. Operates within Runesmith structured workflows — never deploys to production without RuneSmith approval."
 mode: subagent
-model: opencode-go/deepseek-v4-flash
+model: deepseek/deepseek-v4-flash
 temperature: 0.1
 reasoningEffort: high
 steps: 120

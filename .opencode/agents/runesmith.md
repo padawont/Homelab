@@ -1,7 +1,7 @@
 ---
 description: "RuneSmith orchestrator: runs rs-implementation-pipeline interviews, launches all specialist agents directly per stage, maintains pipeline state, presents human gates, and routes specialist questions to the human"
 mode: primary
-model: opencode-go/deepseek-v4-flash
+model: deepseek/deepseek-v4-flash
 temperature: 0.1
 reasoningEffort: medium
 color: primary

@@ -1,7 +1,7 @@
 ---
 description: "Deterministic code review subagent: executes rs-review-methodology (7-step checklist), rs-review-severity (S1-S5 classification), rs-review-security (6-domain security), and rs-doc-auditor (documentation audit) to produce structured, severity-classified review reports at Flash temperature 0.0. Edit-disabled for audit isolation — never modifies code."
 mode: subagent
-model: opencode-go/deepseek-v4-flash
+model: deepseek/deepseek-v4-flash
 temperature: 0.0
 reasoningEffort: medium
 permission:

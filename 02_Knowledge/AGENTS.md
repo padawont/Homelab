@@ -13,6 +13,8 @@ Structured reference notes on tech concepts, syntax guides, and foundational the
 
 After an idea is promoted, or whenever you learn something worth documenting.
 
+> Workflow + skills: see `./workflow.md`
+
 ## Status Lifecycle
 
 ```

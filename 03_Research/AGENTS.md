@@ -10,6 +10,8 @@ To make informed decisions. Research is the bridge between "this seems interesti
 
 Before making a significant homelab decision. Research is required before an ADR.
 
+> Workflow + skills: see `./workflow.md`
+
 ## Status Lifecycle
 
 ```
@@ -28,8 +30,6 @@ draft → accepted → (proceed to 04_ADRs/)
 - Online documentation (vendor docs, articles, comparisons)
 
 ## File system layout
-
-Example:
 
 ```
 03_Research/ingress-comparison/
@@ -59,8 +59,6 @@ references:
 last_audit_date: YYYY-MM-DD
 ---
 ```
-
-Example:
 
 ```yaml
 ---

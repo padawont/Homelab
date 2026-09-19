@@ -14,6 +14,9 @@ Personal Knowledge Management system for my homelab.
 | `06_Archive/` | Failed experiments, rejected proposals, retired services | ./06_Archive/AGENTS.md |
 | `Templates/` | Reusable document templates | ./Templates/AGENTS.md |
 
+Each section folder pairs `AGENTS.md` (rules) with `workflow.md` (that stage's
+steps and skills) — read both.
+
 ## When to Load Subfolder AGENTS.md
 
 Load on a need-to-know basis — do not load all at once.

@@ -10,6 +10,8 @@ To capture every thought about the homelab before it's lost. Ideas are the seed 
 
 Any thought about new tech, homelab changes, or wishlist items.
 
+> Workflow + skills: see `./workflow.md`
+
 ## Status Lifecycle
 
 ```

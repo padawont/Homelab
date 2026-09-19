@@ -10,8 +10,6 @@ To document why decisions were made. ADRs answer "why did we do it this way?" mo
 
 After Research is accepted. Every significant architecture or technology choice needs an ADR.
 
-> Workflow + skills: see `./workflow.md`
-
 ## Status Lifecycle
 
 ```

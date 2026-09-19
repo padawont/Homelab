@@ -43,8 +43,6 @@ superseded_by: "./04_ADRs/43-deploy-caddy-ingress.md"
 ---
 ```
 
-> Workflow + skills: see `./workflow.md`
-
 ## Conventions
 
 - Move (not copy) — original file is deleted from the source section

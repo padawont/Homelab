@@ -10,8 +10,6 @@ To document how services are actually deployed. Configs drift, but docs + config
 
 After an ADR is accepted and before/during deployment.
 
-> Workflow + skills: see `./workflow.md`
-
 ## Status Lifecycle
 
 ```

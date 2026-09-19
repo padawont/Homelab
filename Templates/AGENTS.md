@@ -16,8 +16,6 @@ Reusable document templates for all sections. Copy, don't edit.
 | Implementation rollback | `./Templates/implementations/rollback.md` | `./05_Implementations/` |
 | GitHub Issue | `./Templates/tasks/issue.md` | For creating new GitHub issues |
 
-> Workflow + skills: see `./workflow.md`
-
 ## Conventions
 
 - Templates use YAML frontmatter with placeholder values (`""`, `[]`, `YYYY-MM-DD`, `0`)

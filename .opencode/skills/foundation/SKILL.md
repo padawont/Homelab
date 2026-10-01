@@ -12,7 +12,7 @@ description: >
 # foundation
 
 Read-only groundwork layer executed by RuneSmith. Sets up ONE stage of ONE
-issue so `research-implement` can consume the plan passed in chat.
+issue so `research` can consume the plan passed in chat.
 
 ## When to use
 
@@ -22,10 +22,10 @@ issue so `research-implement` can consume the plan passed in chat.
 
 ## When NOT to use
 
-- Writing/verifying stage content (research-implement, loop-validation).
+- Writing/verifying stage content (research, implement, loop-validation).
 - More than one issue or more than one stage in scope — stop and ask.
 - A plan for this stage already exists in the session (mid-pipeline
-  re-entry goes straight to research-implement).
+  re-entry goes straight to research).
 - rs-* software tasks — foundation is PKM-only.
 
 ## Workflow
@@ -40,22 +40,22 @@ issue so `research-implement` can consume the plan passed in chat.
    print ready-to-paste sub-issue info (title, body, parent epic, dependency
    order — load create-github-issues for structure only, never run gh), then
    pause until the user confirms filing in another session.
-4. Candidate sources — list official docs + GitHub repo URLs per planned
-   file. Do NOT webfetch — verification is research-implement's job.
+4. Candidate source — list ONE official docs or GitHub URL per planned
+   file. Do NOT webfetch — verification is research's job.
 5. Broad TODO — one main todo for this stage.
 6. Assemble the plan inline in the main chat (no file is written):
    - one big-chunk section for THIS stage: deliverable, file list, concept
      per file, dependencies, candidate sources.
-   - inline `Skills:` line — `research-implement → loop-validation`
-     (Idea/S1: `research-implement → loop-validation` — research phase
-     skipped inside the skill).
+   - inline `Skills:` line — `research → implement → loop-validation`
+     (modular: each can run alone; Idea/S1: `implement → loop-validation`;
+     user declines implementation: stop after foundation).
    - one row in the top-of-file execution table (Sx | topic | skills chain).
    - downstream stages as `follow-up` lines only.
 7. Emit the FULL plan to RuneSmith in the main chat and STOP. Report as
    structured YAML (stage, file list, candidate sources, next skill to
    load) — since nothing persists it, RuneSmith must relay the plan
-   verbatim to research-implement. Do NOT load research-implement yourself —
-   RuneSmith decides and drives.
+   verbatim to research and implement. Do NOT load research or implement
+   yourself — RuneSmith decides and drives.
 
 > [!IMPORTANT]
 > Never create GitHub issues yourself. If the stage lacks one, the pipeline
@@ -63,17 +63,17 @@ issue so `research-implement` can consume the plan passed in chat.
 
 > [!NOTE]
 > The plan in the main chat is the hand-off contract: foundation assembles
-> the big chunk, `research-implement` verifies sources per file and writes
+> the big chunk, `research` verifies sources per file and `implement` writes
 > the files. All chaining is done by RuneSmith, never by this skill.
 
 ## Guardrails
 
-- Do NOT load or chain research-implement — RuneSmith drives.
+- Do NOT load or chain research or implement — RuneSmith drives.
 - Do NOT load rs-* skills.
 - Do NOT edit or write ANY file. Allowed: read, glob, grep, todowrite,
   question.
 - Do NOT create GitHub issues — wait for the user.
-- Do NOT create stage content — that is research-implement's job.
-- Do NOT webfetch — source verification moved to research-implement.
+- Do NOT create stage content — that is implement's job.
+- Do NOT webfetch — source verification moved to research.
 - Downstream stages are follow-up lines only; re-run foundation later for
   the next stage.

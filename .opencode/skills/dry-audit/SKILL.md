@@ -14,11 +14,11 @@ description: >
 
 - A user asks whether content is duplicated / DRY-compliant.
 - A file, a folder, or the whole repo needs a repetition check.
-- After `research-implement` writes files, before `loop-validation`.
+- After `implement` writes files, before `loop-validation`.
 
 ## When NOT to use
 
-- Creating content from scratch (capture pipeline / `research-implement`).
+- Creating content from scratch (capture pipeline / `implement`).
 - Non-PKM content (application code, infra configs) — PKM only.
 
 ## Pipeline

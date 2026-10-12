@@ -21,4 +21,4 @@ related_docs: []
 
 <!-- Both abstract examples and real configs — label clearly -->
 
-## References
+## Sources / Further Reading

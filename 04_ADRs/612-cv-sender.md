@@ -28,6 +28,8 @@ references:
     title: "Playwright in Docker"
   - url: "https://dnspython.readthedocs.io/"
     title: "dnspython"
+  - url: "https://support.google.com/mail/answer/22839"
+    title: "Gmail sending limits"
 related_docs:
   - "./05_Implementations/node-main/cv-sender/overview.md"
   - "./02_Knowledge/technologies/services/targit-anywhere/overview.md"
@@ -76,9 +78,10 @@ k3s:
 - **Sessions**: TARGIT session GUIDs are resolved by placeholder text at
   runtime and never hardcoded; reverse-engineering private JSON/JWT endpoints
   is rejected.
-- **Hardening**: per the Playwright Docker docs, the worker image runs as a
-  **non-root user with a seccomp profile**, because it scrapes third-party
-  sites the homelab does not control.
+- **Hardening** — the container runs with a `RuntimeDefault` seccomp profile,
+  all capabilities dropped and privilege escalation disabled, per the Playwright
+  Docker guidance for scraping untrusted sites; running as a dedicated non-root
+  user is a deployment follow-up.
 
 **Gmail limits.** The mailbox is a free `@gmail.com` account, capped at
 **500 recipients/day**, so the 400/day cap sits close to that ceiling; the

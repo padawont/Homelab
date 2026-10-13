@@ -1,0 +1,18 @@
+# pvc.yaml — persistent storage for cv-sender state and caches.
+# Backs /app/data (state.db, preview.csv) and also holds the CV at <pvc-root>/cv/cv.pdf.
+# ReadWriteOnce is sufficient for the single-replica deployment; the k3s default
+# StorageClass (local-path) provides it, so none is requested explicitly.
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: cv-sender-data
+  namespace: cv-sender
+  labels:
+    app.kubernetes.io/name: cv-sender
+    app.kubernetes.io/component: data
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi

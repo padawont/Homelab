@@ -1,0 +1,83 @@
+# deployment.yaml — always-on cv-sender worker.
+# Runs image cv-sender:0.1, which is imported directly into k3s containerd, hence
+# imagePullPolicy: Never. One replica backed by the cv-sender-data PVC (state) and
+# the cv-sender-config ConfigMap (settings). The Gmail app password is injected from
+# the cv-sender-secrets Secret — never baked into the image or manifests.
+#
+# PRECONDITION (one-off, before first start):
+#   Place the CV on the PVC so it appears at <pvc-root>/cv/cv.pdf, e.g. copy it into
+#   the bound volume (visible in-pod at /app/data/cv/cv.pdf). The Deployment mounts
+#   that same path at /app/config/cv so email.attachment resolves. If cv/cv.pdf is
+#   absent the subPath mount will not start — this can be replaced by an init
+#   container if the process is later automated.
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cv-sender
+  namespace: cv-sender
+  labels:
+    app.kubernetes.io/name: cv-sender
+    app.kubernetes.io/component: worker
+spec:
+  replicas: 1
+  # Recreate avoids two pods contending for the ReadWriteOnce PVC during rollouts.
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: cv-sender
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: cv-sender
+        app.kubernetes.io/component: worker
+    spec:
+      restartPolicy: Always
+      securityContext:
+        seccompProfile:
+          type: RuntimeDefault
+      containers:
+        - name: cv-sender
+          image: cv-sender:0.1
+          # Image is pre-imported into k3s containerd; never pull from a registry.
+          imagePullPolicy: Never
+          env:
+            - name: GMAIL_APP_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: cv-sender-secrets
+                  key: GMAIL_APP_PASSWORD
+          volumeMounts:
+            # Application config (read-only, from the ConfigMap).
+            - name: config
+              mountPath: /app/config/config.yaml
+              subPath: config.yaml
+              readOnly: true
+            # Persistent state: state.db, preview.csv and other caches.
+            - name: data
+              mountPath: /app/data
+            # CV attachment, exposed at the path config.yaml expects.
+            - name: data
+              mountPath: /app/config/cv
+              subPath: cv
+              readOnly: true
+          securityContext:
+            allowPrivilegeEscalation: false
+            privileged: false
+            capabilities:
+              drop:
+                - ALL
+          resources:
+            requests:
+              cpu: "100m"
+              memory: "128Mi"
+            limits:
+              cpu: "500m"
+              memory: "512Mi"
+      volumes:
+        - name: config
+          configMap:
+            name: cv-sender-config
+        - name: data
+          persistentVolumeClaim:
+            claimName: cv-sender-data

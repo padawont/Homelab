@@ -1,0 +1,10 @@
+# namespace.yaml — dedicated namespace for the cv-sender worker.
+# Isolates cv-sender resources (Deployment, ConfigMap, Secret, PVC) from other
+# workloads and gives a single boundary for RBAC and NetworkPolicies.
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: cv-sender
+  labels:
+    app.kubernetes.io/name: cv-sender
+    app.kubernetes.io/part-of: cv-sender

@@ -1,0 +1,33 @@
+# config.yaml — cv-sender worker configuration (source of truth).
+# This file is wrapped by configmap.yaml (ConfigMap "cv-sender-config") and mounted
+# into the pod at /app/config/config.yaml.
+# SAFETY: dry_run MUST remain true until a pilot run has been verified end to end.
+dry_run: true
+pilot_count: 3
+source:
+  url: "https://ledelsesinformation.aarhuskommune.dk/Embed#vfs://global/AARHUS-I-TAL/UDDANNELSE_I_TAL-Erhvervspraktik-Virksomhedsliste.xview"
+account:
+  email: "RyanHarrisZubair@gmail.com"
+  smtp_host: "smtp.gmail.com"
+  smtp_port: 587
+  imap_host: "imap.gmail.com"
+  notify_email: "RyanHarrisZubair@gmail.com"
+filters:
+  branche_query: "computer"
+  branche_select_all: true
+  postdistrikter: ["Viby J", "Aarhus N", "Aarhus C", "Aarhus V"]
+enrichment:
+  aarhus_url: "https://selskabsinfo.dk/virksomheder-i/aarhus"
+  skip_if_no_email: true
+rate:
+  daily_cap: 400
+  delay_seconds: 20
+email:
+  signature_name: "Ryan Harris"
+  signature_phone: "+45 42 32 12 35"
+  attachment: "/app/config/cv/cv.pdf"
+state:
+  db_path: "/app/data/state.db"
+paths:
+  data_dir: "/app/data"
+  preview_csv: "/app/data/preview.csv"

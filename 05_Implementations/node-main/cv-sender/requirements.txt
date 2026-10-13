@@ -1,0 +1,8 @@
+# cv sender worker runtime dependencies (ADR-612, issue #614).
+# Pinned for reproducible image builds. Chromium and its system libraries are
+# provided by the Playwright base image, so only the Python packages are listed.
+playwright==1.49.0
+beautifulsoup4==4.12.3
+dnspython==2.7.0
+PyYAML==6.0.2
+openpyxl==3.1.5

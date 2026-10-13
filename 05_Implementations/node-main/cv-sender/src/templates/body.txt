@@ -1,0 +1,7 @@
+hi {company},
+
+jeg vil gerne have en praktik for uge 45
+
+Med venlig hilsen
+{signature_name}
+{signature_phone}

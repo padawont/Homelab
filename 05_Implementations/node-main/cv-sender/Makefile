@@ -3,6 +3,7 @@
 IMAGE     ?= cv-sender:0.1
 NAMESPACE ?= cv-sender
 KUBECTL   ?= kubectl
+CONFIG    ?= configs/config.yaml
 
 # Local run mirrors the Deployment mounts (configs/deployment.yaml):
 #   data/        -> /app/data            (state.db, preview.csv)
@@ -12,9 +13,9 @@ KUBECTL   ?= kubectl
 RUN_ARGS = --rm \
 	-v "$(CURDIR)/data:/app/data" \
 	-v "$(CURDIR)/data/cv:/app/config/cv:ro" \
-	-v "$(CURDIR)/configs/config.yaml:/app/config/config.yaml:ro"
+	-v "$(CURDIR)/$(CONFIG):/app/config/config.yaml:ro"
 
-.PHONY: build import dry-run pilot deploy logs clean
+.PHONY: build import dry-run pilot test-flows deploy logs clean
 
 # Build the worker image locally.
 build:
@@ -32,9 +33,22 @@ dry-run:
 pilot:
 	docker run $(RUN_ARGS) --env-file .env $(IMAGE) --pilot
 
-# Apply in-cluster manifests (Deployment, PVC, ConfigMap, Secret).
+# Run the in-image flow tests (Playwright/Chromium only exists in the image).
+# `--entrypoint python` overrides the image ENTRYPOINT (`python -m src.main
+# worker`) so it is not prepended to the unittest command below.
+test-flows:
+	docker run $(RUN_ARGS) --env-file .env \
+		-v "$(CURDIR)/tests:/app/tests" \
+		--entrypoint python \
+		$(IMAGE) -m unittest discover -s tests -v
+
+# Apply in-cluster manifests in dependency order (namespace → Secret → ConfigMap → PVC → Deployment).
 deploy:
-	$(KUBECTL) apply -f configs/
+	$(KUBECTL) apply -f configs/namespace.yaml
+	$(KUBECTL) apply -f configs/secret.yaml
+	$(KUBECTL) apply -f configs/configmap.yaml
+	$(KUBECTL) apply -f configs/pvc.yaml
+	$(KUBECTL) apply -f configs/deployment.yaml
 
 # Tail worker logs from the deployment.
 logs:

@@ -106,6 +106,10 @@ def _failed_recipient(message: Message) -> str | None:
 
 
 def _send_notification(config: dict, subject: str, body: str) -> None:
+    if bool(config.get("dry_run", True)):
+        logger.info("dry_run is true; skipping notification: %s", subject)
+        return
+
     account = config.get("account", {})
     notify = str(account.get("notify_email") or "").strip()
     if not notify:

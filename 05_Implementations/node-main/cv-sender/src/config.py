@@ -73,6 +73,13 @@ def load_config(path: str | None = None) -> dict:
     if missing:
         raise ValueError("cv sender config is missing required fields: " + ", ".join(missing))
 
+    dry_run = _dig(config, ("dry_run",))
+    if dry_run is not None and not isinstance(dry_run, bool):
+        raise ValueError(
+            "cv sender config has invalid dry_run: expected a bool, got "
+            f"{type(dry_run).__name__} ({dry_run!r})"
+        )
+
     logger.debug("Loaded cv sender config from %s", resolved)
     return config
 

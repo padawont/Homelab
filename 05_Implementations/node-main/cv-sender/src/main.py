@@ -9,10 +9,15 @@ Modes
 ``--dry-run``
     Scrape, filter and validate only; write the preview CSV and send nothing.
 ``--pilot [N]``
-    Send at most ``N`` enquiries (default ``config['pilot_count']``). Sending is
-    skipped entirely when ``config['dry_run']`` is true.
+    Send at most ``N`` enquiries (default ``config['pilot_count']``). When
+    ``config['dry_run']`` is true no mail is sent; the run validates candidates
+    and writes the preview CSV instead.
 ``worker``
     Long-running loop that checks the inbox and sends within the daily cap.
+    When ``config['dry_run']`` is true, the worker performs a single dry-run
+    validation pass at startup (scrape, filter, validate, write the preview
+    CSV) and then idles: no further scraping, no inbox check, no send batch, no
+    daily digest and no reply notifications, so no mail leaves the container.
 
 Run as ``python -m src.main <mode>``. Importing this module performs no I/O.
 """
@@ -163,6 +168,10 @@ def _run_dry_run(config: dict) -> int:
 
 
 def _send_batch(config: dict, limit: int | None) -> int:
+    if bool(config.get("dry_run", True)):
+        logger.info("dry_run is true; skipping send batch")
+        return 0
+
     from enrich import enrich
     from sender import send_email
     from state import State
@@ -235,7 +244,7 @@ def _send_batch(config: dict, limit: int | None) -> int:
 def _run_pilot(config: dict, limit: int | None) -> int:
     if limit is None or limit < 0:
         limit = int(config.get("pilot_count", 3))
-    if bool(config.get("dry_run", False)):
+    if bool(config.get("dry_run", True)):
         logger.info("config dry_run is true; pilot will validate but not send")
         return _run_dry_run(config)
     return _send_batch(config, limit=limit)
@@ -245,38 +254,55 @@ def _run_worker(config: dict) -> int:
     from monitor import check_inbox, send_digest
     from state import State
 
-    poll_seconds = float(config.get("rate", {}).get("poll_seconds", 300) or 300)
+    poll_seconds = max(1.0, float(config.get("rate", {}).get("poll_seconds", 300) or 300))
+    dry_run = bool(config.get("dry_run", True))
     logger.info("worker started (poll every %.0fs)", poll_seconds)
 
+    if dry_run:
+        logger.info("dry_run is true; starting in dry-run mode")
+
     last_digest_day: str | None = None
+    dry_run_done = False
     try:
         while True:
-            state = State(_state_db(config))
-            state.init()
             try:
-                replies, bounces = check_inbox(config, state)
-                if replies or bounces:
-                    logger.info(
-                        "inbox: %d replies, %d bounces", len(replies), len(bounces)
-                    )
+                if dry_run:
+                    if not dry_run_done:
+                        dry_run_done = True
+                        _run_dry_run(config)
+                        logger.info(
+                            "dry-run preview written; worker is now idling "
+                            "(no further scraping or mail)"
+                        )
+                else:
+                    state = State(_state_db(config))
+                    state.init()
+                    try:
+                        replies, bounces = check_inbox(config, state)
+                        if replies or bounces:
+                            logger.info(
+                                "inbox: %d replies, %d bounces", len(replies), len(bounces)
+                            )
+                    except Exception:  # noqa: BLE001 - a poll failure must not kill the loop
+                        logger.exception("inbox check failed")
+                    finally:
+                        state.close()
+
+                    _send_batch(config, limit=None)
+
+                    today = datetime.now(timezone.utc).strftime("%Y-%m-%d")
+                    if today != last_digest_day:
+                        state = State(_state_db(config))
+                        state.init()
+                        try:
+                            send_digest(config, state)
+                        except Exception:  # noqa: BLE001
+                            logger.exception("digest failed")
+                        finally:
+                            state.close()
+                        last_digest_day = today
             except Exception:  # noqa: BLE001 - a poll failure must not kill the loop
-                logger.exception("inbox check failed")
-            finally:
-                state.close()
-
-            _send_batch(config, limit=None)
-
-            today = datetime.now(timezone.utc).strftime("%Y-%m-%d")
-            if today != last_digest_day:
-                state = State(_state_db(config))
-                state.init()
-                try:
-                    send_digest(config, state)
-                except Exception:  # noqa: BLE001
-                    logger.exception("digest failed")
-                finally:
-                    state.close()
-                last_digest_day = today
+                logger.exception("poll failed")
 
             time.sleep(poll_seconds)
     except KeyboardInterrupt:  # pragma: no cover - interactive shutdown

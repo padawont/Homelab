@@ -1,8 +1,10 @@
 """Inbound mailbox monitoring for the cv sender worker.
 
-Polls the applicant mailbox over IMAP, matches replies to previously sent
-messages through ``In-Reply-To`` / ``References``, detects non-delivery reports
-(bounces) and can emit a daily digest. Every mutation goes through the shared
+Polls the sending mailbox (``cvsenderworkonly@gmail.com``) over IMAP for
+replies and bounces, matches replies to previously sent messages through
+``In-Reply-To`` / ``References``, detects non-delivery reports (bounces) and
+can emit a daily digest. Notifications go to the applicant
+(``RyanHarrisZubair@gmail.com``). Every mutation goes through the shared
 :class:`state.State` store, so repeated polls stay idempotent.
 
 Importing this module performs no I/O.

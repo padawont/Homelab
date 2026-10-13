@@ -3,7 +3,9 @@ no-result enrichment, end-of-day digest. SMTP is mocked and mail redirected to
 the sending account (or ``CV_SENDER_TEST_RECIPIENT``); T1/T2/T4 skip without
 credentials/CV; T3/T5/T6 are fully offline. T7 is an opt-in live send that
 authenticates against real Gmail and verifies delivery over IMAP — it never runs
-by default and is gated behind ``CV_SENDER_LIVE_SEND``."""
+by default and is gated behind ``CV_SENDER_LIVE_SEND``. T8 guards against drift
+between ``configs/config.yaml`` and the copy wrapped by ``configs/configmap.yaml``
+and skips in the container, where ``configmap.yaml`` is not mounted."""
 import imaplib
 import os
 import re
@@ -38,6 +40,8 @@ except ImportError:
     _p.sync_api = _s
     sys.modules.update(playwright=_p, **{"playwright.sync_api": _s})
 
+import yaml
+
 import main
 from config import load_config
 import enrich
@@ -49,6 +53,7 @@ from validate import classify
 
 CONTAINER_CONFIG_PATH = Path("/app/config/config.yaml")
 HOST_CONFIG_PATH = Path(__file__).resolve().parents[1] / "configs" / "config.yaml"
+HOST_CONFIGMAP_PATH = Path(__file__).resolve().parents[1] / "configs" / "configmap.yaml"
 SUBJECT_PATH = SRC_DIR / "templates" / "subject.txt"
 
 
@@ -166,6 +171,33 @@ def _poll_for_message_id(imap, message_id, timeout=60.0, interval=5.0):
         if time.monotonic() >= deadline:
             return None
         time.sleep(interval)
+
+
+def _dict_diff(file_cfg, cm_cfg):
+    """Return human-readable lines describing how two config mappings differ.
+
+    Walks the two mappings recursively so a drift report names the exact dotted
+    key path and both values, instead of dumping two whole (deeply nested)
+    dicts that a bare ``assertEqual`` would render impenetrably.
+    """
+    diffs = []
+
+    def walk(prefix, left, right):
+        for key in sorted(set(left) | set(right), key=str):
+            path = f"{prefix}.{key}" if prefix else str(key)
+            if key not in left:
+                diffs.append(f"  + {path}: {right[key]!r} (only in configmap.yaml)")
+            elif key not in right:
+                diffs.append(f"  - {path}: {left[key]!r} (only in config.yaml)")
+            else:
+                lv, rv = left[key], right[key]
+                if isinstance(lv, dict) and isinstance(rv, dict):
+                    walk(path, lv, rv)
+                elif lv != rv:
+                    diffs.append(f"  ~ {path}: config.yaml={lv!r} vs configmap.yaml={rv!r}")
+
+    walk("", file_cfg, cm_cfg)
+    return diffs
 
 
 class CvSenderFlowTests(unittest.TestCase):
@@ -429,3 +461,46 @@ class CvSenderFlowTests(unittest.TestCase):
         self.assertIn(company_name, body)
         self.assertIn(config["email"]["signature_name"], body)
         self.assertIn(config["email"]["signature_phone"], body)
+
+    def test_config_and_configmap_stay_in_sync(self):
+        """T8: configs/config.yaml and configs/configmap.yaml must not drift.
+
+        The ConfigMap wraps a copy of the source-of-truth config under
+        ``data["config.yaml"]`` and the pod mounts only that copy, so a drift
+        where the ConfigMap said ``dry_run: false`` while the file said ``true``
+        would fail *open* at deploy. Parses both documents and asserts they are
+        equal, plus the ConfigMap's own name/namespace and that the ``dry_run``
+        safety flag survives into the copy. Skips cleanly in the container,
+        where only ``/app/config/config.yaml`` is mounted (not ``configmap.yaml``).
+        """
+        missing = [
+            str(p)
+            for p in (HOST_CONFIG_PATH, HOST_CONFIGMAP_PATH)
+            if not p.is_file()
+        ]
+        if missing:
+            self.skipTest(
+                "config/configmap drift guard skipped; missing files (expected in "
+                "the container, which mounts only /app/config/config.yaml): "
+                + ", ".join(missing)
+            )
+
+        file_config = yaml.safe_load(HOST_CONFIG_PATH.read_text(encoding="utf-8"))
+        configmap = yaml.safe_load(HOST_CONFIGMAP_PATH.read_text(encoding="utf-8"))
+
+        self.assertEqual(configmap["metadata"]["name"], "cv-sender-config")
+        self.assertEqual(configmap["metadata"]["namespace"], "cv-sender")
+
+        configmap_config = yaml.safe_load(configmap["data"]["config.yaml"])
+        self.assertIn(
+            "dry_run",
+            configmap_config,
+            "ConfigMap data['config.yaml'] is missing the dry_run safety flag",
+        )
+
+        self.assertEqual(
+            file_config,
+            configmap_config,
+            msg="configs/config.yaml and configs/configmap.yaml have drifted:\n"
+            + "\n".join(_dict_diff(file_config, configmap_config)),
+        )

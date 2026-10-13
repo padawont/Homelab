@@ -1,15 +1,23 @@
 """Normalize a TARGIT Excel export into typed company rows.
 
-The export is a cross-tab with a handful of title/padding rows above the real
-column header, so the header is located heuristically by matching Danish and
-English column fragments. Field values are returned as strings; addresses are
-reduced to the first e-mail address found in the cell.
+The export is a cross-tab whose company data lives on the ``Tabel`` worksheet;
+the other sheets are empty or small summaries, so the sheet is chosen by name
+rather than via ``workbook.active``. openpyxl 3.1.5 rejects the
+``defaultColWidthPt`` attribute TARGIT emits on worksheet XML, so the workbook
+is re-packaged in memory with that attribute stripped before it is handed to
+openpyxl (the file on disk is never modified). The header is located
+heuristically by matching Danish and English column fragments. Field values are
+returned as strings; addresses are reduced to the first e-mail address found in
+the cell. The Branche filter lives here too (``filter_rows``) so the export can
+be downloaded unfiltered and selected in Python.
 """
 
 from __future__ import annotations
 
+import io
 import logging
 import re
+import zipfile
 from pathlib import Path
 from typing import Any
 
@@ -27,6 +35,13 @@ ROW_KEYS: tuple[str, ...] = (
     "phone",
     "employees",
 )
+
+#: The worksheet that holds the company data in a TARGIT export.
+PREFERRED_SHEET = "Tabel"
+
+#: ``defaultColWidthPt`` on a worksheet ``<sheetFormatPr>`` element, which
+#: openpyxl 3.1.5 cannot parse. It is cosmetic, so it is stripped in memory.
+_DEFAULT_COL_WIDTH_PT_RE = re.compile(rb'\sdefaultColWidthPt="[^"]*"')
 
 #: Canonical field -> header fragments, ordered most-specific first so a broad
 #: key such as ``name`` cannot steal a column from a narrower one.
@@ -62,9 +77,9 @@ def read_rows(xlsx_path: str) -> list[dict]:
     if not path.is_file():
         raise FileNotFoundError(f"company export not found: {xlsx_path}")
 
-    workbook = load_workbook(filename=str(path), read_only=True, data_only=True)
+    workbook = _load_workbook(path)
     try:
-        worksheet = workbook.active
+        worksheet = _select_sheet(workbook)
         rows = list(worksheet.iter_rows(values_only=True))
     finally:
         workbook.close()
@@ -82,6 +97,72 @@ def read_rows(xlsx_path: str) -> list[dict]:
 
     logger.info("Normalized %d company rows from %s", len(records), xlsx_path)
     return records
+
+
+def filter_rows(rows: list[dict], branche_query: str) -> list[dict]:
+    """Return only rows whose ``branche`` contains ``branche_query``.
+
+    Matching is case-insensitive and substring-based, so ``"computer"`` selects
+    both ``Computerprogrammering`` and ``Computerkonsulentbistand ...``. An empty
+    ``branche_query`` returns ``rows`` unchanged (no filter applied).
+    """
+
+    query = (branche_query or "").strip().lower()
+    if not query:
+        return rows
+    return [row for row in rows if query in (row.get("branche") or "").lower()]
+
+
+def _load_workbook(path: Path):
+    """Open ``path`` with openpyxl after sanitising the worksheet XML in memory.
+
+    openpyxl 3.1.5 raises ``TypeError: SheetFormatProperties.__init__() got an
+    unexpected keyword argument 'defaultColWidthPt'`` on TARGIT's worksheet
+    ``<sheetFormatPr>`` elements. The attribute is cosmetic, so the ``.xlsx`` is
+    read as a zip, the attribute is stripped from each ``xl/worksheets/*.xml``
+    entry, and openpyxl is handed a ``BytesIO`` -- the file on disk is never
+    modified.
+    """
+
+    with zipfile.ZipFile(path) as zin:
+        buffer = io.BytesIO()
+        with zipfile.ZipFile(buffer, "w", zipfile.ZIP_DEFLATED) as zout:
+            for item in zin.infolist():
+                data = zin.read(item.filename)
+                if item.filename.startswith("xl/worksheets/") and item.filename.endswith(".xml"):
+                    data = _DEFAULT_COL_WIDTH_PT_RE.sub(b"", data)
+                zout.writestr(item, data)
+    buffer.seek(0)
+    return load_workbook(buffer, read_only=True, data_only=True)
+
+
+def _select_sheet(workbook):
+    """Choose the worksheet that holds the company data, logging the choice.
+
+    The data always lives on the ``Tabel`` sheet; the other sheets
+    (``Du kan også finde virksomhedern``, ``Udforsk``, ``Virksomhedsliste``) are
+    empty or small summaries. ``Tabel`` wins when present; otherwise fall back to
+    the sheet with the most used rows × columns so a changed export shape still
+    normalises something useful rather than silently reading an empty sheet.
+    """
+
+    if PREFERRED_SHEET in workbook.sheetnames:
+        logger.info("Reading worksheet %r (company data sheet)", PREFERRED_SHEET)
+        return workbook[PREFERRED_SHEET]
+
+    chosen = None
+    best = -1
+    for name in workbook.sheetnames:
+        sheet = workbook[name]
+        score = sheet.max_row * sheet.max_column
+        if score > best:
+            chosen, best = sheet, score
+    logger.info(
+        "Reading worksheet %r (largest sheet; %r absent)",
+        chosen.title if chosen is not None else None,
+        PREFERRED_SHEET,
+    )
+    return chosen
 
 
 def _locate_header(rows: list[tuple[Any, ...]]) -> tuple[int | None, dict[str, int]]:

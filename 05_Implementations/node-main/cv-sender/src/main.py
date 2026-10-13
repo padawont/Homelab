@@ -94,14 +94,21 @@ def _format_row(row: dict) -> str:
 
 
 def _load_rows(config: dict) -> list[dict]:
-    """Scrape the TARGIT export and normalise it into rows."""
-    from normalize import read_rows
+    """Scrape the TARGIT export, normalise it, and apply the Branche filter.
+
+    The export is downloaded unfiltered (the TARGIT slicer is not scriptable),
+    so the Branche selection from ``filters.branche_query`` is applied here in
+    Python after the workbook is read.
+    """
+    from normalize import filter_rows, read_rows
     from scraper import export_companies
 
     out_dir = _data_dir(config)
     out_dir.mkdir(parents=True, exist_ok=True)
     workbook = export_companies(config, str(out_dir))
     rows = read_rows(workbook)
+    branche_query = (config.get("filters") or {}).get("branche_query", "") or ""
+    rows = filter_rows(rows, branche_query)
     logger.info("loaded %d rows from %s", len(rows), workbook)
     return rows
 

@@ -51,6 +51,15 @@ from state import State
 import validate
 from validate import classify
 
+# openpyxl is present only in the worker image, not the host, so ``normalize``
+# (which imports it at module load) is imported and its tests skipped on the host.
+try:
+    import normalize
+    HAS_NORMALIZE = True
+except ImportError:  # pragma: no cover - host has no openpyxl
+    normalize = None
+    HAS_NORMALIZE = False
+
 CONTAINER_CONFIG_PATH = Path("/app/config/config.yaml")
 HOST_CONFIG_PATH = Path(__file__).resolve().parents[1] / "configs" / "config.yaml"
 HOST_CONFIGMAP_PATH = Path(__file__).resolve().parents[1] / "configs" / "configmap.yaml"
@@ -504,3 +513,114 @@ class CvSenderFlowTests(unittest.TestCase):
             msg="configs/config.yaml and configs/configmap.yaml have drifted:\n"
             + "\n".join(_dict_diff(file_config, configmap_config)),
         )
+
+
+# -- normalize regression helpers (issue #638) ------------------------------
+
+_HEADER = [
+    "Hovedkategori", "Branche", "Virksomhed", "Postdistrikt",
+    "Adresse", "Email", "Telefonnummer", "Antal medarbejdere",
+]
+
+
+def _write_xlsx(path, data_rows, targit_bug=False):
+    """Write a TARGIT-shaped workbook: an empty first sheet + a ``Tabel`` sheet.
+
+    ``targit_bug=True`` injects the ``defaultColWidthPt`` attribute that
+    openpyxl 3.1.5 cannot parse, so ``read_rows`` must sanitise it in memory.
+    """
+    import openpyxl
+
+    wb = openpyxl.Workbook()
+    first = wb.active
+    first.title = "Du kan også finde virksomhedern"
+    first["A1"] = None
+    tabel = wb.create_sheet("Tabel")
+    tabel.append(_HEADER)
+    for row in data_rows:
+        tabel.append(row)
+    wb.save(path)
+    if targit_bug:
+        _inject_default_col_width_pt(path)
+
+
+def _inject_default_col_width_pt(path):
+    """Add ``defaultColWidthPt`` to the worksheet XML of ``path`` in place."""
+    import io
+    import zipfile
+
+    path = Path(path)
+    raw = path.read_bytes()
+    buffer = io.BytesIO()
+    with zipfile.ZipFile(io.BytesIO(raw)) as zin, \
+            zipfile.ZipFile(buffer, "w", zipfile.ZIP_DEFLATED) as zout:
+        for item in zin.infolist():
+            data = zin.read(item.filename)
+            if item.filename.startswith("xl/worksheets/") and item.filename.endswith(".xml"):
+                if b"<sheetFormatPr" in data:
+                    data = re.sub(
+                        rb"<sheetFormatPr\b([^>]*?)(/?)>",
+                        rb'<sheetFormatPr\1 defaultColWidthPt="7.5"\2>',
+                        data,
+                        count=1,
+                    )
+                else:
+                    data = data.replace(
+                        b"<sheetData>",
+                        b'<sheetFormatPr defaultColWidthPt="7.5"/><sheetData>',
+                        1,
+                    )
+            zout.writestr(item, data)
+    path.write_bytes(buffer.getvalue())
+
+
+@unittest.skipUnless(
+    HAS_NORMALIZE,
+    "openpyxl not installed (host); normalize tests run in the worker image",
+)
+class NormalizeTests(unittest.TestCase):
+    """Normalization regressions for issue #638: the ``Tabel`` sheet, the
+    openpyxl ``defaultColWidthPt`` sanitisation, and the Python-side Branche
+    filter that replaced the in-browser slicer."""
+
+    def _data_rows(self):
+        return [
+            ["IT", "Computerprogrammering", "Acme A/S", "Aarhus C",
+             "Vej 1", "acme@example.com", "1", "10"],
+            ["IT", "Computerkonsulentbistand og forvaltning af computerfaciliteter",
+             "Beta ApS", "Viby J", "Vej 2", "beta@example.com", "2", "5"],
+            ["Byg", "Byggeri", "Gamma A/S", "Aarhus N",
+             "Vej 3", "gamma@example.com", "3", "20"],
+        ]
+
+    def test_read_rows_selects_tabel_not_active(self):
+        """The data lives on ``Tabel``, not the empty ``workbook.active`` sheet."""
+        with tempfile.TemporaryDirectory() as tmp:
+            path = Path(tmp) / "companies.xlsx"
+            _write_xlsx(path, self._data_rows())
+            rows = normalize.read_rows(str(path))
+        self.assertEqual(
+            [r["name"] for r in rows], ["Acme A/S", "Beta ApS", "Gamma A/S"]
+        )
+
+    def test_read_rows_strips_default_col_width_pt(self):
+        """openpyxl 3.1.5 rejects ``defaultColWidthPt``; read_rows sanitises it."""
+        with tempfile.TemporaryDirectory() as tmp:
+            path = Path(tmp) / "companies.xlsx"
+            _write_xlsx(path, self._data_rows(), targit_bug=True)
+            before = path.read_bytes()
+            rows = normalize.read_rows(str(path))  # must not raise TypeError
+            after = path.read_bytes()
+        self.assertEqual(len(rows), 3)
+        self.assertEqual(before, after)  # the file on disk is never mutated
+
+    def test_filter_rows_case_insensitive_substring(self):
+        rows = [
+            {"branche": "Computerprogrammering", "name": "a"},
+            {"branche": "computerkonsulentbistand", "name": "b"},
+            {"branche": "Byggeri", "name": "c"},
+        ]
+        self.assertEqual(len(normalize.filter_rows(rows, "computer")), 2)
+        self.assertEqual(len(normalize.filter_rows(rows, "COMPUTER")), 2)
+        self.assertEqual(normalize.filter_rows(rows, ""), rows)  # no query -> unchanged
+        self.assertEqual(normalize.filter_rows(rows, None), rows)

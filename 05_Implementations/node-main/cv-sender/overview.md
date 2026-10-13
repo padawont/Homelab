@@ -102,9 +102,17 @@ every poll.
 | PVC | `cv-sender-data` | 1Gi — `state.db`, caches, `cv/cv.pdf` |
 | Deployment | `cv-sender` | 1 replica, always-on, image `cv-sender:0.1` |
 
-- **Source view**: `https://ledelsesinformation.aarhuskommune.dk/Embed#vfs://global/AARHUS-I-TAL/UDDANNELSE_I_TAL-Erhvervspraktik-Virksomhedsliste.xview`
+- **Source view**: `https://ledelsesinformation.aarhuskommune.dk/#vfs://global/AARHUS-I-TAL/UDDANNELSE_I_TAL-Erhvervspraktik-Virksomhedsliste.xview`
   — a Blazor WebAssembly view, client-rendered and anonymous. The grid is
   row-capped, so the worker uses **Export to Excel** rather than DOM scraping.
+  The `/Embed` suffix is avoided — it renders the view but downloads a 0-byte
+  export. The toolbar's export button is `display: none`, so the scraper
+  un-hides it before clicking. The full list (~37,319 rows) is exported
+  unfiltered; Branche filtering happens in Python, not the browser.
+- **Workbook**: the company data is on the `Tabel` sheet (the others are empty
+  or small summaries). openpyxl 3.1.5 rejects the `defaultColWidthPt` attribute
+  TARGIT emits, so `normalize` re-packages the `.xlsx` in memory (stripping it)
+  before parsing — the file on disk is never modified.
 - **Enrichment**: `selskabsinfo.dk` then
   `https://selskabsinfo.dk/virksomheder-i/aarhus`; if no email is found the
   company is skipped. Both sit behind a Vercel bot challenge and need the real

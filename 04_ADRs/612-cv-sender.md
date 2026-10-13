@@ -49,8 +49,9 @@ also needs a real browser. No login is required (`#lsLogin` is `display: none`),
 so an unauthenticated automated browser reaches both the view and its export.
 
 The homelab needs a repeatable, low-ops worker that extracts, filters, enriches,
-and contacts companies without committing personal data or secrets to git. This
-epic has no Research stage; the problem and constraints are recorded here.
+and contacts companies without committing the CV, the Gmail App Password, or
+scraped company data to git. This epic has no Research stage; the problem and
+constraints are recorded here.
 
 ## Decision
 
@@ -75,8 +76,12 @@ k3s:
 - **Sessions**: TARGIT session GUIDs are resolved by placeholder text at
   runtime and never hardcoded; reverse-engineering private JSON/JWT endpoints
   is rejected.
+- **Hardening**: per the Playwright Docker docs, the worker image runs as a
+  **non-root user with a seccomp profile**, because it scrapes third-party
+  sites the homelab does not control.
 
-**Gmail limits.** The 400/day cap stays well under Gmail's sending limits; the
+**Gmail limits.** The mailbox is a free `@gmail.com` account, capped at
+**500 recipients/day**, so the 400/day cap sits close to that ceiling; the
 worker must pace sends and back off on SMTP `4xx`/`5xx`, or Gmail throttles and
 can suspend the account.
 

@@ -1,6 +1,12 @@
-hi {company},
+Kære {company},
 
-jeg vil gerne have en praktik for uge 45
+Jeg hedder {signature_name}, og jeg er elev i folkeskolen. I uge 45 skal jeg i
+erhvervspraktik, og jeg er meget interesseret i IT og teknologi. Derfor vil jeg
+meget gerne i praktik hos jer.
+
+Jeg har vedhæftet mit CV, hvor I kan læse mere om mig.
+
+Jeg håber at høre fra jer.
 
 Med venlig hilsen
 {signature_name}

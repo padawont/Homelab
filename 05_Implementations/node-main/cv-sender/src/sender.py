@@ -46,8 +46,13 @@ def send_email(config: dict, row: dict, cv_path: str) -> str | None:
     """Send one enquiry for ``row`` with ``cv_path`` attached.
 
     Returns the generated ``Message-ID`` on success, or ``None`` when the row has
-    no recipient address. Configuration and transport errors are raised.
+    no recipient address or when ``dry_run`` is true. Configuration and transport
+    errors are raised.
     """
+    if bool(config.get("dry_run", True)):
+        logger.info("dry_run is true; refusing to send to %s", row.get("name"))
+        return None
+
     email_cfg = config.get("email", {})
     signature_name = str(email_cfg.get("signature_name") or "").strip()
     signature_phone = str(email_cfg.get("signature_phone") or "").strip()

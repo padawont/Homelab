@@ -31,6 +31,7 @@ data:
     rate:
       daily_cap: 400
       delay_seconds: 20
+      poll_seconds: 300
     email:
       signature_name: "Ryan Harris"
       signature_phone: "+45 42 32 12 35"

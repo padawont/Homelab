@@ -84,8 +84,12 @@ kubectl -n cv-sender get pods
 kubectl -n cv-sender logs deploy/cv-sender -f
 ```
 
-Expect the `cv-sender` pod `Running`/`Ready`; with `dry_run: true` the logs show
-candidates selected but no mail sent.
+Expect the `cv-sender` pod `Running`/`Ready`. With `dry_run: true` the worker
+performs a single validation pass at startup — scraping the TARGIT view,
+classifying each candidate and writing `data/preview.csv` with per-status
+counts — then idles. No mail (including the daily digest and reply
+notifications) leaves the container, and the live view is not re-scraped on
+every poll.
 
 ## Configuration
 
@@ -105,7 +109,7 @@ candidates selected but no mail sent.
   company is skipped. Both sit behind a Vercel bot challenge and need the real
   browser.
 - **CV**: on the PVC at `cv/cv.pdf`, exposed in-pod at `/app/config/cv/cv.pdf`.
-- **Rate**: 400/day, 20s delay between sends.
+- **Rate**: 400/day, 20s delay between sends, 300s poll interval.
 - **Rollout**: `dry_run: true` → pilot of 3 → full run, all driven from
   `configs/config.yaml`.
 

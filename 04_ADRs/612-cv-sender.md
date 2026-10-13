@@ -90,9 +90,11 @@ worker must pace sends and back off on SMTP `4xx`/`5xx`, or Gmail throttles and
 can suspend the account.
 
 **Legal and ethical.** This is unsolicited bulk cold outreach: the worker only
-contacts publicly listed businesses about a real erhvervspraktik placement,
-honours opt-outs, and keeps volume low — it is not a spam tool, and compliance
-with GDPR and marketing rules is the owner's responsibility.
+contacts publicly listed businesses about a real erhvervspraktik placement.
+Each enquiry invites the recipient to opt out, and their details are removed
+on request — removal is handled manually from replies in the sending mailbox,
+not by automation. Volume stays low, so it is not a spam tool; compliance with
+GDPR and marketing rules remains the owner's responsibility.
 
 **Never committed.** The CV, the Gmail App Password, and all scraped company
 data are never committed — the App Password lives only in a k8s Secret, the CV
@@ -122,7 +124,7 @@ The worker runs inside the existing single-node k3s cluster:
 - **Config/secret**: a ConfigMap holds filters, cadence, and the 400/day cap; a
   Secret holds the Gmail App Password.
 - **Egress**: outbound HTTPS to the TARGIT view and `selskabsinfo.dk`, and
-  SMTP/IMAP to the applicant mailbox.
+  SMTP/IMAP to the sending mailbox (`cvsenderworkonly@gmail.com`).
 
 ```mermaid
 graph TD
@@ -133,7 +135,7 @@ graph TD
     DEP --> PVC[(cv-sender PVC<br/>state.db + CV.pdf)]
     DEP -->|HTTPS out| TARGIT[TARGIT Anywhere view]
     DEP -->|HTTPS out| SELSKAB[selskabsinfo.dk]
-    DEP -->|SMTP STARTTLS / IMAP| MAIL[applicant mailbox]
+    DEP -->|SMTP STARTTLS / IMAP| MAIL[sending mailbox<br/>cvsenderworkonly@gmail.com]
 ```
 
 The decision clears the way for the `05_Implementations/` stage: worker image

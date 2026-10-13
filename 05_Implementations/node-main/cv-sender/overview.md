@@ -8,6 +8,9 @@ technologies: [python, playwright, kubernetes, sqlite, smtplib, imaplib]
 related_docs:
   - "./04_ADRs/612-cv-sender.md"
   - "./05_Implementations/node-main/k3s/overview.md"
+  - "./02_Knowledge/technologies/kubernetes/concepts/deployments.md"
+  - "./02_Knowledge/technologies/kubernetes/concepts/secrets.md"
+  - "./02_Knowledge/technologies/kubernetes/concepts/storage.md"
 references:
   online:
     - url: "https://playwright.dev/python/docs/docker"
@@ -33,9 +36,11 @@ attached, and monitors replies. Governed by ADR-612 (`./04_ADRs/612-cv-sender.md
 - Working single-node k3s cluster on `node-main` — see
   `./05_Implementations/node-main/k3s/overview.md`.
 - Docker on the build host to produce the `cv-sender:0.1` image.
-- Secret `cv-sender-secrets` holding `GMAIL_APP_PASSWORD`; ConfigMap
-  `cv-sender-config` from `configs/config.yaml` (never committed to git).
-- The CV file copied onto the PVC at `/app/config/cv/cv.pdf`.
+- Secret `cv-sender-secrets`, populated from an untracked `secret.yaml`
+  (never committed to git), holding `GMAIL_APP_PASSWORD`; ConfigMap
+  `cv-sender-config` from the tracked `configs/config.yaml`.
+- The CV copied onto the PVC at `cv/cv.pdf`; the `subPath` mount exposes it in
+  the pod at `/app/config/cv/cv.pdf`.
 - Outbound HTTPS to the TARGIT view and `selskabsinfo.dk`, plus SMTP/IMAP access
   to the mailbox `RyanHarrisZubair@gmail.com`.
 
@@ -59,7 +64,17 @@ manifests in dependency order (namespace → Secret → ConfigMap → PVC → De
 ```bash
 docker build -t cv-sender:0.1 .
 docker save cv-sender:0.1 | sudo k3s ctr images import -
-kubectl apply -f configs/
+# Apply per file in dependency order — a directory apply (`-f configs/`) is
+# wrong on three counts: config.yaml has no apiVersion/kind (not a manifest);
+# secret.yaml.example has an unrecognised extension (`.example`), so kubectl
+# silently skips it and the Secret is never created by a directory apply;
+# and lexical order (configmap → deployment → namespace → pvc) does not
+# respect the namespace → Secret → ConfigMap → PVC → Deployment order.
+kubectl apply -f configs/namespace.yaml
+kubectl apply -f configs/secret.yaml    # untracked, from secret.yaml.example
+kubectl apply -f configs/configmap.yaml
+kubectl apply -f configs/pvc.yaml
+kubectl apply -f configs/deployment.yaml
 ```
 
 ### Post-deploy verification
@@ -79,7 +94,7 @@ candidates selected but no mail sent.
 | Namespace | `cv-sender` | |
 | Secret | `cv-sender-secrets` | holds `GMAIL_APP_PASSWORD` |
 | ConfigMap | `cv-sender-config` | from `configs/config.yaml` |
-| PVC | `cv-sender-data` | 1Gi — holds `state.db` + caches |
+| PVC | `cv-sender-data` | 1Gi — `state.db`, caches, `cv/cv.pdf` |
 | Deployment | `cv-sender` | 1 replica, always-on, image `cv-sender:0.1` |
 
 - **Source view**: `https://ledelsesinformation.aarhuskommune.dk/Embed#vfs://global/AARHUS-I-TAL/UDDANNELSE_I_TAL-Erhvervspraktik-Virksomhedsliste.xview`
@@ -89,7 +104,7 @@ candidates selected but no mail sent.
   `https://selskabsinfo.dk/virksomheder-i/aarhus`; if no email is found the
   company is skipped. Both sit behind a Vercel bot challenge and need the real
   browser.
-- **CV**: `/app/config/cv/cv.pdf`, copied onto the PVC at deploy time.
+- **CV**: on the PVC at `cv/cv.pdf`, exposed in-pod at `/app/config/cv/cv.pdf`.
 - **Rate**: 400/day, 20s delay between sends.
 - **Rollout**: `dry_run: true` → pilot of 3 → full run, all driven from
   `configs/config.yaml`.

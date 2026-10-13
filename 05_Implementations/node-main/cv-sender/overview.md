@@ -42,7 +42,8 @@ attached, and monitors replies. Governed by ADR-612 (`./04_ADRs/612-cv-sender.md
 - The CV copied onto the PVC at `cv/cv.pdf`; the `subPath` mount exposes it in
   the pod at `/app/config/cv/cv.pdf`.
 - Outbound HTTPS to the TARGIT view and `selskabsinfo.dk`, plus SMTP/IMAP access
-  to the mailbox `RyanHarrisZubair@gmail.com`.
+  to the sending mailbox `cvsenderworkonly@gmail.com`; notifications still go
+  to `RyanHarrisZubair@gmail.com`.
 
 ## Deployment
 
@@ -127,6 +128,7 @@ kubectl -n cv-sender logs deploy/cv-sender -f
 - **State**: idempotent SQLite `state.db` on the PVC so restarts and rolling
   updates resume without double-sending.
 - **Monitoring**: the worker polls IMAP for replies and bounces on
-  `RyanHarrisZubair@gmail.com`; notifications go to the same address.
+  `cvsenderworkonly@gmail.com`; notifications go to
+  `RyanHarrisZubair@gmail.com`.
 - **Backup**: copy `state.db` off the PVC before destructive changes.
 - Rollback is documented in `./rollback.md`.

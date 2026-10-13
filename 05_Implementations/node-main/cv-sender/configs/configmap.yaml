@@ -16,7 +16,7 @@ data:
     source:
       url: "https://ledelsesinformation.aarhuskommune.dk/Embed#vfs://global/AARHUS-I-TAL/UDDANNELSE_I_TAL-Erhvervspraktik-Virksomhedsliste.xview"
     account:
-      email: "RyanHarrisZubair@gmail.com"
+      email: "cvsenderworkonly@gmail.com"
       smtp_host: "smtp.gmail.com"
       smtp_port: 587
       imap_host: "imap.gmail.com"

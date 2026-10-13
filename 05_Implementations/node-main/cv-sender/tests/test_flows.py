@@ -1,20 +1,30 @@
 """E2E flow tests for cv sender (issue #631): present email, enrichment,
 no-result enrichment, end-of-day digest. SMTP is mocked and mail redirected to
-TEST_RECIPIENT; T1/T2/T4 skip without credentials/CV; T3 is offline."""
+the sending account (or ``CV_SENDER_TEST_RECIPIENT``); T1/T2/T4 skip without
+credentials/CV; T3/T5/T6 are fully offline. T7 is an opt-in live send that
+authenticates against real Gmail and verifies delivery over IMAP — it never runs
+by default and is gated behind ``CV_SENDER_LIVE_SEND``."""
+import imaplib
 import os
+import re
 import sys
 import tempfile
+import time
 import types
 import unittest
 from datetime import datetime, timezone
+from email import message_from_bytes, policy
+from email.utils import getaddresses
 from pathlib import Path
 from unittest import mock
 
 SRC_DIR = Path(__file__).resolve().parents[1] / "src"
 sys.path.insert(0, str(SRC_DIR))
 
-TEST_RECIPIENT = "RyanHarrisZubair@gmail.com"
 PASSWORD_ENV = "GMAIL_APP_PASSWORD"
+TEST_RECIPIENT_ENV = "CV_SENDER_TEST_RECIPIENT"
+LIVE_SEND_ENV = "CV_SENDER_LIVE_SEND"
+LIVE_RECIPIENT_ENV = "CV_SENDER_LIVE_RECIPIENT"
 
 # Host has no Playwright; stub it so enrich.py imports (its `_lookup` wraps
 # everything in try/except, so `sync_playwright=None` degrades to a None result).
@@ -82,6 +92,82 @@ def _require_send_prereqs(testcase, config):
         testcase.skipTest(f"CV attachment not found: {cv!r}")
 
 
+def _test_recipient(config):
+    """Resolve the mocked-send recipient: explicit override, else the sender.
+
+    T1/T2 redirect SMTP traffic to the sending account itself so no test can
+    ever reach an applicant's real mailbox. ``CV_SENDER_TEST_RECIPIENT``
+    overrides that default when an operator wants a specific test mailbox.
+    """
+    override = (os.environ.get(TEST_RECIPIENT_ENV) or "").strip()
+    if override:
+        return override
+    return config.get("account", {}).get("email", "")
+
+
+def _quote_mailbox(name):
+    """Wrap a mailbox name in double quotes for ``imap.select``, idempotently.
+
+    ``imaplib`` only auto-quotes mailbox names on newer Pythons; on 3.10 the raw
+    bytes are sent as-is, so a name containing spaces or brackets (e.g.
+    ``[Gmail]/Sent Mail``) is rejected with ``BAD Could not parse command``.
+    Always quote explicitly, but never double-quote a name that is already
+    quoted.
+    """
+    if not name:
+        return name
+    if name.startswith(b'"') and name.endswith(b'"'):
+        return name
+    return b'"' + name + b'"'
+
+
+def _discover_sent_folder(imap):
+    """Return the Gmail ``Sent Mail`` folder name from the IMAP LIST response.
+
+    Gmail advertises the RFC 6154 ``\\Sent`` special-use flag on its Sent folder,
+    so the name is discovered rather than hardcoded (it may be ``[Gmail]/Sent
+    Mail``, ``[Google Mail]/Sent Mail``, or a modified-UTF-7 localised name).
+    The returned name is already double-quoted for use with ``imap.select`` so a
+    caller cannot forget: explicit quoting works on both Python 3.10 and 3.14,
+    whereas relying on imaplib's auto-quoting fails on 3.10 for names with spaces
+    or brackets.
+    """
+    typ, data = imap.list()
+    if typ != "OK":
+        raise RuntimeError(f"IMAP LIST failed: {typ!r}")
+    entries = [e for e in (data or []) if isinstance(e, (bytes, bytearray))]
+    for entry in entries:
+        if b"\\Sent" in entry:
+            match = re.search(rb'"([^"]*)"\s*$', entry)
+            if match:
+                return _quote_mailbox(match.group(1))
+    # Fallback for servers that omit the special-use flag: any folder named
+    # "sent..." (English Gmail always advertises \Sent, so this is belt/braces).
+    for entry in entries:
+        if b"sent" in entry.lower():
+            match = re.search(rb'"([^"]*)"\s*$', entry)
+            if match:
+                return _quote_mailbox(match.group(1))
+    raise RuntimeError("no Sent folder found in IMAP LIST response")
+
+
+def _poll_for_message_id(imap, message_id, timeout=60.0, interval=5.0):
+    """Poll the selected folder for ``message_id``; return the RFC822 payload."""
+    search_key = message_id.strip("<>")
+    deadline = time.monotonic() + timeout
+    while True:
+        typ, data = imap.search(None, "HEADER", "Message-ID", search_key)
+        if typ == "OK" and data and data[0]:
+            nums = data[0].split()
+            if nums:
+                typ2, payload = imap.fetch(nums[-1], "(RFC822)")
+                if typ2 == "OK" and payload and isinstance(payload[0], tuple):
+                    return payload[0][1]
+        if time.monotonic() >= deadline:
+            return None
+        time.sleep(interval)
+
+
 class CvSenderFlowTests(unittest.TestCase):
     def test_send_with_present_email(self):
         """T1: a valid, in-scope row is sent with the CV attached, redirected."""
@@ -90,14 +176,15 @@ class CvSenderFlowTests(unittest.TestCase):
         _require_send_prereqs(self, config)
         cv_path = config["email"]["attachment"]
         row = {"name": "Testvirksomhed A/S", "postdistrikt": "Aarhus C", "branche": "computer", "address": "Testvej 1", "email": "accounts@example.com", "phone": "1", "employees": "1"}
+        recipient = _test_recipient(config)
         send_row = dict(row)
-        send_row["email"] = TEST_RECIPIENT  # redirect: never mail the real address
+        send_row["email"] = recipient  # redirect: never mail the real address
         smtp_cls, sent = _fake_smtp()
         with mock.patch("smtplib.SMTP", smtp_cls):
             message_id = send_email(config, send_row, cv_path)
         self.assertIsNotNone(message_id)
         message = sent[0]
-        self.assertEqual(message["To"], TEST_RECIPIENT)
+        self.assertEqual(message["To"], recipient)
         self.assertEqual(message["Message-ID"], message_id)
         self.assertEqual(message["Subject"], SUBJECT_PATH.read_text(encoding="utf-8").strip())
         self.assertEqual(
@@ -122,13 +209,14 @@ class CvSenderFlowTests(unittest.TestCase):
         local, _, domain = enriched.partition("@")
         self.assertNotIn(local, enrich._BLOCKED_LOCALS)
         self.assertFalse(any(domain == d or domain.endswith("." + d) for d in enrich._DIRECTORY_DOMAINS))
+        recipient = _test_recipient(config)
         send_row = dict(row)
-        send_row["email"] = TEST_RECIPIENT  # enriched address asserted, never mailed
+        send_row["email"] = recipient  # enriched address asserted, never mailed
         smtp_cls, sent = _fake_smtp()
         with mock.patch("smtplib.SMTP", smtp_cls):
             message_id = send_email(config, send_row, config["email"]["attachment"])
         self.assertIsNotNone(message_id)
-        self.assertEqual(sent[0]["To"], TEST_RECIPIENT)
+        self.assertEqual(sent[0]["To"], recipient)
         self.assertNotEqual(sent[0]["To"], enriched)
 
     def test_missing_email_no_enrichment_no_send(self):
@@ -268,3 +356,76 @@ class CvSenderFlowTests(unittest.TestCase):
         self.assertEqual(result, 0)
         smtp_cls.assert_not_called()
         self.assertTrue(Path(preview_csv).is_file())  # dry-run path actually ran
+
+    @unittest.skipUnless(
+        (os.environ.get(LIVE_SEND_ENV) or "").strip().lower()
+        in ("1", "true", "yes", "on"),
+        f"set {LIVE_SEND_ENV}=1 to send a real message via Gmail and verify it over IMAP",
+    )
+    def test_live_send_and_verify(self):
+        """T7: opt-in live send through production send_email + IMAP verification.
+
+        Sends exactly one enquiry over the real SMTP path (``smtp.gmail.com:587``
+        + STARTTLS) and proves delivery by locating the returned ``Message-ID``
+        in the sender's Gmail Sent Mail folder (discovered from ``imap.list()``,
+        never hardcoded). The recipient is ``CV_SENDER_LIVE_RECIPIENT`` when set,
+        otherwise the sender's own address — never a scraped company address.
+        Skipped cleanly when the app password or the CV attachment is missing.
+        """
+        config = _load_config_or_skip(self)
+        config["dry_run"] = False  # send_email refuses to send under dry_run
+        _require_send_prereqs(self, config)
+
+        account = config["account"]
+        sender = account["email"]
+        recipient = (os.environ.get(LIVE_RECIPIENT_ENV) or "").strip() or sender
+
+        company_name = "Testvirksomhed Live A/S"
+        row = {"name": company_name, "email": recipient}
+
+        message_id = send_email(config, row, config["email"]["attachment"])
+        self.assertIsNotNone(message_id)
+
+        imap_host = account.get("imap_host") or "imap.gmail.com"
+        imap = imaplib.IMAP4_SSL(imap_host, 993)
+        payload = None
+        try:
+            imap.login(sender, os.environ[PASSWORD_ENV])
+            folder = _discover_sent_folder(imap)
+            typ, _data = imap.select(folder)
+            if typ != "OK":
+                self.fail(f"IMAP SELECT {folder!r} returned {typ!r}")
+            payload = _poll_for_message_id(imap, message_id)
+        finally:
+            try:
+                imap.logout()
+            except Exception:  # noqa: BLE001 - best-effort teardown
+                pass
+
+        self.assertIsNotNone(
+            payload, f"sent message {message_id!r} not found in Sent Mail within 60s"
+        )
+        message = message_from_bytes(payload, policy=policy.default)
+
+        to_addrs = {addr.lower() for _, addr in getaddresses([message.get("To", "")])}
+        self.assertIn(recipient.lower(), to_addrs)
+        self.assertEqual(
+            message.get("Subject", ""),
+            SUBJECT_PATH.read_text(encoding="utf-8").strip(),
+        )
+
+        pdfs = [
+            p for p in message.iter_attachments()
+            if p.get_content_type() == "application/pdf"
+        ]
+        self.assertEqual(len(pdfs), 1, "expected exactly one application/pdf attachment")
+        self.assertEqual(pdfs[0].get_filename(), "cv.pdf")
+        self.assertEqual(
+            pdfs[0].get_payload(decode=True),
+            Path(config["email"]["attachment"]).read_bytes(),
+        )
+
+        body = message.get_body(preferencelist=("plain",)).get_content()
+        self.assertIn(company_name, body)
+        self.assertIn(config["email"]["signature_name"], body)
+        self.assertIn(config["email"]["signature_phone"], body)

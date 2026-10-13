@@ -72,8 +72,9 @@ k3s:
   `https://selskabsinfo.dk/virksomheder-i/aarhus`; if still no email, skip the
   company. No CVR/`cvrapi.dk` fallback.
 - **Send/monitor**: STARTTLS + Gmail App Password from
-  `RyanHarrisZubair@gmail.com`, CV attached; `imaplib` reply/bounce detection
-  (`In-Reply-To`/`References`); idempotent SQLite state so restarts never
+  `cvsenderworkonly@gmail.com`, CV attached; `imaplib` reply/bounce detection
+  (`In-Reply-To`/`References`); reply/bounce notifications go to
+  `RyanHarrisZubair@gmail.com`; idempotent SQLite state so restarts never
   double-send. 400/day cap; rollout dry-run → pilot of 3 → full.
 - **Sessions**: TARGIT session GUIDs are resolved by placeholder text at
   runtime and never hardcoded; reverse-engineering private JSON/JWT endpoints

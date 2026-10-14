@@ -5,7 +5,7 @@
 dry_run: true
 pilot_count: 3
 source:
-  url: "https://ledelsesinformation.aarhuskommune.dk/Embed#vfs://global/AARHUS-I-TAL/UDDANNELSE_I_TAL-Erhvervspraktik-Virksomhedsliste.xview"
+  url: "https://ledelsesinformation.aarhuskommune.dk/#vfs://global/AARHUS-I-TAL/UDDANNELSE_I_TAL-Erhvervspraktik-Virksomhedsliste.xview"
 account:
   email: "cvsenderworkonly@gmail.com"
   smtp_host: "smtp.gmail.com"
@@ -14,7 +14,6 @@ account:
   notify_email: "RyanHarrisZubair@gmail.com"
 filters:
   branche_query: "computer"
-  branche_select_all: true
   postdistrikter: ["Viby J", "Aarhus N", "Aarhus C", "Aarhus V"]
 enrichment:
   aarhus_url: "https://selskabsinfo.dk/virksomheder-i/aarhus"

@@ -11,7 +11,7 @@ replaces: ""
 replaced-by: ""
 history: "Supersedes the cv-mailer epic (#606); tracked by epic #611"
 sources:
-  - url: "https://ledelsesinformation.aarhuskommune.dk/Embed#vfs://global/AARHUS-I-TAL/UDDANNELSE_I_TAL-Erhvervspraktik-Virksomhedsliste.xview"
+  - url: "https://ledelsesinformation.aarhuskommune.dk/#vfs://global/AARHUS-I-TAL/UDDANNELSE_I_TAL-Erhvervspraktik-Virksomhedsliste.xview"
     title: "Aarhus Kommune — Erhvervspraktik virksomhedsliste (TARGIT Anywhere)"
   - url: "https://selskabsinfo.dk/"
     title: "selskabsinfo.dk — company enrichment"
@@ -45,7 +45,11 @@ Blazor WebAssembly view. The table is client-rendered and absent from the served
 HTML, so `requests` + BeautifulSoup returns an empty shell. The rendered DOM grid
 is row-capped (`div.lsCrosstab.hasRowLimit`, ~18 rows), so DOM scraping cannot
 extract the full set; the **Export to Excel** action
-(`.ActionButton[actionid="excel"]`) returns the full filtered set (~1,882 rows).
+(`.ActionButton[actionid="excel"]`) returns the full unfiltered list (~37,319
+rows), narrowed to the 1,881 computer-branch rows in Python. The toolbar holding
+the export button is `display: none`, so the scraper un-hides it, waits for
+the rendered header/row-total, then retries until non-empty: both URLs can
+0-byte before hydration and a slow hydration can exhaust the retry budget.
 `selskabsinfo.dk` sits behind a Vercel bot challenge (HTTP 429), so enrichment
 also needs a real browser. No login is required (`#lsLogin` is `display: none`),
 so an unauthenticated automated browser reaches both the view and its export.
@@ -64,10 +68,14 @@ k3s:
   BeautifulSoup for parsing, and the Python standard library
   (`email.message.EmailMessage`, `smtplib`, `imaplib`) for send and monitor.
 - **Extraction**: the Excel export, not DOM scraping — the grid is row-capped
-  and the export returns the full filtered set.
-- **Filtering**: type `computer` into `input[placeholder="Search Branche"]`
-  then click `.slicerSelectAll`; keep Postdistrikt ∈ {Viby J, Aarhus N,
-  Aarhus C, Aarhus V}.
+  and the export returns the full unfiltered list; the data lives on the `Tabel`
+  sheet and the workbook is re-packaged in memory (stripping the
+  `defaultColWidthPt` attribute openpyxl 3.1.5 cannot parse) before reading.
+- **Filtering**: the TARGIT slicer is not scriptable (`.slicerSelectAll` is
+  permanently `display: none`), so the export is unfiltered and Branche is
+  selected in Python via a case-insensitive substring match on
+  `filters.branche_query`; keep Postdistrikt ∈ {Viby J, Aarhus N, Aarhus C,
+  Aarhus V}.
 - **Enrichment**: `selskabsinfo.dk` →
   `https://selskabsinfo.dk/virksomheder-i/aarhus`; if still no email, skip the
   company. No CVR/`cvrapi.dk` fallback.
@@ -102,9 +110,9 @@ and scrape output only on the PVC.
 
 ```mermaid
 graph TD
-    TARGIT[TARGIT Anywhere view<br/>Blazor WASM] -->|Playwright<br/>headless Chromium| SCRAPE[Excel export<br/>.ActionButton excel]
-    SCRAPE --> NORM[BeautifulSoup<br/>normalize rows]
-    NORM --> FILTER[Filter: Branche=computer<br/>Postdistrikt Viby J / Aarhus N / C / V]
+    TARGIT[TARGIT Anywhere view<br/>Blazor WASM] -->|Playwright<br/>un-hide toolbar| SCRAPE[Excel export<br/>.ActionButton excel]
+    SCRAPE --> NORM[openpyxl<br/>read Tabel sheet<br/>strip defaultColWidthPt]
+    NORM --> FILTER[Python filter<br/>Branche=computer<br/>Postdistrikt Viby J / Aarhus N / C / V]
     FILTER --> VALIDATE[Validate MX<br/>dnspython]
     VALIDATE --> ENRICH[Enrich selskabsinfo.dk<br/>no email → skip]
     ENRICH --> STATE[(SQLite state<br/>state.db)]

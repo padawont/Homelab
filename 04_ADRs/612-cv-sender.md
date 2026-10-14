@@ -46,13 +46,13 @@ HTML, so `requests` + BeautifulSoup returns an empty shell. The rendered DOM gri
 is row-capped (`div.lsCrosstab.hasRowLimit`, ~18 rows), so DOM scraping cannot
 extract the full set; the **Export to Excel** action
 (`.ActionButton[actionid="excel"]`) returns the full unfiltered list (~37,319
-rows), narrowed to the ~1,882 computer-branch rows in Python. The `/Embed` URL
-variant renders the view but downloads a 0-byte export, and the toolbar holding
-the export button is `display: none`, so the scraper uses the non-Embed URL and
-un-hides the toolbar before clicking. `selskabsinfo.dk` sits behind a Vercel bot
-challenge (HTTP 429), so enrichment also needs a real browser. No login is
-required (`#lsLogin` is `display: none`), so an unauthenticated automated browser
-reaches both the view and its export.
+rows), narrowed to the 1,881 computer-branch rows in Python. The toolbar holding
+the export button is `display: none`, so the scraper un-hides it, waits for
+the rendered header/row-total, then retries until non-empty: both URLs can
+0-byte before hydration and a slow hydration can exhaust the retry budget.
+`selskabsinfo.dk` sits behind a Vercel bot challenge (HTTP 429), so enrichment
+also needs a real browser. No login is required (`#lsLogin` is `display: none`),
+so an unauthenticated automated browser reaches both the view and its export.
 
 The homelab needs a repeatable, low-ops worker that extracts, filters, enriches,
 and contacts companies without committing the CV, the Gmail App Password, or

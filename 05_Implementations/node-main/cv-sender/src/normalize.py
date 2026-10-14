@@ -71,6 +71,11 @@ def read_rows(xlsx_path: str) -> list[dict]:
     ------
     FileNotFoundError
         If ``xlsx_path`` does not point to an existing file.
+    ValueError
+        If no worksheet yields a recognisable company header (e.g. the export is
+        malformed, or the preferred ``Tabel`` sheet is absent and the fallback
+        landed on a summary sheet). A missing header is an error, never a silent
+        empty result.
     """
 
     path = Path(xlsx_path)
@@ -86,8 +91,11 @@ def read_rows(xlsx_path: str) -> list[dict]:
 
     header_index, columns = _locate_header(rows)
     if header_index is None:
-        logger.warning("No recognisable header row found in %s", xlsx_path)
-        return []
+        raise ValueError(
+            f"no recognisable company header on worksheet {worksheet.title!r} "
+            f"of {xlsx_path}; the export may be malformed or the "
+            f"{PREFERRED_SHEET!r} sheet is missing"
+        )
 
     records: list[dict] = []
     for raw in rows[header_index + 1:]:
@@ -104,13 +112,16 @@ def filter_rows(rows: list[dict], branche_query: str) -> list[dict]:
 
     Matching is case-insensitive and substring-based, so ``"computer"`` selects
     both ``Computerprogrammering`` and ``Computerkonsulentbistand ...``. An empty
-    ``branche_query`` returns ``rows`` unchanged (no filter applied).
+    ``branche_query`` returns ``rows`` unchanged (no filter applied). The query
+    is coerced with :func:`str` so a truthy non-string (an int, list, ...) can
+    never raise ``AttributeError``; it simply matches nothing, as any
+    non-matching query does. The input list is never mutated.
     """
 
-    query = (branche_query or "").strip().lower()
+    query = str(branche_query or "").strip().lower()
     if not query:
         return rows
-    return [row for row in rows if query in (row.get("branche") or "").lower()]
+    return [row for row in rows if query in str(row.get("branche") or "").lower()]
 
 
 def _load_workbook(path: Path):
@@ -143,7 +154,9 @@ def _select_sheet(workbook):
     (``Du kan også finde virksomhedern``, ``Udforsk``, ``Virksomhedsliste``) are
     empty or small summaries. ``Tabel`` wins when present; otherwise fall back to
     the sheet with the most used rows × columns so a changed export shape still
-    normalises something useful rather than silently reading an empty sheet.
+    normalises something useful. The caller re-verifies the chosen sheet against
+    the header heuristic, so a fallback that lands on a summary sheet fails
+    loudly rather than silently returning no rows.
     """
 
     if PREFERRED_SHEET in workbook.sheetnames:
@@ -157,9 +170,14 @@ def _select_sheet(workbook):
         score = sheet.max_row * sheet.max_column
         if score > best:
             chosen, best = sheet, score
+
+    if chosen is None:
+        raise ValueError(
+            f"export workbook has no worksheets; cannot read company data"
+        )
     logger.info(
         "Reading worksheet %r (largest sheet; %r absent)",
-        chosen.title if chosen is not None else None,
+        chosen.title,
         PREFERRED_SHEET,
     )
     return chosen

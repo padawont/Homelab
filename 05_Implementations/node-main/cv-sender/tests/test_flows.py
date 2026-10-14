@@ -36,6 +36,7 @@ except ImportError:
     _s = types.ModuleType("playwright.sync_api")
     _s.sync_playwright = None
     _s.Page = object
+    _s.TimeoutError = Exception  # scraper.py imports this; unused on the host
     _p = types.ModuleType("playwright")
     _p.sync_api = _s
     sys.modules.update(playwright=_p, **{"playwright.sync_api": _s})
@@ -59,6 +60,10 @@ try:
 except ImportError:  # pragma: no cover - host has no openpyxl
     normalize = None
     HAS_NORMALIZE = False
+
+# scraper imports playwright (stubbed above), so it is importable on the host;
+# only its pure helpers (e.g. ``_xlsx_filename``) are exercised offline.
+import scraper  # noqa: E402
 
 CONTAINER_CONFIG_PATH = Path("/app/config/config.yaml")
 HOST_CONFIG_PATH = Path(__file__).resolve().parents[1] / "configs" / "config.yaml"
@@ -624,3 +629,75 @@ class NormalizeTests(unittest.TestCase):
         self.assertEqual(len(normalize.filter_rows(rows, "COMPUTER")), 2)
         self.assertEqual(normalize.filter_rows(rows, ""), rows)  # no query -> unchanged
         self.assertEqual(normalize.filter_rows(rows, None), rows)
+
+    def test_read_rows_fallback_summary_sheet_raises(self):
+        """A large summary sheet with no ``Tabel`` must raise, not return [].
+
+        When ``Tabel`` is absent the fallback picks the sheet with the largest
+        ``max_row * max_column``; a summary sheet whose dimensions are inflated by
+        stray formatting wins and has no company header. ``read_rows`` must raise
+        a clear error instead of silently yielding an empty list.
+        """
+        import openpyxl
+
+        with tempfile.TemporaryDirectory() as tmp:
+            path = Path(tmp) / "no-tabel.xlsx"
+            wb = openpyxl.Workbook()
+            data = wb.active
+            data.title = "data"
+            data.append(_HEADER)
+            data.append(["IT", "Computerprogrammering", "Acme A/S", "Aarhus C",
+                         "Vej 1", "acme@example.com", "1", "10"])
+            summary = wb.create_sheet("Oversigt")
+            for i in range(100):
+                summary.cell(row=i + 1, column=1, value=f"samlet {i}")
+            summary.cell(row=500, column=40, value="")  # inflate dimensions
+            wb.save(path)
+            with self.assertRaises(ValueError) as ctx:
+                normalize.read_rows(str(path))
+        self.assertIn("header", str(ctx.exception).lower())
+
+    def test_filter_rows_non_string_query_does_not_crash(self):
+        """A truthy non-string query (int) is coerced, never raises AttributeError."""
+        rows = [{"branche": "Computerprogrammering", "name": "a"}]
+        result = normalize.filter_rows(rows, 604)
+        self.assertEqual(result, [])  # "604" matches no branche
+
+    def test_filter_rows_does_not_mutate_input(self):
+        """filter_rows returns a new list and leaves its input untouched."""
+        rows = [
+            {"branche": "Computerprogrammering", "name": "a"},
+            {"branche": "Byggeri", "name": "b"},
+        ]
+        snapshot = [dict(r) for r in rows]
+        filtered = normalize.filter_rows(rows, "computer")
+        self.assertEqual(len(filtered), 1)
+        self.assertEqual(rows, snapshot)
+
+    def test_filter_rows_whitespace_query_is_empty(self):
+        """A whitespace-only query behaves like an empty query (no filter)."""
+        rows = [{"branche": "Computerprogrammering", "name": "a"}]
+        self.assertEqual(normalize.filter_rows(rows, "   "), rows)
+        self.assertEqual(normalize.filter_rows(rows, "\t\n"), rows)
+
+
+class ScraperFilenameTests(unittest.TestCase):
+    """Offline regression for the download-filename sanitisation (FIX-4).
+
+    ``download.suggested_filename`` is server-controlled via ``Content-Disposition``,
+    so ``_xlsx_filename`` must strip directory components and enforce the ``.xlsx``
+    suffix, otherwise a hostile name could escape the configured data dir.
+    """
+
+    def test_xlsx_filename_strips_directory_components(self):
+        self.assertEqual(scraper._xlsx_filename("../../etc/passwd.xlsx"), "passwd.xlsx")
+        self.assertEqual(scraper._xlsx_filename("/tmp/evil.xlsx"), "evil.xlsx")
+        self.assertEqual(scraper._xlsx_filename("sub/../companies.xlsx"), "companies.xlsx")
+
+    def test_xlsx_filename_enforces_suffix(self):
+        self.assertEqual(scraper._xlsx_filename("report"), "report.xlsx")
+        self.assertEqual(scraper._xlsx_filename("report.xlsx"), "report.xlsx")
+
+    def test_xlsx_filename_empty_or_missing(self):
+        self.assertEqual(scraper._xlsx_filename(None), "erhvervspraktik.xlsx")
+        self.assertEqual(scraper._xlsx_filename(""), "erhvervspraktik.xlsx")

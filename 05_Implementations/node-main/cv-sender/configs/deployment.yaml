@@ -47,6 +47,16 @@ spec:
                 secretKeyRef:
                   name: cv-sender-secrets
                   key: GMAIL_APP_PASSWORD
+            - name: CV_SENDER_SIGNATURE_NAME
+              valueFrom:
+                secretKeyRef:
+                  name: cv-sender-secrets
+                  key: CV_SENDER_SIGNATURE_NAME
+            - name: CV_SENDER_SIGNATURE_PHONE
+              valueFrom:
+                secretKeyRef:
+                  name: cv-sender-secrets
+                  key: CV_SENDER_SIGNATURE_PHONE
           volumeMounts:
             # Application config (read-only, from the ConfigMap).
             - name: config

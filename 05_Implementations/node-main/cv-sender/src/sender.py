@@ -1,9 +1,10 @@
 """Outbound email for the cv sender worker.
 
 Builds a personalised erhvervspraktik enquiry with the CV attached and delivers
-it over SMTP (STARTTLS). The Gmail App Password is read from the
-``GMAIL_APP_PASSWORD`` environment variable only — it is never taken from the
-config dict and never logged.
+it over SMTP (STARTTLS). The Gmail App Password (``GMAIL_APP_PASSWORD``) and the
+signature name/phone (``CV_SENDER_SIGNATURE_NAME`` / ``CV_SENDER_SIGNATURE_PHONE``)
+are read from environment variables only — they are never taken from the config
+dict and the password is never logged.
 
 Importing this module performs no I/O; the templates are read when a message is
 actually built.
@@ -26,20 +27,28 @@ SUBJECT_PATH = TEMPLATE_DIR / "subject.txt"
 BODY_PATH = TEMPLATE_DIR / "body.txt"
 
 PASSWORD_ENV = "GMAIL_APP_PASSWORD"
+SIGNATURE_NAME_ENV = "CV_SENDER_SIGNATURE_NAME"
+SIGNATURE_PHONE_ENV = "CV_SENDER_SIGNATURE_PHONE"
 
 
 def _subject() -> str:
     return SUBJECT_PATH.read_text(encoding="utf-8").strip()
 
 
-def _body(config: dict, company: str) -> str:
-    email_cfg = config.get("email", {})
+def _signature() -> tuple[str, str]:
+    name = (os.environ.get(SIGNATURE_NAME_ENV) or "").strip()
+    phone = (os.environ.get(SIGNATURE_PHONE_ENV) or "").strip()
+    if not name or not phone:
+        raise RuntimeError(
+            f"refusing to send: {SIGNATURE_NAME_ENV} and {SIGNATURE_PHONE_ENV} must both be set"
+        )
+    return name, phone
+
+
+def _body(company: str) -> str:
+    name, phone = _signature()
     template = BODY_PATH.read_text(encoding="utf-8")
-    return template.format(
-        company=company,
-        signature_name=email_cfg.get("signature_name", ""),
-        signature_phone=email_cfg.get("signature_phone", ""),
-    )
+    return template.format(company=company, signature_name=name, signature_phone=phone)
 
 
 def send_email(config: dict, row: dict, cv_path: str) -> str | None:
@@ -52,15 +61,6 @@ def send_email(config: dict, row: dict, cv_path: str) -> str | None:
     if bool(config.get("dry_run", True)):
         logger.info("dry_run is true; refusing to send to %s", row.get("name"))
         return None
-
-    email_cfg = config.get("email", {})
-    signature_name = str(email_cfg.get("signature_name") or "").strip()
-    signature_phone = str(email_cfg.get("signature_phone") or "").strip()
-    if not signature_name or not signature_phone:
-        raise ValueError(
-            "refusing to send: config.email.signature_name and "
-            "config.email.signature_phone must both be set"
-        )
 
     recipient = str(row.get("email") or "").strip()
     if not recipient:
@@ -83,7 +83,7 @@ def send_email(config: dict, row: dict, cv_path: str) -> str | None:
     message["Date"] = formatdate(localtime=True)
     message_id = make_msgid(domain=sender.rpartition("@")[2] or None)
     message["Message-ID"] = message_id
-    message.set_content(_body(config, str(row.get("name", ""))))
+    message.set_content(_body(str(row.get("name", ""))))
 
     cv = Path(cv_path)
     content_type, _encoding = mimetypes.guess_type(cv.name)

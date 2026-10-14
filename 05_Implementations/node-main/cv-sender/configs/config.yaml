@@ -11,6 +11,8 @@ account:
   smtp_host: "smtp.gmail.com"
   smtp_port: 587
   imap_host: "imap.gmail.com"
+  # Deliberately tracked (not in the Secret): the routing target for
+  # replies, bounces and digests; carries no credential.
   notify_email: "RyanHarrisZubair@gmail.com"
 filters:
   branche_query: "computer"
@@ -23,8 +25,6 @@ rate:
   delay_seconds: 20
   poll_seconds: 300
 email:
-  signature_name: "Ryan Harris"
-  signature_phone: "+45 42 32 12 35"
   attachment: "/app/config/cv/cv.pdf"
 state:
   db_path: "/app/data/state.db"

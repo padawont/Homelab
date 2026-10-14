@@ -1,6 +1,6 @@
 # syntax=docker/dockerfile:1
 
-# cv sender worker — Playwright-driven erhvervspraktik outreach (ADR-612, issue #614).
+# cv sender worker — Playwright-driven erhvervspraktik outreach (ADR-612, epic #611).
 # The Playwright Python image ships headless Chromium plus its system dependencies,
 # so no `playwright install` step is needed.
 FROM mcr.microsoft.com/playwright/python:v1.49.0-jammy

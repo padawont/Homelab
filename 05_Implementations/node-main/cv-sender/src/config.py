@@ -1,15 +1,16 @@
 """Configuration loading and validation for the cv sender worker.
 
 The worker reads a single YAML document describing the account, the source view,
-the row filters, the outgoing email signature, the daily rate limit, the
-enrichment endpoints and the on-disk paths. Secrets are deliberately *not* part
-of this document: the Gmail app password is read from the environment by
-``sender.py`` only.
+the row filters, the daily rate limit, the enrichment endpoints and the on-disk
+paths. Secrets and personal details are deliberately *not* part of this
+document: the Gmail app password and the signature name/phone are read from the
+environment by ``sender.py`` only.
 """
 
 from __future__ import annotations
 
 import logging
+import math
 import os
 from pathlib import Path
 from typing import Any
@@ -28,8 +29,6 @@ DEFAULT_CONFIG_PATH = "/app/config/config.yaml"
 _REQUIRED_FIELDS: tuple[tuple[tuple[str, ...], str], ...] = (
     (("account", "email"), "account.email"),
     (("filters", "postdistrikter"), "filters.postdistrikter"),
-    (("email", "signature_name"), "email.signature_name"),
-    (("email", "signature_phone"), "email.signature_phone"),
     (("rate", "daily_cap"), "rate.daily_cap"),
 )
 
@@ -78,6 +77,18 @@ def load_config(path: str | None = None) -> dict:
         raise ValueError(
             "cv sender config has invalid dry_run: expected a bool, got "
             f"{type(dry_run).__name__} ({dry_run!r})"
+        )
+
+    poll = _dig(config, ("rate", "poll_seconds"))
+    if poll is not None and (
+        isinstance(poll, bool)
+        or not isinstance(poll, (int, float))
+        or not math.isfinite(poll)
+        or poll <= 0
+    ):
+        raise ValueError(
+            "cv sender config has invalid rate.poll_seconds: expected a finite positive "
+            f"number, got {type(poll).__name__} ({poll!r})"
         )
 
     logger.debug("Loaded cv sender config from %s", resolved)

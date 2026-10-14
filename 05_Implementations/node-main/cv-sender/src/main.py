@@ -303,11 +303,11 @@ def _run_worker(config: dict) -> int:
                         state.init()
                         try:
                             send_digest(config, state)
+                            last_digest_day = today
                         except Exception:  # noqa: BLE001
                             logger.exception("digest failed")
                         finally:
                             state.close()
-                        last_digest_day = today
             except Exception:  # noqa: BLE001 - a poll failure must not kill the loop
                 logger.exception("poll failed")
 

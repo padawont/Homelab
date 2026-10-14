@@ -37,8 +37,10 @@ attached, and monitors replies. Governed by ADR-612 (`./04_ADRs/612-cv-sender.md
   `./05_Implementations/node-main/k3s/overview.md`.
 - Docker on the build host to produce the `cv-sender:0.1` image.
 - Secret `cv-sender-secrets`, populated from an untracked `secret.yaml`
-  (never committed to git), holding `GMAIL_APP_PASSWORD`; ConfigMap
-  `cv-sender-config` from the tracked `configs/config.yaml`.
+  (never committed to git), holding `GMAIL_APP_PASSWORD` and the signature keys
+  `CV_SENDER_SIGNATURE_NAME`/`CV_SENDER_SIGNATURE_PHONE` (the applicant's name
+  and phone, kept out of tracked config); ConfigMap `cv-sender-config` from the
+  tracked `configs/config.yaml`.
 - The CV copied onto the PVC at `cv/cv.pdf`; the `subPath` mount exposes it in
   the pod at `/app/config/cv/cv.pdf`.
 - Outbound HTTPS to the TARGIT view and `selskabsinfo.dk`, plus SMTP/IMAP access
@@ -97,7 +99,7 @@ every poll.
 | Resource | Name | Notes |
 |---|---|---|
 | Namespace | `cv-sender` | |
-| Secret | `cv-sender-secrets` | holds `GMAIL_APP_PASSWORD` |
+| Secret | `cv-sender-secrets` | holds `GMAIL_APP_PASSWORD` and the signature keys `CV_SENDER_SIGNATURE_NAME`/`CV_SENDER_SIGNATURE_PHONE` |
 | ConfigMap | `cv-sender-config` | from `configs/config.yaml` |
 | PVC | `cv-sender-data` | 1Gi — `state.db`, caches, `cv/cv.pdf` |
 | Deployment | `cv-sender` | 1 replica, always-on, image `cv-sender:0.1` |

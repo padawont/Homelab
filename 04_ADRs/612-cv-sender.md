@@ -17,8 +17,6 @@ sources:
     title: "selskabsinfo.dk — company enrichment"
   - url: "https://playwright.dev/python/docs/intro"
     title: "Playwright for Python"
-  - url: "https://www.crummy.com/software/BeautifulSoup/bs4/doc/"
-    title: "BeautifulSoup documentation"
   - url: "https://docs.python.org/3/library/email.examples.html"
     title: "Python email examples"
 references:
@@ -63,9 +61,9 @@ data to git. This epic has no Research stage; the problem is recorded here.
 Build **cv sender** as a containerised, long-running Python worker on node-main
 k3s:
 
-- **Runtime**: Playwright (headless Chromium) for rendering and interaction,
-  BeautifulSoup for parsing, and the Python standard library
-  (`email.message.EmailMessage`, `smtplib`, `imaplib`) for send and monitor.
+- **Runtime**: Playwright (headless Chromium) for rendering, interaction and
+  parsing, and the Python standard library (`email.message.EmailMessage`,
+  `smtplib`, `imaplib`) for send and monitor.
 - **Extraction**: the Excel export, not DOM scraping — the grid is row-capped
   and the export returns the full unfiltered list; the data lives on the `Tabel`
   sheet and the workbook is re-packaged in memory (stripping the
@@ -80,9 +78,10 @@ k3s:
   company. No CVR/`cvrapi.dk` fallback.
 - **Send/monitor**: STARTTLS + Gmail App Password from
   `cvsenderworkonly@gmail.com`, CV attached; `imaplib` reply/bounce detection
-  (`In-Reply-To`/`References`); reply/bounce notifications go to
-  `RyanHarrisZubair@gmail.com`; idempotent SQLite state so restarts never
-  double-send. 400/day cap; rollout dry-run → pilot of 3 → full.
+  (`In-Reply-To`/`References`); reply notifications go to
+  `RyanHarrisZubair@gmail.com` while bounces are flagged and counted in the
+  daily digest; idempotent SQLite state so restarts never double-send. 400/day
+  cap; rollout dry-run → pilot of 3 → full.
 - **Sessions**: TARGIT session GUIDs are resolved by placeholder text at
   runtime and never hardcoded; reverse-engineering private JSON/JWT endpoints
   is rejected.

@@ -2,14 +2,14 @@
 adr: 612
 title: "Adopt cv sender for browser-automated erhvervspraktik outreach"
 author: "padawont"
-status: draft
+status: accepted
 topic: "email-outreach"
 technology: "playwright, python, kubernetes, targit-anywhere"
 date: 2026-10-13
 date-proposed: 2026-10-13
 replaces: ""
 replaced-by: ""
-history: "Supersedes the cv-mailer epic (#606); tracked by epic #611"
+history: "Supersedes the cv-mailer epic (#606); tracked by epic #611; accepted 2026-10-14 with the #632/#637 hardening PR"
 sources:
   - url: "https://ledelsesinformation.aarhuskommune.dk/#vfs://global/AARHUS-I-TAL/UDDANNELSE_I_TAL-Erhvervspraktik-Virksomhedsliste.xview"
     title: "Aarhus Kommune — Erhvervspraktik virksomhedsliste (TARGIT Anywhere)"
@@ -17,8 +17,6 @@ sources:
     title: "selskabsinfo.dk — company enrichment"
   - url: "https://playwright.dev/python/docs/intro"
     title: "Playwright for Python"
-  - url: "https://www.crummy.com/software/BeautifulSoup/bs4/doc/"
-    title: "BeautifulSoup documentation"
   - url: "https://docs.python.org/3/library/email.examples.html"
     title: "Python email examples"
 references:
@@ -54,19 +52,18 @@ the rendered header/row-total, then retries until non-empty: both URLs can
 also needs a real browser. No login is required (`#lsLogin` is `display: none`),
 so an unauthenticated automated browser reaches both the view and its export.
 
-The homelab needs a repeatable, low-ops worker that extracts, filters, enriches,
-and contacts companies without committing the CV, the Gmail App Password, or
-scraped company data to git. This epic has no Research stage; the problem and
-constraints are recorded here.
+The homelab needs a repeatable, low-ops worker that extracts, filters, enriches
+and contacts companies without committing the CV, the App Password or scraped
+data to git. This epic has no Research stage; the problem is recorded here.
 
 ## Decision
 
 Build **cv sender** as a containerised, long-running Python worker on node-main
 k3s:
 
-- **Runtime**: Playwright (headless Chromium) for rendering and interaction,
-  BeautifulSoup for parsing, and the Python standard library
-  (`email.message.EmailMessage`, `smtplib`, `imaplib`) for send and monitor.
+- **Runtime**: Playwright (headless Chromium) for rendering, interaction and
+  parsing, and the Python standard library (`email.message.EmailMessage`,
+  `smtplib`, `imaplib`) for send and monitor.
 - **Extraction**: the Excel export, not DOM scraping — the grid is row-capped
   and the export returns the full unfiltered list; the data lives on the `Tabel`
   sheet and the workbook is re-packaged in memory (stripping the
@@ -81,16 +78,16 @@ k3s:
   company. No CVR/`cvrapi.dk` fallback.
 - **Send/monitor**: STARTTLS + Gmail App Password from
   `cvsenderworkonly@gmail.com`, CV attached; `imaplib` reply/bounce detection
-  (`In-Reply-To`/`References`); reply/bounce notifications go to
-  `RyanHarrisZubair@gmail.com`; idempotent SQLite state so restarts never
-  double-send. 400/day cap; rollout dry-run → pilot of 3 → full.
+  (`In-Reply-To`/`References`); reply notifications go to
+  `RyanHarrisZubair@gmail.com` while bounces are flagged and counted in the
+  daily digest; idempotent SQLite state so restarts never double-send. 400/day
+  cap; rollout dry-run → pilot of 3 → full.
 - **Sessions**: TARGIT session GUIDs are resolved by placeholder text at
   runtime and never hardcoded; reverse-engineering private JSON/JWT endpoints
   is rejected.
-- **Hardening** — the container runs with a `RuntimeDefault` seccomp profile,
-  all capabilities dropped and privilege escalation disabled, per the Playwright
-  Docker guidance for scraping untrusted sites; running as a dedicated non-root
-  user is a deployment follow-up.
+- **Hardening** — `RuntimeDefault` seccomp, all capabilities dropped, privilege
+  escalation disabled, per the Playwright Docker guidance for scraping untrusted
+  sites; a dedicated non-root user is a deployment follow-up.
 
 **Gmail limits.** The mailbox is a free `@gmail.com` account, capped at
 **500 recipients/day**, so the 400/day cap sits close to that ceiling; the
@@ -104,9 +101,10 @@ on request — removal is handled manually from replies in the sending mailbox,
 not by automation. Volume stays low, so it is not a spam tool; compliance with
 GDPR and marketing rules remains the owner's responsibility.
 
-**Never committed.** The CV, the Gmail App Password, and all scraped company
-data are never committed — the App Password lives only in a k8s Secret, the CV
-and scrape output only on the PVC.
+**Never committed.** The CV, the App Password and scraped data never go to git;
+the applicant's signature name/phone moved to the k8s Secret, keeping tracked
+config PII-free apart from the deliberately tracked `account.notify_email`
+(notification routing, not a credential).
 
 ```mermaid
 graph TD
@@ -130,7 +128,7 @@ The worker runs inside the existing single-node k3s cluster:
   ships on the PVC, never in the image.
 - **State**: a PVC holds `state.db` (SQLite) and the CV attachment.
 - **Config/secret**: a ConfigMap holds filters, cadence, and the 400/day cap; a
-  Secret holds the Gmail App Password.
+  Secret holds the App Password and the applicant's signature name/phone.
 - **Egress**: outbound HTTPS to the TARGIT view and `selskabsinfo.dk`, and
   SMTP/IMAP to the sending mailbox (`cvsenderworkonly@gmail.com`).
 
@@ -139,7 +137,7 @@ graph TD
     K3S[k3s node-main 192.168.111.7] --> NS[cv-sender namespace]
     NS --> DEP[cv-sender Deployment<br/>Playwright worker]
     DEP --> CM[cv-sender ConfigMap<br/>filters, cadence, cap 400/day]
-    DEP --> SEC[cv-sender Secret<br/>Gmail App Password]
+    DEP --> SEC[cv-sender Secret<br/>Gmail App Password<br/>+ applicant signature name/phone]
     DEP --> PVC[(cv-sender PVC<br/>state.db + CV.pdf)]
     DEP -->|HTTPS out| TARGIT[TARGIT Anywhere view]
     DEP -->|HTTPS out| SELSKAB[selskabsinfo.dk]

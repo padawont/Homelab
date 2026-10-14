@@ -37,8 +37,10 @@ attached, and monitors replies. Governed by ADR-612 (`./04_ADRs/612-cv-sender.md
   `./05_Implementations/node-main/k3s/overview.md`.
 - Docker on the build host to produce the `cv-sender:0.1` image.
 - Secret `cv-sender-secrets`, populated from an untracked `secret.yaml`
-  (never committed to git), holding `GMAIL_APP_PASSWORD`; ConfigMap
-  `cv-sender-config` from the tracked `configs/config.yaml`.
+  (never committed to git), holding `GMAIL_APP_PASSWORD` and the signature keys
+  `CV_SENDER_SIGNATURE_NAME`/`CV_SENDER_SIGNATURE_PHONE` (the applicant's name
+  and phone, kept out of tracked config); ConfigMap `cv-sender-config` from the
+  tracked `configs/config.yaml`.
 - The CV copied onto the PVC at `cv/cv.pdf`; the `subPath` mount exposes it in
   the pod at `/app/config/cv/cv.pdf`.
 - Outbound HTTPS to the TARGIT view and `selskabsinfo.dk`, plus SMTP/IMAP access
@@ -72,7 +74,8 @@ docker save cv-sender:0.1 | sudo k3s ctr images import -
 # and lexical order (configmap → deployment → namespace → pvc) does not
 # respect the namespace → Secret → ConfigMap → PVC → Deployment order.
 kubectl apply -f configs/namespace.yaml
-kubectl apply -f configs/secret.yaml    # untracked, from secret.yaml.example
+cp configs/secret.yaml.example configs/secret.yaml   # untracked; edit in the real values
+kubectl apply -f configs/secret.yaml    # untracked, created above from secret.yaml.example
 kubectl apply -f configs/configmap.yaml
 kubectl apply -f configs/pvc.yaml
 kubectl apply -f configs/deployment.yaml
@@ -87,17 +90,17 @@ kubectl -n cv-sender logs deploy/cv-sender -f
 
 Expect the `cv-sender` pod `Running`/`Ready`. With `dry_run: true` the worker
 performs a single validation pass at startup — scraping the TARGIT view,
-classifying each candidate and writing `data/preview.csv` with per-status
-counts — then idles. No mail (including the daily digest and reply
-notifications) leaves the container, and the live view is not re-scraped on
-every poll.
+classifying each candidate and writing `data/preview.csv` — one row per
+candidate with its `status` and `reason`, the per-status totals only logged
+— then idles. No mail (including the daily digest and reply notifications)
+leaves the container, and the live view is not re-scraped on every poll.
 
 ## Configuration
 
 | Resource | Name | Notes |
 |---|---|---|
 | Namespace | `cv-sender` | |
-| Secret | `cv-sender-secrets` | holds `GMAIL_APP_PASSWORD` |
+| Secret | `cv-sender-secrets` | holds `GMAIL_APP_PASSWORD` and the signature keys `CV_SENDER_SIGNATURE_NAME`/`CV_SENDER_SIGNATURE_PHONE` |
 | ConfigMap | `cv-sender-config` | from `configs/config.yaml` |
 | PVC | `cv-sender-data` | 1Gi — `state.db`, caches, `cv/cv.pdf` |
 | Deployment | `cv-sender` | 1 replica, always-on, image `cv-sender:0.1` |
@@ -105,8 +108,8 @@ every poll.
 - **Source view**: `https://ledelsesinformation.aarhuskommune.dk/#vfs://global/AARHUS-I-TAL/UDDANNELSE_I_TAL-Erhvervspraktik-Virksomhedsliste.xview`
   — a Blazor WebAssembly view, client-rendered and anonymous. The grid is
   row-capped, so the worker uses **Export to Excel** rather than DOM scraping.
-  The toolbar's export button is `display: none`, so the scraper un-hides it
-  before clicking. The full list (~37,319 rows) is exported unfiltered; Branche
+  The toolbar holding the export button is `display: none`, so the scraper
+  un-hides it before clicking. The full list (~37,319 rows) is exported unfiltered; Branche
   filtering happens in Python, not the browser.
 - **Export readiness**: the view hydrates its data model after the grid first
   renders, so a click too early downloads a 0-byte workbook (the `/Embed` URL

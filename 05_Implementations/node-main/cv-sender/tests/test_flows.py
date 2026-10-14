@@ -9,10 +9,7 @@ and skips in the container, where ``configmap.yaml`` is not mounted."""
 import imaplib
 import os
 import re
-import sys
 import tempfile
-import time
-import types
 import unittest
 from datetime import datetime, timezone
 from email import message_from_bytes, policy
@@ -20,31 +17,33 @@ from email.utils import getaddresses
 from pathlib import Path
 from unittest import mock
 
-SRC_DIR = Path(__file__).resolve().parents[1] / "src"
-sys.path.insert(0, str(SRC_DIR))
-
-PASSWORD_ENV = "GMAIL_APP_PASSWORD"
-TEST_RECIPIENT_ENV = "CV_SENDER_TEST_RECIPIENT"
-LIVE_SEND_ENV = "CV_SENDER_LIVE_SEND"
-LIVE_RECIPIENT_ENV = "CV_SENDER_LIVE_RECIPIENT"
-
-# Host has no Playwright; stub it so enrich.py imports (its `_lookup` wraps
-# everything in try/except, so `sync_playwright=None` degrades to a None result).
-try:
-    import playwright.sync_api  # noqa: F401
-except ImportError:
-    _s = types.ModuleType("playwright.sync_api")
-    _s.sync_playwright = None
-    _s.Page = object
-    _s.TimeoutError = Exception  # scraper.py imports this; unused on the host
-    _p = types.ModuleType("playwright")
-    _p.sync_api = _s
-    sys.modules.update(playwright=_p, **{"playwright.sync_api": _s})
+# _helpers installs the host shims (src on sys.path, Playwright stub); it must be
+# imported before any cv-sender module below.
+from _helpers import (  # noqa: F401
+    CONTAINER_CONFIG_PATH,
+    HOST_CONFIG_PATH,
+    HOST_CONFIGMAP_PATH,
+    LIVE_RECIPIENT_ENV,
+    LIVE_SEND_ENV,
+    PASSWORD_ENV,
+    SRC_DIR,
+    SUBJECT_PATH,
+    TEST_RECIPIENT_ENV,
+    _dict_diff,
+    _discover_sent_folder,
+    _fake_smtp,
+    _load_config_or_skip,
+    _poll_for_message_id,
+    _quote_mailbox,
+    _require_send_prereqs,
+    _resolve_config_path,
+    _test_recipient,
+)
 
 import yaml
 
 import main
-from config import load_config
+from config import load_config  # noqa: F401
 import enrich
 from monitor import send_digest
 from sender import send_email, _body
@@ -61,157 +60,16 @@ except ImportError:  # pragma: no cover - host has no openpyxl
     normalize = None
     HAS_NORMALIZE = False
 
-# scraper imports playwright (stubbed above), so it is importable on the host;
+# scraper imports playwright (stubbed by _helpers), so it is importable on the host;
 # only its pure helpers (e.g. ``_xlsx_filename``) are exercised offline.
 import scraper  # noqa: E402
 
-CONTAINER_CONFIG_PATH = Path("/app/config/config.yaml")
-HOST_CONFIG_PATH = Path(__file__).resolve().parents[1] / "configs" / "config.yaml"
-HOST_CONFIGMAP_PATH = Path(__file__).resolve().parents[1] / "configs" / "configmap.yaml"
-SUBJECT_PATH = SRC_DIR / "templates" / "subject.txt"
-
-
-def _resolve_config_path():
-    """Return the first config path that exists across both run environments."""
-    env = os.environ.get("CV_SENDER_CONFIG")
-    if env and Path(env).is_file():
-        return env
-    if CONTAINER_CONFIG_PATH.is_file():
-        return str(CONTAINER_CONFIG_PATH)
-    if HOST_CONFIG_PATH.is_file():
-        return str(HOST_CONFIG_PATH)
-    return None
-
-
-def _load_config_or_skip(testcase):
-    """Load the cv-sender config, skipping cleanly when none can be located."""
-    path = _resolve_config_path()
-    if not path:
-        testcase.skipTest(
-            "no cv-sender config found (set CV_SENDER_CONFIG, mount "
-            "/app/config/config.yaml, or keep configs/config.yaml)"
-        )
-    return load_config(path)
-
-
-def _fake_smtp():
-    sent = []
-    cls = mock.MagicMock()
-    cls.return_value.__enter__.return_value = cls.return_value
-    cls.return_value.__exit__.return_value = False
-    cls.return_value.send_message.side_effect = sent.append
-    return cls, sent
-
-
-def _require_send_prereqs(testcase, config):
-    if not os.environ.get(PASSWORD_ENV):
-        testcase.skipTest(f"{PASSWORD_ENV} is not set; cannot build a real message")
-    cv = config.get("email", {}).get("attachment")
-    if not cv or not Path(cv).is_file():
-        testcase.skipTest(f"CV attachment not found: {cv!r}")
-
-
-def _test_recipient(config):
-    """Resolve the mocked-send recipient: explicit override, else the sender.
-
-    T1/T2 redirect SMTP traffic to the sending account itself so no test can
-    ever reach an applicant's real mailbox. ``CV_SENDER_TEST_RECIPIENT``
-    overrides that default when an operator wants a specific test mailbox.
-    """
-    override = (os.environ.get(TEST_RECIPIENT_ENV) or "").strip()
-    if override:
-        return override
-    return config.get("account", {}).get("email", "")
-
-
-def _quote_mailbox(name):
-    """Wrap a mailbox name in double quotes for ``imap.select``, idempotently.
-
-    ``imaplib`` only auto-quotes mailbox names on newer Pythons; on 3.10 the raw
-    bytes are sent as-is, so a name containing spaces or brackets (e.g.
-    ``[Gmail]/Sent Mail``) is rejected with ``BAD Could not parse command``.
-    Always quote explicitly, but never double-quote a name that is already
-    quoted.
-    """
-    if not name:
-        return name
-    if name.startswith(b'"') and name.endswith(b'"'):
-        return name
-    return b'"' + name + b'"'
-
-
-def _discover_sent_folder(imap):
-    """Return the Gmail ``Sent Mail`` folder name from the IMAP LIST response.
-
-    Gmail advertises the RFC 6154 ``\\Sent`` special-use flag on its Sent folder,
-    so the name is discovered rather than hardcoded (it may be ``[Gmail]/Sent
-    Mail``, ``[Google Mail]/Sent Mail``, or a modified-UTF-7 localised name).
-    The returned name is already double-quoted for use with ``imap.select`` so a
-    caller cannot forget: explicit quoting works on both Python 3.10 and 3.14,
-    whereas relying on imaplib's auto-quoting fails on 3.10 for names with spaces
-    or brackets.
-    """
-    typ, data = imap.list()
-    if typ != "OK":
-        raise RuntimeError(f"IMAP LIST failed: {typ!r}")
-    entries = [e for e in (data or []) if isinstance(e, (bytes, bytearray))]
-    for entry in entries:
-        if b"\\Sent" in entry:
-            match = re.search(rb'"([^"]*)"\s*$', entry)
-            if match:
-                return _quote_mailbox(match.group(1))
-    # Fallback for servers that omit the special-use flag: any folder named
-    # "sent..." (English Gmail always advertises \Sent, so this is belt/braces).
-    for entry in entries:
-        if b"sent" in entry.lower():
-            match = re.search(rb'"([^"]*)"\s*$', entry)
-            if match:
-                return _quote_mailbox(match.group(1))
-    raise RuntimeError("no Sent folder found in IMAP LIST response")
-
-
-def _poll_for_message_id(imap, message_id, timeout=60.0, interval=5.0):
-    """Poll the selected folder for ``message_id``; return the RFC822 payload."""
-    search_key = message_id.strip("<>")
-    deadline = time.monotonic() + timeout
-    while True:
-        typ, data = imap.search(None, "HEADER", "Message-ID", search_key)
-        if typ == "OK" and data and data[0]:
-            nums = data[0].split()
-            if nums:
-                typ2, payload = imap.fetch(nums[-1], "(RFC822)")
-                if typ2 == "OK" and payload and isinstance(payload[0], tuple):
-                    return payload[0][1]
-        if time.monotonic() >= deadline:
-            return None
-        time.sleep(interval)
-
-
-def _dict_diff(file_cfg, cm_cfg):
-    """Return human-readable lines describing how two config mappings differ.
-
-    Walks the two mappings recursively so a drift report names the exact dotted
-    key path and both values, instead of dumping two whole (deeply nested)
-    dicts that a bare ``assertEqual`` would render impenetrably.
-    """
-    diffs = []
-
-    def walk(prefix, left, right):
-        for key in sorted(set(left) | set(right), key=str):
-            path = f"{prefix}.{key}" if prefix else str(key)
-            if key not in left:
-                diffs.append(f"  + {path}: {right[key]!r} (only in configmap.yaml)")
-            elif key not in right:
-                diffs.append(f"  - {path}: {left[key]!r} (only in config.yaml)")
-            else:
-                lv, rv = left[key], right[key]
-                if isinstance(lv, dict) and isinstance(rv, dict):
-                    walk(path, lv, rv)
-                elif lv != rv:
-                    diffs.append(f"  ~ {path}: config.yaml={lv!r} vs configmap.yaml={rv!r}")
-
-    walk("", file_cfg, cm_cfg)
-    return diffs
+# Applicant identity now comes from the environment (not config.yaml); tests that
+# reach a live ``send_email`` patch these in so the message can be built.
+SIGNATURE_ENV = {
+    "CV_SENDER_SIGNATURE_NAME": "Test User",
+    "CV_SENDER_SIGNATURE_PHONE": "+45 12 34 56 78",
+}
 
 
 class CvSenderFlowTests(unittest.TestCase):
@@ -226,8 +84,10 @@ class CvSenderFlowTests(unittest.TestCase):
         send_row = dict(row)
         send_row["email"] = recipient  # redirect: never mail the real address
         smtp_cls, sent = _fake_smtp()
-        with mock.patch("smtplib.SMTP", smtp_cls):
+        with mock.patch.dict(os.environ, SIGNATURE_ENV), \
+                mock.patch("smtplib.SMTP", smtp_cls):
             message_id = send_email(config, send_row, cv_path)
+            expected_body = _body(row["name"]).rstrip("\n")
         self.assertIsNotNone(message_id)
         message = sent[0]
         self.assertEqual(message["To"], recipient)
@@ -235,7 +95,7 @@ class CvSenderFlowTests(unittest.TestCase):
         self.assertEqual(message["Subject"], SUBJECT_PATH.read_text(encoding="utf-8").strip())
         self.assertEqual(
             message.get_body().get_content().rstrip("\n"),
-            _body(config, row["name"]).rstrip("\n"),
+            expected_body,
         )
         [part] = list(message.iter_attachments())
         self.assertEqual(part.get_content_type(), "application/pdf")
@@ -259,7 +119,8 @@ class CvSenderFlowTests(unittest.TestCase):
         send_row = dict(row)
         send_row["email"] = recipient  # enriched address asserted, never mailed
         smtp_cls, sent = _fake_smtp()
-        with mock.patch("smtplib.SMTP", smtp_cls):
+        with mock.patch.dict(os.environ, SIGNATURE_ENV), \
+                mock.patch("smtplib.SMTP", smtp_cls):
             message_id = send_email(config, send_row, config["email"]["attachment"])
         self.assertIsNotNone(message_id)
         self.assertEqual(sent[0]["To"], recipient)
@@ -339,11 +200,7 @@ class CvSenderFlowTests(unittest.TestCase):
 
         config = {
             "dry_run": True,
-            "email": {
-                "attachment": cv_path,
-                "signature_name": "Test User",
-                "signature_phone": "+45 12 34 56 78",
-            },
+            "email": {"attachment": cv_path},
             "account": {
                 "email": "sender@example.com",
                 "smtp_host": "smtp.example.com",
@@ -429,7 +286,8 @@ class CvSenderFlowTests(unittest.TestCase):
         company_name = "Testvirksomhed Live A/S"
         row = {"name": company_name, "email": recipient}
 
-        message_id = send_email(config, row, config["email"]["attachment"])
+        with mock.patch.dict(os.environ, SIGNATURE_ENV):
+            message_id = send_email(config, row, config["email"]["attachment"])
         self.assertIsNotNone(message_id)
 
         imap_host = account.get("imap_host") or "imap.gmail.com"
@@ -473,8 +331,8 @@ class CvSenderFlowTests(unittest.TestCase):
 
         body = message.get_body(preferencelist=("plain",)).get_content()
         self.assertIn(company_name, body)
-        self.assertIn(config["email"]["signature_name"], body)
-        self.assertIn(config["email"]["signature_phone"], body)
+        self.assertIn(SIGNATURE_ENV["CV_SENDER_SIGNATURE_NAME"], body)
+        self.assertIn(SIGNATURE_ENV["CV_SENDER_SIGNATURE_PHONE"], body)
 
     def test_config_and_configmap_stay_in_sync(self):
         """T8: configs/config.yaml and configs/configmap.yaml must not drift.

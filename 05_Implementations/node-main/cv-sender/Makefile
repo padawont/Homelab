@@ -1,9 +1,11 @@
-# cv sender worker — build, import, and deploy helpers (ADR-612, issue #614).
+# cv sender worker — build, import, and deploy helpers (ADR-612, epic #611).
 
 IMAGE     ?= cv-sender:0.1
 NAMESPACE ?= cv-sender
 KUBECTL   ?= kubectl
 CONFIG    ?= configs/config.yaml
+ENV_FILE  ?= .env
+ENV_ARG   = $(if $(wildcard $(ENV_FILE)),--env-file $(ENV_FILE),)
 
 # Local run mirrors the Deployment mounts (configs/deployment.yaml):
 #   data/        -> /app/data            (state.db, preview.csv)
@@ -30,6 +32,8 @@ dry-run:
 	docker run $(RUN_ARGS) $(IMAGE) --dry-run
 
 # Bounded pilot rollout (rate-limited, pilot_count recipients) before full rollout.
+# Requires .env (see .env.example) to define all three variables:
+# GMAIL_APP_PASSWORD, CV_SENDER_SIGNATURE_NAME and CV_SENDER_SIGNATURE_PHONE.
 pilot:
 	docker run $(RUN_ARGS) --env-file .env $(IMAGE) --pilot
 
@@ -37,7 +41,7 @@ pilot:
 # `--entrypoint python` overrides the image ENTRYPOINT (`python -m src.main
 # worker`) so it is not prepended to the unittest command below.
 test-flows:
-	docker run $(RUN_ARGS) --env-file .env \
+	docker run $(RUN_ARGS) $(ENV_ARG) \
 		-v "$(CURDIR)/tests:/app/tests" \
 		--entrypoint python \
 		$(IMAGE) -m unittest discover -s tests -v

@@ -1,7 +1,7 @@
 ---
 description: "Leaf documentation specialist that writes and updates Diataxis documentation across all four quadrants: tutorials, how-to guides, reference, and explanation. Generates READMEs, API references, changelogs, and architecture docs. Never writes code, runs tests, or delegates."
 mode: subagent
-model: deepseek/deepseek-v4-flash
+model: opencode/deepseek-v4.1-flash
 temperature: 0.3
 reasoningEffort: medium
 permission:

@@ -5,7 +5,7 @@ description: >-
   reproduction scripts only under /tmp/. Uses rs-discover and rs-consult skills.
   Never edits production files, delegates, or runs destructive commands.
 mode: subagent
-model: deepseek/deepseek-v4-flash
+model: opencode/deepseek-v4.1-flash
 temperature: 0.2
 reasoningEffort: medium
 permission:

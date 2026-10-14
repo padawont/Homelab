@@ -1,7 +1,7 @@
 ---
 description: "Homelab PKM Overview: reviews edited files for context and homelab-fit — correct section/folder placement, whether content belongs in Knowledge vs Research vs an Implementation, and whether it is homelab-relevant at all. Read-only — never edits."
 mode: subagent
-model: deepseek/deepseek-v4-flash
+model: opencode/deepseek-v4.1-flash
 temperature: 0.2
 reasoningEffort: medium
 permission:

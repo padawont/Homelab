@@ -1,7 +1,7 @@
 ---
 description: "Homelab PKM Researcher: fact-checks external sources[]/references[] URLs (webfetch) and local claims against authoritative sources and existing repo notes. Flags dead links, wrong URLs, superseded info, unsupported assertions. Read-only — never edits files. Part of the loop-validation pipeline."
 mode: subagent
-model: deepseek/deepseek-v4-flash
+model: opencode/deepseek-v4.1-flash
 temperature: 0.1
 reasoningEffort: medium
 permission:

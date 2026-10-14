@@ -1,7 +1,7 @@
 ---
 description: "Homelab PKM AGENTS.md compliance checkpoint: re-reads the relevant section AGENTS.md and checks for missed conventions — frontmatter fields, status values, kebab-case tags, ISO dates, 150-line limit, cross-links, section structure. Read-only — never edits."
 mode: subagent
-model: deepseek/deepseek-v4-flash
+model: opencode/deepseek-v4.1-flash
 temperature: 0.0
 reasoningEffort: low
 permission:

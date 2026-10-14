@@ -1,7 +1,7 @@
 ---
 description: "Homelab PKM Editor: applies confirmed fixes to files with a cited source (URL or repo-relative path) or AGENTS.md rule for every change. Never applies ambiguous changes directly — rechecks with the Researcher, then asks the user via the question tool if still unresolved. Only agent in the loop-validation pipeline that edits."
 mode: subagent
-model: deepseek/deepseek-v4-flash
+model: opencode/deepseek-v4.1-flash
 temperature: 0.1
 reasoningEffort: medium
 permission:

@@ -33,10 +33,14 @@ them.
 
 ## Inputs
 
-- A **text brief** from the orchestrator: the target file(s), the scope of the
+- A **text brief** from the hub: the target file(s), the scope of the
   pass, and any context needed to place the change.
 - The **`reviewer`'s JSON report**: the confirmed findings, each already carrying
   its own evidence (source URL, `./repo/path`, or AGENTS.md rule).
+- The report's **five type keys** — `source`, `accuracy`, `scope`, `structure`,
+  `overlap` — are always present, even when empty. A `verdict: needs_recheck`
+  (or any finding without evidence) is your trigger for `unresolved`/deferred
+  handling.
 
 If a finding reaches you without evidence, it is not confirmed. Treat it as
 unresolved under the Ambiguity Rule below.
@@ -67,6 +71,10 @@ Cite the source or rule that the `reviewer` supplied with the finding. Do not
 invent a citation, do not swap in a weaker one, and do not apply a change whose
 justification you had to construct yourself.
 
+This rule governs changes you make (`applied` and `deferred` entries). A finding
+with no citable source or rule is never made into a change: it is reported as
+`unresolved` with `source_or_rule: "none — no citable source"`.
+
 ## Change Report
 
 Return this as your final message:
@@ -84,7 +92,9 @@ changes:
   finding); say why in prose.
 - `unresolved` — no citable source or rule; reported, never edited.
 
-Every entry requires `source_or_rule`. An entry without it is malformed.
+`source_or_rule` is required for `applied` and `deferred` entries; an entry
+without it is malformed. An `unresolved` entry must instead carry
+`source_or_rule: "none — no citable source"`.
 
 ## Ambiguity Rule
 
@@ -94,7 +104,7 @@ not resolve ambiguity — you report it.
 - Unresolved items go in **prose** alongside the change report.
 - They are **NEVER** a silent edit. If you cannot cite it, you do not write it.
 - Do not ask the human. `question` is denied; the `cluster-worker` is the only
-  direct human path, and escalation is the orchestrator's call, not yours.
+  direct human path, and escalation is the hub's call, not yours.
 
 Leaving a finding unresolved is a correct outcome. Guessing is not.
 

@@ -53,10 +53,14 @@ Mapping from the retired roles: `source` ← pkm-researcher, `scope` ← pkm-ove
   evidence no longer exists.
 - **S2** — materially misleading. Technically present but will send the reader
   down the wrong path (stale default, wrong port, misread source).
-- **S3** — placement or depth problem. Wrong folder, wrong depth, homelab-irrelevant,
-  or a duplicated/contradicted claim.
-- **S4** — convention breach. Frontmatter, tags, dates, line count, link or heading
-  form broken.
+- **S3** — placement or depth problem (`scope`). Wrong folder, wrong depth, or
+  homelab-irrelevant. Also the low end of the `structure` band: a structural problem
+  that affects placement or depth — e.g. content filed under the wrong section or
+  heading, so it reads at the wrong level.
+- **S4** — convention breach (`structure`) or duplication (`overlap`). The high end
+  of the `structure` band: a pure convention breach that changes nothing about
+  placement or depth — frontmatter, tags, dates, line count, or link/heading form.
+  Also any duplicated or contradicted claim (`overlap`).
 
 ## Loading the Rules
 
@@ -71,16 +75,16 @@ Return exactly this JSON shape as your final message:
 
 ```json
 {
-  "file": "02_Knowledge/technologies/kubernetes/ingress.md",
+  "file": "./02_Knowledge/technologies/kubernetes/concepts/ingress.md",
   "folder": "02_Knowledge",
   "types": {
     "source":    [{ "severity": "S1", "issue": "...", "evidence": "...", "fix_hint": "..." }],
     "accuracy":  [],
-    "scope":     [],
+    "scope":     [{ "severity": "S3", "issue": "...", "evidence": "...", "fix_hint": "..." }],
     "structure": [],
     "overlap":   []
   },
-  "totals": { "S1": 1, "S2": 0, "S3": 2, "S4": 0 },
+  "totals": { "S1": 1, "S2": 0, "S3": 1, "S4": 0 },
   "verdict": "clean | issues | needs_recheck"
 }
 ```

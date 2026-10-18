@@ -16,6 +16,9 @@ Source verifier executed by RuneSmith. Pins reliable sources for every
 planned file so `implement` writers can cite them. `research` and `implement`
 are modular — each can run without the other.
 
+> Agent handoff model: `reviewer` (`source`) returns JSON to the hub — see
+> `./.opencode/WORKFLOW.md`.
+
 ## When to use
 
 - After foundation assembled the stage big chunk, when a stage's planned

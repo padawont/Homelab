@@ -17,6 +17,9 @@ plan's big chunk and, when available, the reference list `research` verified
 for each file. `implement` and `research` are modular — each can run without
 the other.
 
+> Agent handoff model: the Writer fan-out is Flow D (parallel batch) — see
+> `./.opencode/WORKFLOW.md`.
+
 ## When to use
 
 - After research verified a stage's sources, before loop-validation.

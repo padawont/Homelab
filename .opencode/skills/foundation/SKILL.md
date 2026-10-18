@@ -14,6 +14,9 @@ description: >
 Read-only groundwork layer executed by RuneSmith. Sets up ONE stage of ONE
 issue so `research` can consume the plan passed in chat.
 
+> Agent handoff model: RuneSmith dispatches this skill as the hub — see
+> `./.opencode/WORKFLOW.md`.
+
 ## When to use
 
 - Starting or re-entering a single GitHub issue's next stage.

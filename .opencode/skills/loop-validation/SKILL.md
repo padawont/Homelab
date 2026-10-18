@@ -11,6 +11,9 @@ description: >
 
 # loop-validation
 
+> Agent handoff model: this loop is Flow D (parallel batch) — see
+> `./.opencode/WORKFLOW.md`.
+
 ## When to use
 
 - A user asks to validate/fix an existing PKM file or a set of files.

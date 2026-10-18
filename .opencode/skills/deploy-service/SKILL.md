@@ -16,6 +16,9 @@ Standard, repeatable flow for deploying services to the homelab k3s cluster
 folder, reads its `overview.md`, and follows the documented deployment steps.
 Run the steps in order.
 
+> Agent handoff model: cluster execution is Flow B (operational chain) — see
+> `./.opencode/WORKFLOW.md`.
+
 ## Guardrails (non-negotiable)
 
 - **Agent gate**: this skill runs ONLY when the active agent is `build` or

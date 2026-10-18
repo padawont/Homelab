@@ -10,6 +10,9 @@ description: >
 
 # dry-audit
 
+> Agent handoff model: this audit is Flow D (parallel batch) — see
+> `./.opencode/WORKFLOW.md`.
+
 ## When to use
 
 - A user asks whether content is duplicated / DRY-compliant.

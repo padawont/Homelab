@@ -84,12 +84,15 @@ the pinned references. Report to RuneSmith, then STOP. Do NOT load implement
 
 ## Role contract (no new agent file — bind existing subagent)
 
-### Researcher (`pkm-researcher`)
+### Reviewer (`reviewer`, `source` type)
 
 - Behavior: check the KB (target file + same folder) first; fetch ONE source
   per file only when the KB does not fully cover it.
-- Permissions: read/glob/grep/webfetch; read-only — never edits.
+- Permissions: read/glob/grep/webfetch; read-only (`edit: deny`) — never edits.
 - Never fabricates a result: unreachable URLs are `unverifiable`, not `live`.
+- Bound to the `source` type only: the reviewer's JSON `source` findings
+  (`severity`, `issue`, `evidence`, `fix_hint`) are this skill's verification
+  result; the other four type keys come back empty.
 - Output: `{file, source {url, status, notes}, kb_refs[], flags[]}`.
 
 ## Edge cases

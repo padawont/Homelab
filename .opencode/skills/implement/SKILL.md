@@ -2,8 +2,8 @@
 name: implement
 description: >
   Per-stage writer that runs independently of research. For each planned file,
-  launches ONE Writer subagent (pkm-editor as Writer) IN PARALLEL to create
-  the stage files from the stage big chunk + available references + Templates/
+  launches ONE worker (instructed as Writer) IN PARALLEL to create the stage
+  files from the stage big chunk + available references + Templates/
   + section AGENTS.md. When research ran, each writer cites only its own
   file's verified list; otherwise it falls back to plan references marked
   unverified. Marks stage TODOs done and reports to RuneSmith for the
@@ -50,8 +50,13 @@ the other.
 
 ## Workflow
 
-1. For each planned file, launch ONE Writer subagent (`pkm-editor`
-   instructed as Writer) in parallel. Each Writer receives ONLY its own
+**Batch fan-out (Flow D)** — one `worker` per planned file, launched in
+parallel, one lane per file. After the fan-out the hub queues `reviewer` (per
+file, one JSON report) and `editor` (confirmed findings only), then does the
+footprint check with `git diff --name-only`. See `./.opencode/WORKFLOW.md`.
+
+1. For each planned file, launch ONE worker, instructed as Writer, in
+   parallel. Each Writer receives ONLY its own
    file's verified reference list (or plan references if research did not
    run) plus the plan:
    - copies the matching template from `Templates/`
@@ -85,15 +90,23 @@ the other.
 
 ## Role contract (no new agent file — bind existing subagent)
 
-### Writer (`pkm-editor` instructed as Writer)
+### Producer (`worker` instructed as Writer)
 
 - Behavior: creates the stage file per the plan + its own file's verified
   references + Templates/ + section AGENTS.md.
-- Permissions when launched: read/edit/glob/grep; instructed NOT to use the
-  question tool — unresolved ambiguity goes into the report, never a
-  mid-write prompt.
+- Permissions: read/edit/glob/grep, with `webfetch` limited to URLs the brief
+  supplies; `question` is denied by permission, so unresolved ambiguity goes
+  into the report, never a mid-write prompt.
 - Every claim cites a verified source, plan reference, or AGENTS.md rule.
-- Output: `{file, status, claims_unverified[], flags[]}`.
+- Output: the `worker` `handoff:` block, with unverified claims and flags
+  listed under `done`/`blocked`:
+
+  ```yaml
+  handoff:
+    done:    files written (incl. any claims left unverified)
+    next:    hub may queue review of the written files
+    blocked: anything the brief could not satisfy
+  ```
 
 ## Edge cases
 

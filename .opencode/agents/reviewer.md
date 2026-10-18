@@ -44,8 +44,9 @@ is one JSON object consumed by the hub and routed to the editor.
 | `structure` | Frontmatter, status, kebab-case tags, ISO dates, 150-line rule, `./` links, heading order | S3–S4 |
 | `overlap` | Duplicates or contradicts another note/ADR — link instead of repeat? | S4 |
 
-Mapping from the retired roles: `source` ← pkm-researcher, `scope` ← pkm-overview,
-`structure` ← pkm-compliance, `overlap` ← the dry-audit check. `accuracy` is new.
+The five types cover the ground of the former separate review passes: citation
+checking, homelab correctness, placement, conventions, and duplication.
+`accuracy` is the one type with no predecessor.
 
 ## Severity Bands
 

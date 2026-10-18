@@ -5,7 +5,7 @@ description: >
   in scope, launch one read-only agent per file to cross-reference it against
   the rest, then report every repeated factual unit in a single standard
   repetition record (diagrams, facts, config, prose, tables, procedures,
-  frontmatter). Read-only; confirmed fixes are handed to pkm-editor.
+  frontmatter). Read-only; confirmed fixes are handed to editor.
 ---
 
 # dry-audit
@@ -51,14 +51,20 @@ Digest shape: `{file, segments:[{kind, hash, normalised_text, line}], facts[]}`.
 
 ### 2 · Fan out (one agent per file)
 
-- Launch one **read-only** `pkm-overview` subagent per file, all in parallel
-  (batch into waves of ≤20 for large scopes). Its frontmatter sets
-  `edit: deny` and `webfetch: deny`, so read-only is permission-enforced.
+- Launch one **read-only** `reviewer` subagent per file, all in parallel
+  (batch into waves of ≤20 for large scopes). Bind it to the `overlap` type
+  only; its frontmatter sets `edit: deny`, so read-only is permission-enforced.
+  Tell it explicitly not to webfetch — its permission allows it, but the audit
+  needs no web access.
 - Each agent receives its file's digest plus the list of all other files it
   must cross-reference.
 - Task prompt scope: cross-reference only, return standard `repetition`
   records; section/homelab-fit review is OUT OF SCOPE.
 - It returns only standard `repetition` records — no prose, no edits.
+- **Mapping:** the reviewer returns one JSON object — read its `overlap` key.
+  Each finding's `evidence` carries the normalised shared value and `fix_hint`
+  the recommendation (`link-instead | extract | merge | keep`); this skill
+  assembles those findings into its `repetition` record.
 
 ### 3 · Aggregate (main agent)
 
@@ -100,13 +106,13 @@ Then the table view:
 
 ## Hand-off
 
-- Confirmed `link-instead` / `extract` fixes go to `pkm-editor`, citing the
+- Confirmed `link-instead` / `extract` fixes go to `editor`, citing the
   canonical path as the source. Never edit directly.
 - Ambiguous canonical or intentional repetition → `needs-human`.
 
 ## Guardrails
 
-- **Read-only** — never delete or rewrite content; fixes go via `pkm-editor`.
+- **Read-only** — never delete or rewrite content; fixes go via `editor`.
 - **No false alarm** — pipeline restatement is not duplication; require a
   normalised verbatim match.
 - **No guessing** — canonical unclear → `needs-human`.

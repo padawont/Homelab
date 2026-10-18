@@ -86,6 +86,29 @@ Run the steps in order.
 - If verification fails, do not update the PKM notes. Diagnose, report, and
   propose a fix (or roll back per `rollback.md` if the user requests).
 
+### Step 4b — Rollback (via `cluster-worker`)
+
+When the user requests a rollback, do not run `helm rollback` or `kubectl
+rollout undo` yourself. Hand it to `cluster-worker` (Flow B — see
+`./.opencode/WORKFLOW.md`) with a JSON plan:
+
+```json
+{
+  "plan_id": "{service}-rollback",
+  "plan_source": "./05_Implementations/node-main/{service}/rollback.md",
+  "steps": ["..."],
+  "step_range": "1-6",
+  "dry_run": true
+}
+```
+
+- `cluster-worker` is limited to the whitelisted revert verbs
+  (`kubectl rollout undo` / `helm rollback`) plus read-only inspection; it
+  dry-runs first, refuses the whole plan if any step falls outside its
+  whitelist, and is the only agent that may ask the human directly.
+- The **hub** launches `cluster-worker` and chains it — this skill never spawns
+  it. The rollback path must exist in `rollback.md` before launch.
+
 ### Step 5 — PKM note update
 
 After a successful verified deploy, update the implementation records under
@@ -96,6 +119,8 @@ After a successful verified deploy, update the implementation records under
 - Ensure `rollback.md` documents how to revert this deploy safely.
 - If the folder does not exist yet, create it from
   `./Templates/implementations/service.md` and `rollback.md`.
+- These are repo writes: the hub routes them to `worker` (draft/update) and
+  `editor` (confirmed fixes), never a direct edit by this skill.
 
 ## Rules
 
@@ -103,5 +128,7 @@ After a successful verified deploy, update the implementation records under
 - NEVER improvise a deployment procedure — follow the Implementation doc.
 - Never hardcode or commit secrets.
 - No destructive action without explicit user confirmation.
+- **Rollback goes through `cluster-worker`** — never run `helm rollback` or
+  `kubectl rollout undo` directly.
 - Document every deploy in the PKM (overview + rollback).
 - Do not invent cluster targets — the only documented cluster is node-main.

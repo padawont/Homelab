@@ -88,26 +88,17 @@ Deep dive with examples.
 ## Sources / Further Reading
 ```
 
-Example — abstract code snippet:
+Example — abstract:
 
 ```yaml
 # simplified, vendor-neutral
 apiVersion: networking.k8s.io/v1
 kind: Ingress
-metadata:
-  name: example-ingress
+metadata: { name: example-ingress }
 spec:
   rules:
     - host: example.com
-      http:
-        paths:
-          - path: /
-            pathType: Prefix
-            backend:
-              service:
-                name: example-service
-                port:
-                  number: 80
+      http: { paths: [{ path: /, pathType: Prefix }] }
 ```
 
 Example — real config from node-main:
@@ -116,22 +107,12 @@ Example — real config from node-main:
 # actual running config, may drift from this doc
 apiVersion: networking.k8s.io/v1
 kind: Ingress
-metadata:
-  name: forgejo-ingress
-  namespace: forgejo
+metadata: { name: forgejo-ingress, namespace: forgejo }
 spec:
   ingressClassName: traefik
   rules:
     - host: git.homelab.local
-      http:
-        paths:
-          - path: /
-            pathType: Prefix
-            backend:
-              service:
-                name: forgejo-http
-                port:
-                  number: 3000
+      http: { paths: [{ path: /, pathType: Prefix }] }
 ```
 
 ## Conventions
@@ -140,3 +121,16 @@ spec:
 - Both abstract examples and real configs are welcome — label each block as "Example — abstract" or "Example — real config"
 - Set `last_audit_date` on every edit; re-audit weekly
 - Use `related_docs` to cross-link to implementations and vice-versa
+
+## Agent Behaviour
+
+| Role | May | Must not |
+|---|---|---|
+| `worker` | read, gather sources, create and edit the note | edit files outside its brief, add unsourced claims |
+| `reviewer` | run all five review types, emit the JSON report | edit, propose unverified fixes |
+| `editor` | revise the note and its JSON with a cited source or rule | change anything without a citation |
+| `spec-writer` | append a spec section referencing this note | rewrite or delete note content |
+| `cluster-worker` | not applicable to this folder | run operational plans here |
+
+Review types: `source`, `accuracy`, `scope`, `structure`, `overlap`.
+Escalation: anything unresolved goes to the hub in the handoff `blocked:` field — never a guess.

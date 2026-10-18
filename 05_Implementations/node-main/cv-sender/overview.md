@@ -1,6 +1,6 @@
 ---
 title: "cv sender outreach worker"
-status: draft
+status: active
 author: "padawont"
 date: 2026-10-13
 tags: [kubernetes, automation, playwright, email, outreach]
@@ -11,6 +11,7 @@ related_docs:
   - "./02_Knowledge/technologies/kubernetes/concepts/deployments.md"
   - "./02_Knowledge/technologies/kubernetes/concepts/secrets.md"
   - "./02_Knowledge/technologies/kubernetes/concepts/storage.md"
+  - "./rollout.md"
 references:
   online:
     - url: "https://playwright.dev/python/docs/docker"
@@ -127,8 +128,7 @@ leaves the container, and the live view is not re-scraped on every poll.
   browser.
 - **CV**: on the PVC at `cv/cv.pdf`, exposed in-pod at `/app/config/cv/cv.pdf`.
 - **Rate**: 400/day, 20s delay between sends, 300s poll interval.
-- **Rollout**: `dry_run: true` → pilot of 3 → full run, all driven from
-  `configs/config.yaml`.
+- **Rollout**: staged dry-run → pilot → full run; see `./rollout.md`.
 
 ## Operations
 

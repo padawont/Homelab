@@ -2,7 +2,7 @@
 # This file is wrapped by configmap.yaml (ConfigMap "cv-sender-config") and mounted
 # into the pod at /app/config/config.yaml.
 # SAFETY: dry_run MUST remain true until a pilot run has been verified end to end.
-dry_run: true
+dry_run: false
 pilot_count: 3
 source:
   url: "https://ledelsesinformation.aarhuskommune.dk/#vfs://global/AARHUS-I-TAL/UDDANNELSE_I_TAL-Erhvervspraktik-Virksomhedsliste.xview"

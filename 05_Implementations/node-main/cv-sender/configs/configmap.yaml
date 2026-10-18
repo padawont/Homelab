@@ -11,7 +11,7 @@ metadata:
     app.kubernetes.io/component: config
 data:
   config.yaml: |
-    dry_run: true
+    dry_run: false
     pilot_count: 3
     source:
       url: "https://ledelsesinformation.aarhuskommune.dk/#vfs://global/AARHUS-I-TAL/UDDANNELSE_I_TAL-Erhvervspraktik-Virksomhedsliste.xview"

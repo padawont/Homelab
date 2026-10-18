@@ -15,6 +15,9 @@ Reusable document templates for all sections. Copy, don't edit.
 | Implementation overview | `./Templates/implementations/service.md` | `./05_Implementations/` |
 | Implementation rollback | `./Templates/implementations/rollback.md` | `./05_Implementations/` |
 | GitHub Issue | `./Templates/tasks/issue.md` | For creating new GitHub issues |
+| Cluster spec | `./Templates/specs/cluster.md` | Descriptive infra specs |
+| Service stack spec | `./Templates/specs/service-stack.md` | Descriptive infra specs |
+| Topology spec | `./Templates/specs/topology.md` | Descriptive infra specs |
 
 ## Conventions
 

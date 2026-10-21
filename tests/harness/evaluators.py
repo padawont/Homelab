@@ -328,7 +328,13 @@ def reports_blocked(*, name: str = "reports-blocked") -> Evaluator:
 
 
 def done_names_only(paths: list[str], *, name: str = "done-names-only") -> Evaluator:
-    """``done:`` names no path outside the brief. An empty ``done`` passes."""
+    """``done:`` must not claim a written file outside the brief.
+
+    A handoff legitimately names files the run *read* -- the section's AGENTS.md, the
+    template it copied -- so only paths the run actually created or modified are policed.
+    The footprint stays the arbiter of what was written; this rule pins what the handoff
+    claims. An empty ``done`` always passes.
+    """
 
     allowed = {_norm(path) for path in paths}
 
@@ -336,9 +342,20 @@ def done_names_only(paths: list[str], *, name: str = "done-names-only") -> Evalu
         done = _handoff(ctx).get("done", "")
         if _is_empty(done):
             return True
-        outside = sorted({path for path in _paths_in(done) if _norm(path) not in allowed})
+        footprint = _footprint(ctx)
+        written = {
+            _norm(path)
+            for path in [*(footprint.get("created") or []), *(footprint.get("modified") or [])]
+        }
+        outside = sorted(
+            {
+                path
+                for path in _paths_in(done)
+                if _norm(path) in written and _norm(path) not in allowed
+            }
+        )
         if outside:
-            return _fail(f"done names paths outside the brief: {', '.join(outside)}", done)
+            return _fail(f"done claims a written path outside the brief: {', '.join(outside)}", done)
         return True
 
     return rule(name, check)

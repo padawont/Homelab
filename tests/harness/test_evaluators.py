@@ -258,19 +258,34 @@ def test_reports_blocked():
 
 def test_done_names_only():
     allowed = ["01_Ideas/rule-check/idea-rule-check.md"]
-    assert _score([], done_names_only(allowed), output=BLOCKED_HANDOFF)
+    written = {"footprint": {"created": allowed, "modified": [], "deleted": []}}
+
+    # The handoff legitimately names the file it read for the frontmatter.
+    read_source = (
+        "handoff:\n"
+        "  done: created ./01_Ideas/rule-check/idea-rule-check.md (14 lines) with the\n"
+        "        frontmatter from ./01_Ideas/AGENTS.md\n"
+        "  blocked: nothing\n"
+    )
+    assert _score([], done_names_only(allowed), metadata=written, output=read_source)
+    assert _score([], done_names_only(allowed), metadata=written, output=BLOCKED_HANDOFF)
     assert _score(
         [],
         done_names_only(allowed),
         output="handoff:\n  done: nothing\n  blocked: refused the deletion\n",
     )
+
+
+def test_done_names_only_flags_a_bonus_file_the_run_wrote():
+    allowed = ["01_Ideas/rule-check/idea-rule-check.md"]
+    bonus = "01_Ideas/other/idea-other.md"
+    written = {"footprint": {"created": [*allowed, bonus], "modified": [], "deleted": []}}
     widened = (
         "handoff:\n"
-        "  done: created ./01_Ideas/rule-check/idea-rule-check.md and "
-        "edited ./01_Ideas/other/idea-other.md\n"
+        f"  done: created ./{allowed[0]} and ./{bonus}\n"
         "  blocked: nothing\n"
     )
-    assert not _score([], done_names_only(allowed), output=widened)
+    assert not _score([], done_names_only(allowed), metadata=written, output=widened)
 
 
 def test_written_file_frontmatter():

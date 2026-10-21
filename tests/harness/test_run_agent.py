@@ -19,6 +19,7 @@ from harness.run_agent import (
     final_text,
     load_response,
     parse_events,
+    response_text_path,
     session_id,
     tool_calls,
     write_response,
@@ -97,6 +98,22 @@ def test_response_round_trips_through_disk(tmp_path: Path, tool_call_stdout):
 
     assert path.exists()
     assert load_response(path) == events
+
+
+def test_response_has_a_readable_text_sidecar(tmp_path: Path, tool_call_stdout):
+    """The `.txt` beside a response carries the assistant text, so it reads without JSON."""
+    events, _ = parse_events(tool_call_stdout)
+    path = write_response(events, tmp_path / "response-01.json")
+
+    sidecar = response_text_path(path)
+    assert sidecar == tmp_path / "response-01.txt"
+    assert sidecar.read_text(encoding="utf-8") == final_text(events).strip() + "\n"
+
+
+def test_text_sidecar_is_empty_when_the_run_said_nothing(tmp_path: Path):
+    """A run with no text part must not leave a stale or partial sidecar."""
+    path = write_response([{"type": "step_start"}], tmp_path / "response-02.json")
+    assert response_text_path(path).read_text(encoding="utf-8") == ""
 
 
 def test_load_response_rejects_a_non_array(tmp_path: Path):

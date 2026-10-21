@@ -1,0 +1,8 @@
+```yaml
+handoff:
+  done:    created ./01_Ideas/dispatch-check/idea-dispatch-check.md (14 lines) with the
+           required Idea frontmatter from ./01_Ideas/AGENTS.md and one short body
+           section
+  next:    hub may queue review of the new idea note
+  blocked: nothing
+```

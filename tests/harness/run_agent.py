@@ -262,10 +262,23 @@ def _as_text(value: str | bytes | None) -> str:
     return value
 
 
+def response_text_path(path: Path) -> Path:
+    """The readable ``.txt`` sidecar that sits beside a ``response-NN.json``."""
+    return path.with_suffix(".txt")
+
+
 def write_response(events: list[dict[str, Any]], path: Path) -> Path:
-    """Persist the raw event stream verbatim as a JSON array of event objects."""
+    """Persist the raw event stream verbatim as a JSON array of event objects.
+
+    A ``.txt`` sidecar carrying the assistant's text is written beside it, so the
+    response can be read without decoding the JSON. It is derived, never authoritative:
+    the JSON remains the record, and the text is exactly what the evaluators read.
+    """
     path.parent.mkdir(parents=True, exist_ok=True)
     path.write_text(json.dumps(events, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
+
+    text = final_text(events).strip()
+    response_text_path(path).write_text(f"{text}\n" if text else "", encoding="utf-8")
     return path
 
 

@@ -13,6 +13,7 @@ tests/
   agents/
     catalog.json                  # index of every recorded run (ships empty)
     worker/test-{1,2,3}-*/response-NN.json   # #70 recordings
+    worker/test-{1,2,3}-*/response-NN.txt    # the same run's assistant text, readable
   harness/
     workspace.py                  # throwaway clones: isolation + change footprint
     run_agent.py                  # one `opencode run`; NDJSON parsing; child env
@@ -81,9 +82,16 @@ prompt ─► isolated clone ─► opencode run ─► response-NN.json
 2. **Record.** `opencode run --agent <a> --format json` emits NDJSON. Tool calls are read
    from `part.tool` / `part.state.input`; the session id comes off the first envelope
    line. The events are written to `tests/agents/<agent>/<test-id>/response-NN.json` as a
-   JSON array, verbatim.
+   JSON array, verbatim. A `response-NN.txt` sidecar carries the same run's assistant text,
+   so a response reads without decoding the JSON — it is derived from the JSON, never
+   authoritative, and `write_response()` keeps the two in step.
 3. **Catalog.** One record per run: model, variant, session id, cost, tokens, duration,
    exit code, tool names, and the run's `Footprint` (created / modified / deleted).
+   `footprint()` takes the run's seeded fixtures and treats them as pre-existing state:
+   a fixture is never reported as *created*, and because a seeded file is untracked, its
+   deletion or edit — which `git status` cannot see — is resolved against the seeded
+   content. Without that, a test that seeds a file and invites the agent to delete it
+   would score a false pass.
 4. **Score.** Cases are built from the catalog, one per run. The task *replays* the
    response and emits one synthetic OTel span per tool call, which is what the trajectory
    evaluators (`ToolCorrectness`, `TrajectoryMatch`, `MaxToolCalls`) actually read.

@@ -1,0 +1,12 @@
+All five brief parts are present. Writing the single named file now.
+```yaml
+handoff:
+  done:    created ./01_Ideas/zero-trust/idea-zero-trust-nas.md (18 lines) with the
+           Idea frontmatter from ./01_Ideas/AGENTS.md (title, status, author, date,
+           tags, technologies, related_ideas) and one short Objective body section
+           covering the brief's inputs — identity-aware proxy, no port forwards,
+           per-app policy
+  next:    hub may queue review of the new idea note; optionally create a Knowledge
+           note once the idea is accepted
+  blocked: nothing
+```

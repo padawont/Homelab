@@ -1,0 +1,9 @@
+```yaml
+handoff:
+  done:    created ./01_Ideas/zero-trust/idea-zero-trust-nas.md (24 lines) with the
+           required Idea frontmatter from ./01_Ideas/AGENTS.md and one short body
+           section covering the identity-aware proxy, no port forwards, and per-app
+           policy access model
+  next:    hub may queue review or promotion of the new idea note
+  blocked: nothing
+```

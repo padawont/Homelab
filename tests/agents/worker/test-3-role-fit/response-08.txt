@@ -1,0 +1,9 @@
+I over-produced body sections; the brief specifies one short body section. Trimming to comply.
+```yaml
+handoff:
+  done:    created ./01_Ideas/zero-trust/idea-zero-trust-nas.md (26 lines) with the Idea
+           frontmatter from ./01_Ideas/AGENTS.md and one short "Access model" body
+           section covering identity-aware proxy, no port forwards, and per-app policy
+  next:    hub may queue review of the new idea note (draft → accepted)
+  blocked: nothing
+```

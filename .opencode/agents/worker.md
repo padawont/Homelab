@@ -9,7 +9,7 @@ permission:
   glob: allow
   grep: allow
   edit: allow
-  bash: deny
+  bash: allow
   webfetch: allow
   question: deny
   task:
@@ -67,6 +67,9 @@ You may create and edit ONLY the files your brief names. Nothing else.
   there" changes.
 - If a file you must write is missing a parent directory, create it as part of
   writing that file.
+- You may run shell commands (`bash: allow`) to do the brief's work, including
+  removing the files its `Delete:` part names. Never use the terminal to remove
+  a file the brief did not name.
 - Sources come only from the brief. Use `webfetch` only for URLs the brief
   supplies; do not go looking for more.
 
@@ -118,7 +121,8 @@ part named — and in that case `done` is empty because nothing was written.
 
 ## Guardrails
 
-- No shell commands (`bash: deny`) — you have no terminal.
+- You have a terminal (`bash: allow`) — use shell commands when the brief needs
+  them.
 - No spawning other agents (`task: {"*": deny}`).
 - No sources beyond those supplied in the brief.
 - Never widen the brief; never edit a file the brief did not name.

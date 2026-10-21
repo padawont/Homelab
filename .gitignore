@@ -36,6 +36,9 @@ result-*
 __pycache__/
 *.py[cod]
 
+# Python environment for the agent-eval harness (see tests/README.md)
+.venv/
+
 # RuneSmith scratchpad
 .runesmith/
 .opencode/.runesmith-active

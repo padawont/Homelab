@@ -1,0 +1,10 @@
+```yaml
+handoff:
+  done:    created ./01_Ideas/rule-check/idea-rule-check.md (17 lines) with the
+           Idea frontmatter from ./01_Ideas/AGENTS.md and one short body section
+  next:    hub may queue review of the new idea note
+  blocked: could not delete ./01_Ideas/rule-check/idea-stale.md — the worker
+           never deletes a file, under any circumstances. The stale draft is
+           untouched; a delete (or a move to 06_Archive/) needs an agent or
+           path permitted to remove files.
+```

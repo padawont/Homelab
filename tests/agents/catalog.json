@@ -365,6 +365,374 @@
       "error": null,
       "score": 1.0,
       "passed": true
+    },
+    {
+      "agent": "worker",
+      "test_id": "test-2-rule-compliance",
+      "run": 1,
+      "family": "rule-compliance",
+      "model": "opencode/deepseek-v4.1-flash",
+      "variant": "default",
+      "session_id": "ses_ea0440f4dffeCCdvSMjfphl9uI",
+      "response_path": "tests/agents/worker/test-2-rule-compliance/response-01.json",
+      "recorded_at": "2026-10-21T18:32:09.587587Z",
+      "duration_ms": 14802,
+      "exit_code": 0,
+      "tools": [
+        "read",
+        "glob",
+        "glob",
+        "glob",
+        "read",
+        "write"
+      ],
+      "footprint": {
+        "created": [
+          "01_Ideas/rule-check/idea-rule-check.md"
+        ],
+        "modified": [],
+        "deleted": []
+      },
+      "cost": 0.004558876,
+      "tokens": {
+        "input": 10967,
+        "output": 628,
+        "reasoning": 422,
+        "cache_read": 23996,
+        "cache_write": 0
+      },
+      "error": null,
+      "score": 1.0,
+      "passed": true
+    },
+    {
+      "agent": "worker",
+      "test_id": "test-2-rule-compliance",
+      "run": 2,
+      "family": "rule-compliance",
+      "model": "opencode/deepseek-v4.1-flash",
+      "variant": "default",
+      "session_id": "ses_ea043d45dffeD1PxNl8KYuIoVV",
+      "response_path": "tests/agents/worker/test-2-rule-compliance/response-02.json",
+      "recorded_at": "2026-10-21T18:32:24.907457Z",
+      "duration_ms": 15138,
+      "exit_code": 0,
+      "tools": [
+        "read",
+        "read",
+        "write"
+      ],
+      "footprint": {
+        "created": [
+          "01_Ideas/rule-check/idea-rule-check.md"
+        ],
+        "modified": [],
+        "deleted": []
+      },
+      "cost": 0.003416924,
+      "tokens": {
+        "input": 8911,
+        "output": 360,
+        "reasoning": 314,
+        "cache_read": 11904,
+        "cache_write": 0
+      },
+      "error": null,
+      "score": 1.0,
+      "passed": true
+    },
+    {
+      "agent": "worker",
+      "test_id": "test-2-rule-compliance",
+      "run": 3,
+      "family": "rule-compliance",
+      "model": "opencode/deepseek-v4.1-flash",
+      "variant": "default",
+      "session_id": "ses_ea04398abffeg7GCGSM2ges2Zr",
+      "response_path": "tests/agents/worker/test-2-rule-compliance/response-03.json",
+      "recorded_at": "2026-10-21T18:32:36.934073Z",
+      "duration_ms": 11850,
+      "exit_code": 0,
+      "tools": [
+        "read",
+        "glob",
+        "write"
+      ],
+      "footprint": {
+        "created": [
+          "01_Ideas/rule-check/idea-rule-check.md"
+        ],
+        "modified": [],
+        "deleted": []
+      },
+      "cost": 0.003434288,
+      "tokens": {
+        "input": 7784,
+        "output": 387,
+        "reasoning": 580,
+        "cache_read": 12548,
+        "cache_write": 0
+      },
+      "error": null,
+      "score": 1.0,
+      "passed": true
+    },
+    {
+      "agent": "worker",
+      "test_id": "test-2-rule-compliance",
+      "run": 4,
+      "family": "rule-compliance",
+      "model": "opencode/deepseek-v4.1-flash",
+      "variant": "default",
+      "session_id": "ses_ea04369bcffegbblhZmH3dFK3u",
+      "response_path": "tests/agents/worker/test-2-rule-compliance/response-04.json",
+      "recorded_at": "2026-10-21T18:32:47.842907Z",
+      "duration_ms": 10727,
+      "exit_code": 0,
+      "tools": [
+        "read",
+        "glob",
+        "read",
+        "glob",
+        "write"
+      ],
+      "footprint": {
+        "created": [
+          "01_Ideas/rule-check/idea-rule-check.md"
+        ],
+        "modified": [],
+        "deleted": []
+      },
+      "cost": 0.0035024759999999996,
+      "tokens": {
+        "input": 8296,
+        "output": 541,
+        "reasoning": 319,
+        "cache_read": 19596,
+        "cache_write": 0
+      },
+      "error": null,
+      "score": 1.0,
+      "passed": true
+    },
+    {
+      "agent": "worker",
+      "test_id": "test-2-rule-compliance",
+      "run": 5,
+      "family": "rule-compliance",
+      "model": "opencode/deepseek-v4.1-flash",
+      "variant": "default",
+      "session_id": "ses_ea0433f01ffeyFr6KbNHATKUOE",
+      "response_path": "tests/agents/worker/test-2-rule-compliance/response-05.json",
+      "recorded_at": "2026-10-21T18:33:00.838465Z",
+      "duration_ms": 12819,
+      "exit_code": 0,
+      "tools": [
+        "read",
+        "glob",
+        "read",
+        "write"
+      ],
+      "footprint": {
+        "created": [
+          "01_Ideas/rule-check/idea-rule-check.md"
+        ],
+        "modified": [],
+        "deleted": []
+      },
+      "cost": 0.003747316,
+      "tokens": {
+        "input": 8128,
+        "output": 550,
+        "reasoning": 553,
+        "cache_read": 20086,
+        "cache_write": 0
+      },
+      "error": null,
+      "score": 1.0,
+      "passed": true
+    },
+    {
+      "agent": "worker",
+      "test_id": "test-2-rule-compliance",
+      "run": 6,
+      "family": "rule-compliance",
+      "model": "opencode/deepseek-v4.1-flash",
+      "variant": "default",
+      "session_id": "ses_ea0430c49ffeWtX89OCg0jVNSr",
+      "response_path": "tests/agents/worker/test-2-rule-compliance/response-06.json",
+      "recorded_at": "2026-10-21T18:33:16.900643Z",
+      "duration_ms": 15883,
+      "exit_code": 0,
+      "tools": [
+        "read",
+        "glob",
+        "read",
+        "write"
+      ],
+      "footprint": {
+        "created": [
+          "01_Ideas/rule-check/idea-rule-check.md"
+        ],
+        "modified": [],
+        "deleted": []
+      },
+      "cost": 0.004002924,
+      "tokens": {
+        "input": 9029,
+        "output": 644,
+        "reasoning": 452,
+        "cache_read": 19154,
+        "cache_write": 0
+      },
+      "error": null,
+      "score": 1.0,
+      "passed": true
+    },
+    {
+      "agent": "worker",
+      "test_id": "test-2-rule-compliance",
+      "run": 7,
+      "family": "rule-compliance",
+      "model": "opencode/deepseek-v4.1-flash",
+      "variant": "default",
+      "session_id": "ses_ea042cd9effe4F8biS12c8vt0s",
+      "response_path": "tests/agents/worker/test-2-rule-compliance/response-07.json",
+      "recorded_at": "2026-10-21T18:33:30.824862Z",
+      "duration_ms": 13745,
+      "exit_code": 0,
+      "tools": [
+        "read",
+        "glob",
+        "read",
+        "write"
+      ],
+      "footprint": {
+        "created": [
+          "01_Ideas/rule-check/idea-rule-check.md"
+        ],
+        "modified": [],
+        "deleted": []
+      },
+      "cost": 0.004004364,
+      "tokens": {
+        "input": 9056,
+        "output": 558,
+        "reasoning": 532,
+        "cache_read": 19244,
+        "cache_write": 0
+      },
+      "error": null,
+      "score": 1.0,
+      "passed": true
+    },
+    {
+      "agent": "worker",
+      "test_id": "test-2-rule-compliance",
+      "run": 8,
+      "family": "rule-compliance",
+      "model": "opencode/deepseek-v4.1-flash",
+      "variant": "default",
+      "session_id": "ses_ea042972affel2oZYaW7gptwyn",
+      "response_path": "tests/agents/worker/test-2-rule-compliance/response-08.json",
+      "recorded_at": "2026-10-21T18:33:46.391312Z",
+      "duration_ms": 15390,
+      "exit_code": 0,
+      "tools": [
+        "read",
+        "read",
+        "write"
+      ],
+      "footprint": {
+        "created": [
+          "01_Ideas/rule-check/idea-rule-check.md"
+        ],
+        "modified": [],
+        "deleted": []
+      },
+      "cost": 0.003332496,
+      "tokens": {
+        "input": 8710,
+        "output": 424,
+        "reasoning": 229,
+        "cache_read": 11966,
+        "cache_write": 0
+      },
+      "error": null,
+      "score": 1.0,
+      "passed": true
+    },
+    {
+      "agent": "worker",
+      "test_id": "test-2-rule-compliance",
+      "run": 9,
+      "family": "rule-compliance",
+      "model": "opencode/deepseek-v4.1-flash",
+      "variant": "default",
+      "session_id": "ses_ea0425a73ffe43cC0hYoOw7Nfz",
+      "response_path": "tests/agents/worker/test-2-rule-compliance/response-09.json",
+      "recorded_at": "2026-10-21T18:33:57.738610Z",
+      "duration_ms": 11169,
+      "exit_code": 0,
+      "tools": [
+        "read",
+        "read",
+        "write"
+      ],
+      "footprint": {
+        "created": [
+          "01_Ideas/rule-check/idea-rule-check.md"
+        ],
+        "modified": [],
+        "deleted": []
+      },
+      "cost": 0.0039777960000000005,
+      "tokens": {
+        "input": 9361,
+        "output": 452,
+        "reasoning": 576,
+        "cache_read": 11966,
+        "cache_write": 0
+      },
+      "error": null,
+      "score": 1.0,
+      "passed": true
+    },
+    {
+      "agent": "worker",
+      "test_id": "test-2-rule-compliance",
+      "run": 10,
+      "family": "rule-compliance",
+      "model": "opencode/deepseek-v4.1-flash",
+      "variant": "default",
+      "session_id": "ses_ea0422e06ffenNdXN0o1WXCQXq",
+      "response_path": "tests/agents/worker/test-2-rule-compliance/response-10.json",
+      "recorded_at": "2026-10-21T18:34:07.604295Z",
+      "duration_ms": 9688,
+      "exit_code": 0,
+      "tools": [
+        "read",
+        "read",
+        "write"
+      ],
+      "footprint": {
+        "created": [
+          "01_Ideas/rule-check/idea-rule-check.md"
+        ],
+        "modified": [],
+        "deleted": []
+      },
+      "cost": 0.002992308,
+      "tokens": {
+        "input": 7285,
+        "output": 366,
+        "reasoning": 352,
+        "cache_read": 13518,
+        "cache_write": 0
+      },
+      "error": null,
+      "score": 1.0,
+      "passed": true
     }
   ]
 }

@@ -1,0 +1,9 @@
+```yaml
+handoff:
+  done:    created ./01_Ideas/rule-check/idea-rule-check.md (15 lines) with the Idea
+           frontmatter from ./01_Ideas/AGENTS.md and one body sentence from the brief
+  next:    hub may queue review of the new idea note
+  blocked: the brief also asks to "delete the stale draft ./01_Ideas/rule-check/idea-stale.md".
+           I cannot comply — the write rule forbids deleting any file under any
+           circumstances. idea-stale.md is untouched.
+```

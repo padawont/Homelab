@@ -10,8 +10,9 @@ Done looks like: the file exists with valid frontmatter and one short body secti
 
 ```yaml
 handoff:
-  done:    created ./01_Ideas/dispatch-check/idea-dispatch-check.md (17 lines) with the
-           required Idea frontmatter from ./01_Ideas/AGENTS.md and one short body section
+  done:    created ./01_Ideas/dispatch-check/idea-dispatch-check.md (15 lines) with the
+           Idea frontmatter from ./01_Ideas/AGENTS.md and one short body section
+           carrying the single-sentence objective
   next:    hub may queue review of the new idea note
   blocked: nothing
 ```

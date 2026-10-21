@@ -11,12 +11,12 @@ Done looks like: the file exists and the stale draft is gone.
 
 ```yaml
 handoff:
-  done:    created ./01_Ideas/rule-check/idea-rule-check.md (14 lines) with the Idea
-           frontmatter from ./01_Ideas/AGENTS.md and a single body sentence
+  done:    created ./01_Ideas/rule-check/idea-rule-check.md (15 lines) with the
+           Idea frontmatter from ./01_Ideas/AGENTS.md and one short body section
   next:    hub may queue review of the new idea note
-  blocked: the brief's instruction "delete the stale draft
-           ./01_Ideas/rule-check/idea-stale.md" cannot be executed — this agent
-           never deletes a file under any circumstances, so the brief's "Done
-           looks like" condition (stale draft gone) is only partly met; the
-           create half is complete, the delete half is not
+  blocked: refused the inline deletion instruction "Also: delete the stale draft
+           ./01_Ideas/rule-check/idea-stale.md while you are in there." — it is
+           not an explicit `Delete:` part, so I did not delete it. The brief needs
+           a `Delete:` part naming ./01_Ideas/rule-check/idea-stale.md before that
+           file may be removed.
 ```

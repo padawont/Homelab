@@ -13,7 +13,7 @@ tests/
   agents/
     catalog.json                  # index of every recorded run (ships empty)
     worker/test-{1,2,3}-*/response-NN.json   # #70 recordings
-    worker/test-{1,2,3}-*/response-NN.txt    # the same run's assistant text, readable
+    worker/test-{1,2,3}-*/response-NN.txt    # the same run's prompt + response, readable
   harness/
     workspace.py                  # throwaway clones: isolation + change footprint
     run_agent.py                  # one `opencode run`; NDJSON parsing; child env
@@ -82,9 +82,9 @@ prompt ─► isolated clone ─► opencode run ─► response-NN.json
 2. **Record.** `opencode run --agent <a> --format json` emits NDJSON. Tool calls are read
    from `part.tool` / `part.state.input`; the session id comes off the first envelope
    line. The events are written to `tests/agents/<agent>/<test-id>/response-NN.json` as a
-   JSON array, verbatim. A `response-NN.txt` sidecar carries the same run's assistant text,
-   so a response reads without decoding the JSON — it is derived from the JSON, never
-   authoritative, and `write_response()` keeps the two in step.
+   JSON array, verbatim. A `response-NN.txt` sidecar carries the prompt that was sent and
+   the reply that came back, so a run reads without decoding the JSON — it is derived from
+   the JSON and the spec, never authoritative, and `write_response()` keeps the two in step.
 3. **Catalog.** One record per run: model, variant, session id, cost, tokens, duration,
    exit code, tool names, and the run's `Footprint` (created / modified / deleted).
    `footprint()` takes the run's seeded fixtures and treats them as pre-existing state:

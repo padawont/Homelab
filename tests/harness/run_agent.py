@@ -267,18 +267,39 @@ def response_text_path(path: Path) -> Path:
     return path.with_suffix(".txt")
 
 
-def write_response(events: list[dict[str, Any]], path: Path) -> Path:
+PROMPT_HEADER = "===== PROMPT ====="
+RESPONSE_HEADER = "===== RESPONSE ====="
+
+
+def render_transcript(prompt: str | None, events: list[dict[str, Any]]) -> str:
+    """One run in readable form: the brief that was sent, then the agent's reply.
+
+    The JSON stays the record; this is the same run without the envelope, so a reviewer
+    can see the question and the answer together.
+    """
+    blocks = []
+    if prompt is not None:
+        blocks.append(f"{PROMPT_HEADER}\n\n{prompt.strip()}\n")
+    text = final_text(events).strip()
+    blocks.append(f"{RESPONSE_HEADER}\n\n{text}\n" if text else f"{RESPONSE_HEADER}\n")
+    return "\n".join(blocks)
+
+
+def write_response(
+    events: list[dict[str, Any]],
+    path: Path,
+    *,
+    prompt: str | None = None,
+) -> Path:
     """Persist the raw event stream verbatim as a JSON array of event objects.
 
-    A ``.txt`` sidecar carrying the assistant's text is written beside it, so the
-    response can be read without decoding the JSON. It is derived, never authoritative:
-    the JSON remains the record, and the text is exactly what the evaluators read.
+    A ``.txt`` sidecar carrying the prompt and the agent's text is written beside it, so
+    a response reads without decoding the JSON. It is derived, never authoritative: the
+    JSON remains the record, and the text is exactly what the evaluators read.
     """
     path.parent.mkdir(parents=True, exist_ok=True)
     path.write_text(json.dumps(events, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
-
-    text = final_text(events).strip()
-    response_text_path(path).write_text(f"{text}\n" if text else "", encoding="utf-8")
+    response_text_path(path).write_text(render_transcript(prompt, events), encoding="utf-8")
     return path
 
 

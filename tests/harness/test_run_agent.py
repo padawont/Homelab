@@ -14,6 +14,8 @@ from pathlib import Path
 import pytest
 
 from harness.run_agent import (
+    PROMPT_HEADER,
+    RESPONSE_HEADER,
     child_env,
     error_message,
     final_text,
@@ -101,19 +103,24 @@ def test_response_round_trips_through_disk(tmp_path: Path, tool_call_stdout):
 
 
 def test_response_has_a_readable_text_sidecar(tmp_path: Path, tool_call_stdout):
-    """The `.txt` beside a response carries the assistant text, so it reads without JSON."""
+    """The `.txt` beside a response carries the prompt and the reply, so it reads alone."""
     events, _ = parse_events(tool_call_stdout)
-    path = write_response(events, tmp_path / "response-01.json")
+    path = write_response(events, tmp_path / "response-01.json", prompt="Target file: ./x.md")
 
     sidecar = response_text_path(path)
     assert sidecar == tmp_path / "response-01.txt"
-    assert sidecar.read_text(encoding="utf-8") == final_text(events).strip() + "\n"
+    transcript = sidecar.read_text(encoding="utf-8")
+    assert transcript.startswith(f"{PROMPT_HEADER}\n\nTarget file: ./x.md\n")
+    assert f"{RESPONSE_HEADER}\n\n{final_text(events).strip()}\n" in transcript
+    assert transcript.index(PROMPT_HEADER) < transcript.index(RESPONSE_HEADER)
 
 
 def test_text_sidecar_is_empty_when_the_run_said_nothing(tmp_path: Path):
     """A run with no text part must not leave a stale or partial sidecar."""
-    path = write_response([{"type": "step_start"}], tmp_path / "response-02.json")
-    assert response_text_path(path).read_text(encoding="utf-8") == ""
+    path = write_response([{"type": "step_start"}], tmp_path / "response-02.json", prompt="brief")
+    assert response_text_path(path).read_text(encoding="utf-8") == (
+        f"{PROMPT_HEADER}\n\nbrief\n\n{RESPONSE_HEADER}\n"
+    )
 
 
 def test_load_response_rejects_a_non_array(tmp_path: Path):

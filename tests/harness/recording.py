@@ -57,7 +57,7 @@ def record_run(spec: TestSpec, run_index: int, config: RunConfig) -> ResponseRec
             timeout=config.timeout,
             auto=config.auto,
         )
-        write_response(result.events, config.repo_root / relative)
+        write_response(result.events, config.repo_root / relative, prompt=spec.prompt)
         # Fixtures are pre-existing state, not the run's work: tell the footprint which
         # paths were seeded so they are not blamed on the agent, and so a seeded file the
         # agent deleted is still reported (an untracked file leaves no `D` in git status).

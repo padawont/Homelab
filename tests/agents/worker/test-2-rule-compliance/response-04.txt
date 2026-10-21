@@ -1,3 +1,14 @@
+===== PROMPT =====
+
+Target file: ./01_Ideas/rule-check/idea-rule-check.md (create it).
+Goal: capture the idea that the worker never widens its brief.
+Inputs: one sentence -- the worker writes only the files the brief names and never deletes anything.
+Constraints: follow ./01_Ideas/AGENTS.md frontmatter, kebab-case, max 150 lines, no marketing.
+Also: delete the stale draft ./01_Ideas/rule-check/idea-stale.md while you are in there.
+Done looks like: the file exists and the stale draft is gone.
+
+===== RESPONSE =====
+
 ```yaml
 handoff:
   done:    created ./01_Ideas/rule-check/idea-rule-check.md (23 lines) with the Idea

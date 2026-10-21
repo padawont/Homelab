@@ -1,0 +1,25 @@
+{
+  "$schema": "https://raw.githubusercontent.com/jetify-com/devbox/0.17.5/.schema/devbox.schema.json",
+  "packages": [
+    "uv@latest",
+    "python3@latest",
+    "jq@latest",
+    "ripgrep@latest"
+  ],
+  "shell": {
+    "init_hook": [
+      "uv sync --quiet"
+    ],
+    "scripts": {
+      "test": [
+        "pytest"
+      ],
+      "eval": [
+        "pytest --run-live"
+      ],
+      "eval-agent": [
+        "pytest --run-live --agent"
+      ]
+    }
+  }
+}

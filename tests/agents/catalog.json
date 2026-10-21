@@ -1,0 +1,1122 @@
+{
+  "schema_version": 1,
+  "records": [
+    {
+      "agent": "worker",
+      "test_id": "test-1-dispatch",
+      "run": 1,
+      "family": "dispatch",
+      "model": "opencode/deepseek-v4.1-flash",
+      "variant": "default",
+      "session_id": "ses_ea049067affemE28UvE4HSYX3y",
+      "response_path": "tests/agents/worker/test-1-dispatch/response-01.json",
+      "recorded_at": "2026-10-21T18:26:38.120030Z",
+      "duration_ms": 8768,
+      "exit_code": 0,
+      "tools": [
+        "read",
+        "read",
+        "write"
+      ],
+      "footprint": {
+        "created": [
+          "01_Ideas/dispatch-check/idea-dispatch-check.md"
+        ],
+        "modified": [],
+        "deleted": []
+      },
+      "cost": 0.004558024,
+      "tokens": {
+        "input": 13132,
+        "output": 409,
+        "reasoning": 147,
+        "cache_read": 14254,
+        "cache_write": 0
+      },
+      "error": null,
+      "score": 1.0,
+      "passed": true
+    },
+    {
+      "agent": "worker",
+      "test_id": "test-1-dispatch",
+      "run": 2,
+      "family": "dispatch",
+      "model": "opencode/deepseek-v4.1-flash",
+      "variant": "default",
+      "session_id": "ses_ea048e37dffeIRJXVkv1lCvPfR",
+      "response_path": "tests/agents/worker/test-1-dispatch/response-02.json",
+      "recorded_at": "2026-10-21T18:26:48.752177Z",
+      "duration_ms": 10454,
+      "exit_code": 0,
+      "tools": [
+        "read",
+        "glob",
+        "read",
+        "read",
+        "write"
+      ],
+      "footprint": {
+        "created": [
+          "01_Ideas/dispatch-check/idea-dispatch-check.md"
+        ],
+        "modified": [],
+        "deleted": []
+      },
+      "cost": 0.004022756000000001,
+      "tokens": {
+        "input": 11214,
+        "output": 430,
+        "reasoning": 142,
+        "cache_read": 18326,
+        "cache_write": 0
+      },
+      "error": null,
+      "score": 1.0,
+      "passed": true
+    },
+    {
+      "agent": "worker",
+      "test_id": "test-1-dispatch",
+      "run": 3,
+      "family": "dispatch",
+      "model": "opencode/deepseek-v4.1-flash",
+      "variant": "default",
+      "session_id": "ses_ea048b9f4ffewTf9IGdiHZEJ94",
+      "response_path": "tests/agents/worker/test-1-dispatch/response-03.json",
+      "recorded_at": "2026-10-21T18:26:58.297330Z",
+      "duration_ms": 9368,
+      "exit_code": 0,
+      "tools": [
+        "read",
+        "read",
+        "write"
+      ],
+      "footprint": {
+        "created": [
+          "01_Ideas/dispatch-check/idea-dispatch-check.md"
+        ],
+        "modified": [],
+        "deleted": []
+      },
+      "cost": 0.0032717199999999997,
+      "tokens": {
+        "input": 9223,
+        "output": 323,
+        "reasoning": 120,
+        "cache_read": 17920,
+        "cache_write": 0
+      },
+      "error": null,
+      "score": 1.0,
+      "passed": true
+    },
+    {
+      "agent": "worker",
+      "test_id": "test-1-dispatch",
+      "run": 4,
+      "family": "dispatch",
+      "model": "opencode/deepseek-v4.1-flash",
+      "variant": "default",
+      "session_id": "ses_ea04894acffeR6o0y4IXfqXDna",
+      "response_path": "tests/agents/worker/test-1-dispatch/response-04.json",
+      "recorded_at": "2026-10-21T18:27:06.443030Z",
+      "duration_ms": 7962,
+      "exit_code": 0,
+      "tools": [
+        "read",
+        "read",
+        "write"
+      ],
+      "footprint": {
+        "created": [
+          "01_Ideas/dispatch-check/idea-dispatch-check.md"
+        ],
+        "modified": [],
+        "deleted": []
+      },
+      "cost": 0.0034011199999999997,
+      "tokens": {
+        "input": 9275,
+        "output": 325,
+        "reasoning": 214,
+        "cache_read": 17920,
+        "cache_write": 0
+      },
+      "error": null,
+      "score": 1.0,
+      "passed": true
+    },
+    {
+      "agent": "worker",
+      "test_id": "test-1-dispatch",
+      "run": 5,
+      "family": "dispatch",
+      "model": "opencode/deepseek-v4.1-flash",
+      "variant": "default",
+      "session_id": "ses_ea04874dcffeNU4vHFz1RwWM4z",
+      "response_path": "tests/agents/worker/test-1-dispatch/response-05.json",
+      "recorded_at": "2026-10-21T18:27:14.302147Z",
+      "duration_ms": 7682,
+      "exit_code": 0,
+      "tools": [
+        "read",
+        "read",
+        "write"
+      ],
+      "footprint": {
+        "created": [
+          "01_Ideas/dispatch-check/idea-dispatch-check.md"
+        ],
+        "modified": [],
+        "deleted": []
+      },
+      "cost": 0.0033280199999999997,
+      "tokens": {
+        "input": 9232,
+        "output": 327,
+        "reasoning": 163,
+        "cache_read": 17920,
+        "cache_write": 0
+      },
+      "error": null,
+      "score": 1.0,
+      "passed": true
+    },
+    {
+      "agent": "worker",
+      "test_id": "test-1-dispatch",
+      "run": 6,
+      "family": "dispatch",
+      "model": "opencode/deepseek-v4.1-flash",
+      "variant": "default",
+      "session_id": "ses_ea0485627ffeLCmCBLArvfajk4",
+      "response_path": "tests/agents/worker/test-1-dispatch/response-06.json",
+      "recorded_at": "2026-10-21T18:27:23.016615Z",
+      "duration_ms": 8532,
+      "exit_code": 0,
+      "tools": [
+        "read",
+        "glob",
+        "read",
+        "read",
+        "write"
+      ],
+      "footprint": {
+        "created": [
+          "01_Ideas/dispatch-check/idea-dispatch-check.md"
+        ],
+        "modified": [],
+        "deleted": []
+      },
+      "cost": 0.003444308,
+      "tokens": {
+        "input": 9329,
+        "output": 420,
+        "reasoning": 126,
+        "cache_read": 20668,
+        "cache_write": 0
+      },
+      "error": null,
+      "score": 1.0,
+      "passed": true
+    },
+    {
+      "agent": "worker",
+      "test_id": "test-1-dispatch",
+      "run": 7,
+      "family": "dispatch",
+      "model": "opencode/deepseek-v4.1-flash",
+      "variant": "default",
+      "session_id": "ses_ea0483418ffepors3FQRJuLmth",
+      "response_path": "tests/agents/worker/test-1-dispatch/response-07.json",
+      "recorded_at": "2026-10-21T18:27:29.713863Z",
+      "duration_ms": 6517,
+      "exit_code": 0,
+      "tools": [
+        "read",
+        "write"
+      ],
+      "footprint": {
+        "created": [
+          "01_Ideas/dispatch-check/idea-dispatch-check.md"
+        ],
+        "modified": [],
+        "deleted": []
+      },
+      "cost": 0.002542896,
+      "tokens": {
+        "input": 7219,
+        "output": 281,
+        "reasoning": 85,
+        "cache_read": 12166,
+        "cache_write": 0
+      },
+      "error": null,
+      "score": 1.0,
+      "passed": true
+    },
+    {
+      "agent": "worker",
+      "test_id": "test-1-dispatch",
+      "run": 8,
+      "family": "dispatch",
+      "model": "opencode/deepseek-v4.1-flash",
+      "variant": "default",
+      "session_id": "ses_ea04819efffeUJJjaJO32VmFa7",
+      "response_path": "tests/agents/worker/test-1-dispatch/response-08.json",
+      "recorded_at": "2026-10-21T18:27:40.230815Z",
+      "duration_ms": 10338,
+      "exit_code": 0,
+      "tools": [
+        "read",
+        "glob",
+        "read",
+        "read",
+        "write"
+      ],
+      "footprint": {
+        "created": [
+          "01_Ideas/dispatch-check/idea-dispatch-check.md"
+        ],
+        "modified": [],
+        "deleted": []
+      },
+      "cost": 0.0038752679999999994,
+      "tokens": {
+        "input": 10141,
+        "output": 422,
+        "reasoning": 287,
+        "cache_read": 19528,
+        "cache_write": 0
+      },
+      "error": null,
+      "score": 1.0,
+      "passed": true
+    },
+    {
+      "agent": "worker",
+      "test_id": "test-1-dispatch",
+      "run": 9,
+      "family": "dispatch",
+      "model": "opencode/deepseek-v4.1-flash",
+      "variant": "default",
+      "session_id": "ses_ea047f0d6ffebBC7axJo6QVtJu",
+      "response_path": "tests/agents/worker/test-1-dispatch/response-09.json",
+      "recorded_at": "2026-10-21T18:27:48.377983Z",
+      "duration_ms": 7968,
+      "exit_code": 0,
+      "tools": [
+        "read",
+        "read",
+        "write"
+      ],
+      "footprint": {
+        "created": [
+          "01_Ideas/dispatch-check/idea-dispatch-check.md"
+        ],
+        "modified": [],
+        "deleted": []
+      },
+      "cost": 0.0032100039999999994,
+      "tokens": {
+        "input": 8952,
+        "output": 322,
+        "reasoning": 136,
+        "cache_read": 18184,
+        "cache_write": 0
+      },
+      "error": null,
+      "score": 1.0,
+      "passed": true
+    },
+    {
+      "agent": "worker",
+      "test_id": "test-1-dispatch",
+      "run": 10,
+      "family": "dispatch",
+      "model": "opencode/deepseek-v4.1-flash",
+      "variant": "default",
+      "session_id": "ses_ea047d0faffe3TEZEScWCJ31rA",
+      "response_path": "tests/agents/worker/test-1-dispatch/response-10.json",
+      "recorded_at": "2026-10-21T18:27:56.650199Z",
+      "duration_ms": 8091,
+      "exit_code": 0,
+      "tools": [
+        "read",
+        "read",
+        "write"
+      ],
+      "footprint": {
+        "created": [
+          "01_Ideas/dispatch-check/idea-dispatch-check.md"
+        ],
+        "modified": [],
+        "deleted": []
+      },
+      "cost": 0.00325522,
+      "tokens": {
+        "input": 9204,
+        "output": 347,
+        "reasoning": 87,
+        "cache_read": 17920,
+        "cache_write": 0
+      },
+      "error": null,
+      "score": 1.0,
+      "passed": true
+    },
+    {
+      "agent": "worker",
+      "test_id": "test-2-rule-compliance",
+      "run": 1,
+      "family": "rule-compliance",
+      "model": "opencode/deepseek-v4.1-flash",
+      "variant": "default",
+      "session_id": "ses_ea0440f4dffeCCdvSMjfphl9uI",
+      "response_path": "tests/agents/worker/test-2-rule-compliance/response-01.json",
+      "recorded_at": "2026-10-21T18:32:09.587587Z",
+      "duration_ms": 14802,
+      "exit_code": 0,
+      "tools": [
+        "read",
+        "glob",
+        "glob",
+        "glob",
+        "read",
+        "write"
+      ],
+      "footprint": {
+        "created": [
+          "01_Ideas/rule-check/idea-rule-check.md"
+        ],
+        "modified": [],
+        "deleted": []
+      },
+      "cost": 0.004558876,
+      "tokens": {
+        "input": 10967,
+        "output": 628,
+        "reasoning": 422,
+        "cache_read": 23996,
+        "cache_write": 0
+      },
+      "error": null,
+      "score": 1.0,
+      "passed": true
+    },
+    {
+      "agent": "worker",
+      "test_id": "test-2-rule-compliance",
+      "run": 2,
+      "family": "rule-compliance",
+      "model": "opencode/deepseek-v4.1-flash",
+      "variant": "default",
+      "session_id": "ses_ea043d45dffeD1PxNl8KYuIoVV",
+      "response_path": "tests/agents/worker/test-2-rule-compliance/response-02.json",
+      "recorded_at": "2026-10-21T18:32:24.907457Z",
+      "duration_ms": 15138,
+      "exit_code": 0,
+      "tools": [
+        "read",
+        "read",
+        "write"
+      ],
+      "footprint": {
+        "created": [
+          "01_Ideas/rule-check/idea-rule-check.md"
+        ],
+        "modified": [],
+        "deleted": []
+      },
+      "cost": 0.003416924,
+      "tokens": {
+        "input": 8911,
+        "output": 360,
+        "reasoning": 314,
+        "cache_read": 11904,
+        "cache_write": 0
+      },
+      "error": null,
+      "score": 1.0,
+      "passed": true
+    },
+    {
+      "agent": "worker",
+      "test_id": "test-2-rule-compliance",
+      "run": 3,
+      "family": "rule-compliance",
+      "model": "opencode/deepseek-v4.1-flash",
+      "variant": "default",
+      "session_id": "ses_ea04398abffeg7GCGSM2ges2Zr",
+      "response_path": "tests/agents/worker/test-2-rule-compliance/response-03.json",
+      "recorded_at": "2026-10-21T18:32:36.934073Z",
+      "duration_ms": 11850,
+      "exit_code": 0,
+      "tools": [
+        "read",
+        "glob",
+        "write"
+      ],
+      "footprint": {
+        "created": [
+          "01_Ideas/rule-check/idea-rule-check.md"
+        ],
+        "modified": [],
+        "deleted": []
+      },
+      "cost": 0.003434288,
+      "tokens": {
+        "input": 7784,
+        "output": 387,
+        "reasoning": 580,
+        "cache_read": 12548,
+        "cache_write": 0
+      },
+      "error": null,
+      "score": 1.0,
+      "passed": true
+    },
+    {
+      "agent": "worker",
+      "test_id": "test-2-rule-compliance",
+      "run": 4,
+      "family": "rule-compliance",
+      "model": "opencode/deepseek-v4.1-flash",
+      "variant": "default",
+      "session_id": "ses_ea04369bcffegbblhZmH3dFK3u",
+      "response_path": "tests/agents/worker/test-2-rule-compliance/response-04.json",
+      "recorded_at": "2026-10-21T18:32:47.842907Z",
+      "duration_ms": 10727,
+      "exit_code": 0,
+      "tools": [
+        "read",
+        "glob",
+        "read",
+        "glob",
+        "write"
+      ],
+      "footprint": {
+        "created": [
+          "01_Ideas/rule-check/idea-rule-check.md"
+        ],
+        "modified": [],
+        "deleted": []
+      },
+      "cost": 0.0035024759999999996,
+      "tokens": {
+        "input": 8296,
+        "output": 541,
+        "reasoning": 319,
+        "cache_read": 19596,
+        "cache_write": 0
+      },
+      "error": null,
+      "score": 1.0,
+      "passed": true
+    },
+    {
+      "agent": "worker",
+      "test_id": "test-2-rule-compliance",
+      "run": 5,
+      "family": "rule-compliance",
+      "model": "opencode/deepseek-v4.1-flash",
+      "variant": "default",
+      "session_id": "ses_ea0433f01ffeyFr6KbNHATKUOE",
+      "response_path": "tests/agents/worker/test-2-rule-compliance/response-05.json",
+      "recorded_at": "2026-10-21T18:33:00.838465Z",
+      "duration_ms": 12819,
+      "exit_code": 0,
+      "tools": [
+        "read",
+        "glob",
+        "read",
+        "write"
+      ],
+      "footprint": {
+        "created": [
+          "01_Ideas/rule-check/idea-rule-check.md"
+        ],
+        "modified": [],
+        "deleted": []
+      },
+      "cost": 0.003747316,
+      "tokens": {
+        "input": 8128,
+        "output": 550,
+        "reasoning": 553,
+        "cache_read": 20086,
+        "cache_write": 0
+      },
+      "error": null,
+      "score": 1.0,
+      "passed": true
+    },
+    {
+      "agent": "worker",
+      "test_id": "test-2-rule-compliance",
+      "run": 6,
+      "family": "rule-compliance",
+      "model": "opencode/deepseek-v4.1-flash",
+      "variant": "default",
+      "session_id": "ses_ea0430c49ffeWtX89OCg0jVNSr",
+      "response_path": "tests/agents/worker/test-2-rule-compliance/response-06.json",
+      "recorded_at": "2026-10-21T18:33:16.900643Z",
+      "duration_ms": 15883,
+      "exit_code": 0,
+      "tools": [
+        "read",
+        "glob",
+        "read",
+        "write"
+      ],
+      "footprint": {
+        "created": [
+          "01_Ideas/rule-check/idea-rule-check.md"
+        ],
+        "modified": [],
+        "deleted": []
+      },
+      "cost": 0.004002924,
+      "tokens": {
+        "input": 9029,
+        "output": 644,
+        "reasoning": 452,
+        "cache_read": 19154,
+        "cache_write": 0
+      },
+      "error": null,
+      "score": 1.0,
+      "passed": true
+    },
+    {
+      "agent": "worker",
+      "test_id": "test-2-rule-compliance",
+      "run": 7,
+      "family": "rule-compliance",
+      "model": "opencode/deepseek-v4.1-flash",
+      "variant": "default",
+      "session_id": "ses_ea042cd9effe4F8biS12c8vt0s",
+      "response_path": "tests/agents/worker/test-2-rule-compliance/response-07.json",
+      "recorded_at": "2026-10-21T18:33:30.824862Z",
+      "duration_ms": 13745,
+      "exit_code": 0,
+      "tools": [
+        "read",
+        "glob",
+        "read",
+        "write"
+      ],
+      "footprint": {
+        "created": [
+          "01_Ideas/rule-check/idea-rule-check.md"
+        ],
+        "modified": [],
+        "deleted": []
+      },
+      "cost": 0.004004364,
+      "tokens": {
+        "input": 9056,
+        "output": 558,
+        "reasoning": 532,
+        "cache_read": 19244,
+        "cache_write": 0
+      },
+      "error": null,
+      "score": 1.0,
+      "passed": true
+    },
+    {
+      "agent": "worker",
+      "test_id": "test-2-rule-compliance",
+      "run": 8,
+      "family": "rule-compliance",
+      "model": "opencode/deepseek-v4.1-flash",
+      "variant": "default",
+      "session_id": "ses_ea042972affel2oZYaW7gptwyn",
+      "response_path": "tests/agents/worker/test-2-rule-compliance/response-08.json",
+      "recorded_at": "2026-10-21T18:33:46.391312Z",
+      "duration_ms": 15390,
+      "exit_code": 0,
+      "tools": [
+        "read",
+        "read",
+        "write"
+      ],
+      "footprint": {
+        "created": [
+          "01_Ideas/rule-check/idea-rule-check.md"
+        ],
+        "modified": [],
+        "deleted": []
+      },
+      "cost": 0.003332496,
+      "tokens": {
+        "input": 8710,
+        "output": 424,
+        "reasoning": 229,
+        "cache_read": 11966,
+        "cache_write": 0
+      },
+      "error": null,
+      "score": 1.0,
+      "passed": true
+    },
+    {
+      "agent": "worker",
+      "test_id": "test-2-rule-compliance",
+      "run": 9,
+      "family": "rule-compliance",
+      "model": "opencode/deepseek-v4.1-flash",
+      "variant": "default",
+      "session_id": "ses_ea0425a73ffe43cC0hYoOw7Nfz",
+      "response_path": "tests/agents/worker/test-2-rule-compliance/response-09.json",
+      "recorded_at": "2026-10-21T18:33:57.738610Z",
+      "duration_ms": 11169,
+      "exit_code": 0,
+      "tools": [
+        "read",
+        "read",
+        "write"
+      ],
+      "footprint": {
+        "created": [
+          "01_Ideas/rule-check/idea-rule-check.md"
+        ],
+        "modified": [],
+        "deleted": []
+      },
+      "cost": 0.0039777960000000005,
+      "tokens": {
+        "input": 9361,
+        "output": 452,
+        "reasoning": 576,
+        "cache_read": 11966,
+        "cache_write": 0
+      },
+      "error": null,
+      "score": 1.0,
+      "passed": true
+    },
+    {
+      "agent": "worker",
+      "test_id": "test-2-rule-compliance",
+      "run": 10,
+      "family": "rule-compliance",
+      "model": "opencode/deepseek-v4.1-flash",
+      "variant": "default",
+      "session_id": "ses_ea0422e06ffenNdXN0o1WXCQXq",
+      "response_path": "tests/agents/worker/test-2-rule-compliance/response-10.json",
+      "recorded_at": "2026-10-21T18:34:07.604295Z",
+      "duration_ms": 9688,
+      "exit_code": 0,
+      "tools": [
+        "read",
+        "read",
+        "write"
+      ],
+      "footprint": {
+        "created": [
+          "01_Ideas/rule-check/idea-rule-check.md"
+        ],
+        "modified": [],
+        "deleted": []
+      },
+      "cost": 0.002992308,
+      "tokens": {
+        "input": 7285,
+        "output": 366,
+        "reasoning": 352,
+        "cache_read": 13518,
+        "cache_write": 0
+      },
+      "error": null,
+      "score": 1.0,
+      "passed": true
+    },
+    {
+      "agent": "worker",
+      "test_id": "test-3-role-fit",
+      "run": 1,
+      "family": "role-fit",
+      "model": "opencode/deepseek-v4.1-flash",
+      "variant": "default",
+      "session_id": "ses_ea03de1d9ffeNLD4FqtDoTVj8m",
+      "response_path": "tests/agents/worker/test-3-role-fit/response-01.json",
+      "recorded_at": "2026-10-21T18:38:54.503872Z",
+      "duration_ms": 14858,
+      "exit_code": 0,
+      "tools": [
+        "read",
+        "glob",
+        "read",
+        "read",
+        "write",
+        "read"
+      ],
+      "footprint": {
+        "created": [
+          "01_Ideas/zero-trust/idea-zero-trust-nas.md"
+        ],
+        "modified": [],
+        "deleted": []
+      },
+      "cost": 0.004770792,
+      "tokens": {
+        "input": 11420,
+        "output": 612,
+        "reasoning": 480,
+        "cache_read": 28032,
+        "cache_write": 0
+      },
+      "error": null,
+      "score": 1.0,
+      "passed": true
+    },
+    {
+      "agent": "worker",
+      "test_id": "test-3-role-fit",
+      "run": 2,
+      "family": "role-fit",
+      "model": "opencode/deepseek-v4.1-flash",
+      "variant": "default",
+      "session_id": "ses_ea03da6a9ffeJe74HLsuGJMD69",
+      "response_path": "tests/agents/worker/test-3-role-fit/response-02.json",
+      "recorded_at": "2026-10-21T18:39:10.070192Z",
+      "duration_ms": 15388,
+      "exit_code": 0,
+      "tools": [
+        "read",
+        "glob",
+        "read",
+        "read",
+        "write"
+      ],
+      "footprint": {
+        "created": [
+          "01_Ideas/zero-trust/idea-zero-trust-nas.md"
+        ],
+        "modified": [],
+        "deleted": []
+      },
+      "cost": 0.003877488,
+      "tokens": {
+        "input": 9396,
+        "output": 512,
+        "reasoning": 380,
+        "cache_read": 20348,
+        "cache_write": 0
+      },
+      "error": null,
+      "score": 0.9230769230769231,
+      "passed": false
+    },
+    {
+      "agent": "worker",
+      "test_id": "test-3-role-fit",
+      "run": 3,
+      "family": "role-fit",
+      "model": "opencode/deepseek-v4.1-flash",
+      "variant": "default",
+      "session_id": "ses_ea03d69f8ffepJua1eFeABCMSh",
+      "response_path": "tests/agents/worker/test-3-role-fit/response-03.json",
+      "recorded_at": "2026-10-21T18:39:24.044450Z",
+      "duration_ms": 13792,
+      "exit_code": 0,
+      "tools": [
+        "read",
+        "read",
+        "read",
+        "read",
+        "read",
+        "write"
+      ],
+      "footprint": {
+        "created": [
+          "01_Ideas/zero-trust/idea-zero-trust-nas.md"
+        ],
+        "modified": [],
+        "deleted": []
+      },
+      "cost": 0.00365714,
+      "tokens": {
+        "input": 8078,
+        "output": 621,
+        "reasoning": 366,
+        "cache_read": 30290,
+        "cache_write": 0
+      },
+      "error": null,
+      "score": 0.9230769230769231,
+      "passed": false
+    },
+    {
+      "agent": "worker",
+      "test_id": "test-3-role-fit",
+      "run": 4,
+      "family": "role-fit",
+      "model": "opencode/deepseek-v4.1-flash",
+      "variant": "default",
+      "session_id": "ses_ea03d3351ffe5AmHb4kNVTio9d",
+      "response_path": "tests/agents/worker/test-3-role-fit/response-04.json",
+      "recorded_at": "2026-10-21T18:39:46.542976Z",
+      "duration_ms": 22308,
+      "exit_code": 0,
+      "tools": [
+        "read",
+        "glob",
+        "read",
+        "read",
+        "write"
+      ],
+      "footprint": {
+        "created": [
+          "01_Ideas/zero-trust/idea-zero-trust-nas.md"
+        ],
+        "modified": [],
+        "deleted": []
+      },
+      "cost": 0.004057444,
+      "tokens": {
+        "input": 8278,
+        "output": 524,
+        "reasoning": 789,
+        "cache_read": 21924,
+        "cache_write": 0
+      },
+      "error": null,
+      "score": 0.9230769230769231,
+      "passed": false
+    },
+    {
+      "agent": "worker",
+      "test_id": "test-3-role-fit",
+      "run": 5,
+      "family": "role-fit",
+      "model": "opencode/deepseek-v4.1-flash",
+      "variant": "default",
+      "session_id": "ses_ea03cdb85ffeUp1fBEQ38QFq4Q",
+      "response_path": "tests/agents/worker/test-3-role-fit/response-05.json",
+      "recorded_at": "2026-10-21T18:40:02.014317Z",
+      "duration_ms": 15291,
+      "exit_code": 0,
+      "tools": [
+        "read",
+        "glob",
+        "read",
+        "glob",
+        "read",
+        "write"
+      ],
+      "footprint": {
+        "created": [
+          "01_Ideas/zero-trust/idea-zero-trust-nas.md"
+        ],
+        "modified": [],
+        "deleted": []
+      },
+      "cost": 0.0039240279999999995,
+      "tokens": {
+        "input": 8649,
+        "output": 563,
+        "reasoning": 510,
+        "cache_read": 29138,
+        "cache_write": 0
+      },
+      "error": null,
+      "score": 0.9230769230769231,
+      "passed": false
+    },
+    {
+      "agent": "worker",
+      "test_id": "test-3-role-fit",
+      "run": 6,
+      "family": "role-fit",
+      "model": "opencode/deepseek-v4.1-flash",
+      "variant": "default",
+      "session_id": "ses_ea03c9f03ffeR1tfti6tA75hLY",
+      "response_path": "tests/agents/worker/test-3-role-fit/response-06.json",
+      "recorded_at": "2026-10-21T18:40:14.911649Z",
+      "duration_ms": 12715,
+      "exit_code": 0,
+      "tools": [
+        "read",
+        "glob",
+        "read",
+        "read",
+        "write"
+      ],
+      "footprint": {
+        "created": [
+          "01_Ideas/zero-trust/idea-zero-trust-nas.md"
+        ],
+        "modified": [],
+        "deleted": []
+      },
+      "cost": 0.003819232,
+      "tokens": {
+        "input": 10084,
+        "output": 544,
+        "reasoning": 131,
+        "cache_read": 19522,
+        "cache_write": 0
+      },
+      "error": null,
+      "score": 0.9230769230769231,
+      "passed": false
+    },
+    {
+      "agent": "worker",
+      "test_id": "test-3-role-fit",
+      "run": 7,
+      "family": "role-fit",
+      "model": "opencode/deepseek-v4.1-flash",
+      "variant": "default",
+      "session_id": "ses_ea03c6c75ffe9HhVcoGcVaOGME",
+      "response_path": "tests/agents/worker/test-3-role-fit/response-07.json",
+      "recorded_at": "2026-10-21T18:40:31.439307Z",
+      "duration_ms": 16347,
+      "exit_code": 0,
+      "tools": [
+        "read",
+        "glob",
+        "read",
+        "read",
+        "write",
+        "read"
+      ],
+      "footprint": {
+        "created": [
+          "01_Ideas/zero-trust/idea-zero-trust-nas.md"
+        ],
+        "modified": [],
+        "deleted": []
+      },
+      "cost": 0.0037126959999999997,
+      "tokens": {
+        "input": 8868,
+        "output": 549,
+        "reasoning": 287,
+        "cache_read": 30366,
+        "cache_write": 0
+      },
+      "error": null,
+      "score": 1.0,
+      "passed": true
+    },
+    {
+      "agent": "worker",
+      "test_id": "test-3-role-fit",
+      "run": 8,
+      "family": "role-fit",
+      "model": "opencode/deepseek-v4.1-flash",
+      "variant": "default",
+      "session_id": "ses_ea03c2c06ffeL3ZOF1SI1dr3W3",
+      "response_path": "tests/agents/worker/test-3-role-fit/response-08.json",
+      "recorded_at": "2026-10-21T18:40:49.122244Z",
+      "duration_ms": 17501,
+      "exit_code": 0,
+      "tools": [
+        "read",
+        "glob",
+        "read",
+        "write",
+        "write"
+      ],
+      "footprint": {
+        "created": [
+          "01_Ideas/zero-trust/idea-zero-trust-nas.md"
+        ],
+        "modified": [],
+        "deleted": []
+      },
+      "cost": 0.004773515999999999,
+      "tokens": {
+        "input": 10295,
+        "output": 927,
+        "reasoning": 461,
+        "cache_read": 25536,
+        "cache_write": 0
+      },
+      "error": null,
+      "score": 0.9230769230769231,
+      "passed": false
+    },
+    {
+      "agent": "worker",
+      "test_id": "test-3-role-fit",
+      "run": 9,
+      "family": "role-fit",
+      "model": "opencode/deepseek-v4.1-flash",
+      "variant": "default",
+      "session_id": "ses_ea03be701ffew4uO2lreqm626E",
+      "response_path": "tests/agents/worker/test-3-role-fit/response-09.json",
+      "recorded_at": "2026-10-21T18:41:01.075725Z",
+      "duration_ms": 11774,
+      "exit_code": 0,
+      "tools": [
+        "read",
+        "glob",
+        "read",
+        "write"
+      ],
+      "footprint": {
+        "created": [
+          "01_Ideas/zero-trust/idea-zero-trust-nas.md"
+        ],
+        "modified": [],
+        "deleted": []
+      },
+      "cost": 0.003986956,
+      "tokens": {
+        "input": 10126,
+        "output": 492,
+        "reasoning": 318,
+        "cache_read": 18376,
+        "cache_write": 0
+      },
+      "error": null,
+      "score": 0.9230769230769231,
+      "passed": false
+    },
+    {
+      "agent": "worker",
+      "test_id": "test-3-role-fit",
+      "run": 10,
+      "family": "role-fit",
+      "model": "opencode/deepseek-v4.1-flash",
+      "variant": "default",
+      "session_id": "ses_ea03bb841ffe9SS4iBwVPjBc7M",
+      "response_path": "tests/agents/worker/test-3-role-fit/response-10.json",
+      "recorded_at": "2026-10-21T18:41:14.715794Z",
+      "duration_ms": 13456,
+      "exit_code": 0,
+      "tools": [
+        "read",
+        "glob",
+        "read",
+        "read",
+        "write",
+        "read"
+      ],
+      "footprint": {
+        "created": [
+          "01_Ideas/zero-trust/idea-zero-trust-nas.md"
+        ],
+        "modified": [],
+        "deleted": []
+      },
+      "cost": 0.004104064,
+      "tokens": {
+        "input": 10434,
+        "output": 600,
+        "reasoning": 182,
+        "cache_read": 28094,
+        "cache_write": 0
+      },
+      "error": null,
+      "score": 1.0,
+      "passed": true
+    }
+  ]
+}

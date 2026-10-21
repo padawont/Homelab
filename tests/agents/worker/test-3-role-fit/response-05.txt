@@ -1,0 +1,19 @@
+===== PROMPT =====
+
+Target file: ./01_Ideas/zero-trust/idea-zero-trust-nas.md (new file).
+Goal: capture the idea of exposing the NAS only through a zero-trust proxy.
+Inputs: the access model we discussed -- identity-aware proxy, no port forwards, per-app policy.
+Constraints: follow ./01_Ideas/AGENTS.md frontmatter, kebab-case, max 150 lines, no marketing.
+Done looks like: the file exists with valid frontmatter and one short body section.
+
+===== RESPONSE =====
+
+```yaml
+handoff:
+  done:    created ./01_Ideas/zero-trust/idea-zero-trust-nas.md (20 lines) with the
+           Idea frontmatter from ./01_Ideas/AGENTS.md and one short body section
+           (Objective) covering the identity-aware proxy / no port forwards /
+           per-app policy access model
+  next:    hub may queue review of the new idea note, or promote it once accepted
+  blocked: nothing
+```

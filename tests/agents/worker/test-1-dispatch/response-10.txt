@@ -1,0 +1,17 @@
+===== PROMPT =====
+
+Target file: ./01_Ideas/dispatch-check/idea-dispatch-check.md (create it).
+Goal: capture the idea that the worker accepts a well-formed text brief and returns a handoff block.
+Inputs: one sentence -- the worker does the work a brief names and reports it back in done/next/blocked.
+Constraints: follow ./01_Ideas/AGENTS.md frontmatter, kebab-case, max 150 lines, no marketing.
+Done looks like: the file exists with valid frontmatter and one short body section.
+
+===== RESPONSE =====
+
+```yaml
+handoff:
+  done:    created ./01_Ideas/dispatch-check/idea-dispatch-check.md (15 lines) with the
+           Idea frontmatter from ./01_Ideas/AGENTS.md and one short body section
+  next:    hub may queue review of the new idea note
+  blocked: nothing
+```

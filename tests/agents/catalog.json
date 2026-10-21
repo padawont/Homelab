@@ -1,4 +1,370 @@
 {
   "schema_version": 1,
-  "records": []
+  "records": [
+    {
+      "agent": "worker",
+      "test_id": "test-1-dispatch",
+      "run": 1,
+      "family": "dispatch",
+      "model": "opencode/deepseek-v4.1-flash",
+      "variant": "default",
+      "session_id": "ses_ea049067affemE28UvE4HSYX3y",
+      "response_path": "tests/agents/worker/test-1-dispatch/response-01.json",
+      "recorded_at": "2026-10-21T18:26:38.120030Z",
+      "duration_ms": 8768,
+      "exit_code": 0,
+      "tools": [
+        "read",
+        "read",
+        "write"
+      ],
+      "footprint": {
+        "created": [
+          "01_Ideas/dispatch-check/idea-dispatch-check.md"
+        ],
+        "modified": [],
+        "deleted": []
+      },
+      "cost": 0.004558024,
+      "tokens": {
+        "input": 13132,
+        "output": 409,
+        "reasoning": 147,
+        "cache_read": 14254,
+        "cache_write": 0
+      },
+      "error": null,
+      "score": 1.0,
+      "passed": true
+    },
+    {
+      "agent": "worker",
+      "test_id": "test-1-dispatch",
+      "run": 2,
+      "family": "dispatch",
+      "model": "opencode/deepseek-v4.1-flash",
+      "variant": "default",
+      "session_id": "ses_ea048e37dffeIRJXVkv1lCvPfR",
+      "response_path": "tests/agents/worker/test-1-dispatch/response-02.json",
+      "recorded_at": "2026-10-21T18:26:48.752177Z",
+      "duration_ms": 10454,
+      "exit_code": 0,
+      "tools": [
+        "read",
+        "glob",
+        "read",
+        "read",
+        "write"
+      ],
+      "footprint": {
+        "created": [
+          "01_Ideas/dispatch-check/idea-dispatch-check.md"
+        ],
+        "modified": [],
+        "deleted": []
+      },
+      "cost": 0.004022756000000001,
+      "tokens": {
+        "input": 11214,
+        "output": 430,
+        "reasoning": 142,
+        "cache_read": 18326,
+        "cache_write": 0
+      },
+      "error": null,
+      "score": 1.0,
+      "passed": true
+    },
+    {
+      "agent": "worker",
+      "test_id": "test-1-dispatch",
+      "run": 3,
+      "family": "dispatch",
+      "model": "opencode/deepseek-v4.1-flash",
+      "variant": "default",
+      "session_id": "ses_ea048b9f4ffewTf9IGdiHZEJ94",
+      "response_path": "tests/agents/worker/test-1-dispatch/response-03.json",
+      "recorded_at": "2026-10-21T18:26:58.297330Z",
+      "duration_ms": 9368,
+      "exit_code": 0,
+      "tools": [
+        "read",
+        "read",
+        "write"
+      ],
+      "footprint": {
+        "created": [
+          "01_Ideas/dispatch-check/idea-dispatch-check.md"
+        ],
+        "modified": [],
+        "deleted": []
+      },
+      "cost": 0.0032717199999999997,
+      "tokens": {
+        "input": 9223,
+        "output": 323,
+        "reasoning": 120,
+        "cache_read": 17920,
+        "cache_write": 0
+      },
+      "error": null,
+      "score": 1.0,
+      "passed": true
+    },
+    {
+      "agent": "worker",
+      "test_id": "test-1-dispatch",
+      "run": 4,
+      "family": "dispatch",
+      "model": "opencode/deepseek-v4.1-flash",
+      "variant": "default",
+      "session_id": "ses_ea04894acffeR6o0y4IXfqXDna",
+      "response_path": "tests/agents/worker/test-1-dispatch/response-04.json",
+      "recorded_at": "2026-10-21T18:27:06.443030Z",
+      "duration_ms": 7962,
+      "exit_code": 0,
+      "tools": [
+        "read",
+        "read",
+        "write"
+      ],
+      "footprint": {
+        "created": [
+          "01_Ideas/dispatch-check/idea-dispatch-check.md"
+        ],
+        "modified": [],
+        "deleted": []
+      },
+      "cost": 0.0034011199999999997,
+      "tokens": {
+        "input": 9275,
+        "output": 325,
+        "reasoning": 214,
+        "cache_read": 17920,
+        "cache_write": 0
+      },
+      "error": null,
+      "score": 1.0,
+      "passed": true
+    },
+    {
+      "agent": "worker",
+      "test_id": "test-1-dispatch",
+      "run": 5,
+      "family": "dispatch",
+      "model": "opencode/deepseek-v4.1-flash",
+      "variant": "default",
+      "session_id": "ses_ea04874dcffeNU4vHFz1RwWM4z",
+      "response_path": "tests/agents/worker/test-1-dispatch/response-05.json",
+      "recorded_at": "2026-10-21T18:27:14.302147Z",
+      "duration_ms": 7682,
+      "exit_code": 0,
+      "tools": [
+        "read",
+        "read",
+        "write"
+      ],
+      "footprint": {
+        "created": [
+          "01_Ideas/dispatch-check/idea-dispatch-check.md"
+        ],
+        "modified": [],
+        "deleted": []
+      },
+      "cost": 0.0033280199999999997,
+      "tokens": {
+        "input": 9232,
+        "output": 327,
+        "reasoning": 163,
+        "cache_read": 17920,
+        "cache_write": 0
+      },
+      "error": null,
+      "score": 1.0,
+      "passed": true
+    },
+    {
+      "agent": "worker",
+      "test_id": "test-1-dispatch",
+      "run": 6,
+      "family": "dispatch",
+      "model": "opencode/deepseek-v4.1-flash",
+      "variant": "default",
+      "session_id": "ses_ea0485627ffeLCmCBLArvfajk4",
+      "response_path": "tests/agents/worker/test-1-dispatch/response-06.json",
+      "recorded_at": "2026-10-21T18:27:23.016615Z",
+      "duration_ms": 8532,
+      "exit_code": 0,
+      "tools": [
+        "read",
+        "glob",
+        "read",
+        "read",
+        "write"
+      ],
+      "footprint": {
+        "created": [
+          "01_Ideas/dispatch-check/idea-dispatch-check.md"
+        ],
+        "modified": [],
+        "deleted": []
+      },
+      "cost": 0.003444308,
+      "tokens": {
+        "input": 9329,
+        "output": 420,
+        "reasoning": 126,
+        "cache_read": 20668,
+        "cache_write": 0
+      },
+      "error": null,
+      "score": 1.0,
+      "passed": true
+    },
+    {
+      "agent": "worker",
+      "test_id": "test-1-dispatch",
+      "run": 7,
+      "family": "dispatch",
+      "model": "opencode/deepseek-v4.1-flash",
+      "variant": "default",
+      "session_id": "ses_ea0483418ffepors3FQRJuLmth",
+      "response_path": "tests/agents/worker/test-1-dispatch/response-07.json",
+      "recorded_at": "2026-10-21T18:27:29.713863Z",
+      "duration_ms": 6517,
+      "exit_code": 0,
+      "tools": [
+        "read",
+        "write"
+      ],
+      "footprint": {
+        "created": [
+          "01_Ideas/dispatch-check/idea-dispatch-check.md"
+        ],
+        "modified": [],
+        "deleted": []
+      },
+      "cost": 0.002542896,
+      "tokens": {
+        "input": 7219,
+        "output": 281,
+        "reasoning": 85,
+        "cache_read": 12166,
+        "cache_write": 0
+      },
+      "error": null,
+      "score": 1.0,
+      "passed": true
+    },
+    {
+      "agent": "worker",
+      "test_id": "test-1-dispatch",
+      "run": 8,
+      "family": "dispatch",
+      "model": "opencode/deepseek-v4.1-flash",
+      "variant": "default",
+      "session_id": "ses_ea04819efffeUJJjaJO32VmFa7",
+      "response_path": "tests/agents/worker/test-1-dispatch/response-08.json",
+      "recorded_at": "2026-10-21T18:27:40.230815Z",
+      "duration_ms": 10338,
+      "exit_code": 0,
+      "tools": [
+        "read",
+        "glob",
+        "read",
+        "read",
+        "write"
+      ],
+      "footprint": {
+        "created": [
+          "01_Ideas/dispatch-check/idea-dispatch-check.md"
+        ],
+        "modified": [],
+        "deleted": []
+      },
+      "cost": 0.0038752679999999994,
+      "tokens": {
+        "input": 10141,
+        "output": 422,
+        "reasoning": 287,
+        "cache_read": 19528,
+        "cache_write": 0
+      },
+      "error": null,
+      "score": 1.0,
+      "passed": true
+    },
+    {
+      "agent": "worker",
+      "test_id": "test-1-dispatch",
+      "run": 9,
+      "family": "dispatch",
+      "model": "opencode/deepseek-v4.1-flash",
+      "variant": "default",
+      "session_id": "ses_ea047f0d6ffebBC7axJo6QVtJu",
+      "response_path": "tests/agents/worker/test-1-dispatch/response-09.json",
+      "recorded_at": "2026-10-21T18:27:48.377983Z",
+      "duration_ms": 7968,
+      "exit_code": 0,
+      "tools": [
+        "read",
+        "read",
+        "write"
+      ],
+      "footprint": {
+        "created": [
+          "01_Ideas/dispatch-check/idea-dispatch-check.md"
+        ],
+        "modified": [],
+        "deleted": []
+      },
+      "cost": 0.0032100039999999994,
+      "tokens": {
+        "input": 8952,
+        "output": 322,
+        "reasoning": 136,
+        "cache_read": 18184,
+        "cache_write": 0
+      },
+      "error": null,
+      "score": 1.0,
+      "passed": true
+    },
+    {
+      "agent": "worker",
+      "test_id": "test-1-dispatch",
+      "run": 10,
+      "family": "dispatch",
+      "model": "opencode/deepseek-v4.1-flash",
+      "variant": "default",
+      "session_id": "ses_ea047d0faffe3TEZEScWCJ31rA",
+      "response_path": "tests/agents/worker/test-1-dispatch/response-10.json",
+      "recorded_at": "2026-10-21T18:27:56.650199Z",
+      "duration_ms": 8091,
+      "exit_code": 0,
+      "tools": [
+        "read",
+        "read",
+        "write"
+      ],
+      "footprint": {
+        "created": [
+          "01_Ideas/dispatch-check/idea-dispatch-check.md"
+        ],
+        "modified": [],
+        "deleted": []
+      },
+      "cost": 0.00325522,
+      "tokens": {
+        "input": 9204,
+        "output": 347,
+        "reasoning": 87,
+        "cache_read": 17920,
+        "cache_write": 0
+      },
+      "error": null,
+      "score": 1.0,
+      "passed": true
+    }
+  ]
 }

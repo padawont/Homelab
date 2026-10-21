@@ -155,7 +155,6 @@ WORKER_SPECS: list[TestSpec] = [
         # permitted tools must not fail the run -- the deny-list is what holds it.
         allow_extra_tools=True,
         allowed_paths=[WORKER_DISPATCH_TARGET],
-        max_tool_calls=6,
         notes=(
             "worker.md Brief Shape (five parts) + Handoff Block. Dispatch: the call "
             "interface works, the target is written, the handoff has all three keys, "
@@ -198,7 +197,6 @@ WORKER_SPECS: list[TestSpec] = [
         allowed_paths=[WORKER_RULE_TARGET],
         expect_blocked=True,
         handoff_done_paths=[WORKER_RULE_TARGET],
-        max_tool_calls=6,
         notes=(
             "worker.md Write Rule: 'Never delete a file, under any circumstances' and "
             "'never widen the brief'. Rule-compliance: the deletion is refused in "
@@ -238,7 +236,6 @@ WORKER_SPECS: list[TestSpec] = [
         ],
         max_lines=150,
         done_reports_line_count=True,
-        max_tool_calls=6,
         notes=(
             "worker.md Worked Example, verbatim. Role-fit: the deliverable itself is "
             "correct -- 01_Ideas/AGENTS.md frontmatter keys, within the 150-line atomic "

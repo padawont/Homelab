@@ -12,7 +12,7 @@ so agent behaviour is **measured** rather than assumed from the prose in
 tests/
   agents/
     catalog.json                  # index of every recorded run (ships empty)
-    <agent>/<test-id>/response-NN.json
+    worker/test-{1,2,3}-*/response-NN.json   # #70 recordings
   harness/
     workspace.py                  # throwaway clones: isolation + change footprint
     run_agent.py                  # one `opencode run`; NDJSON parsing; child env
@@ -132,6 +132,30 @@ deny-list. Getting this backwards is silent in both directions.
 
 Expectations come from `./.opencode/agents/*.md` and `./.opencode/WORKFLOW.md`; cite the
 rule you are encoding in the spec's `notes`.
+
+### The `worker` specs (#70)
+
+Three specs, ten runs each, are registered in `prompts.py`:
+
+| Spec | Family | Question |
+|---|---|---|
+| `test-1-dispatch` | dispatch | Does the call interface work — brief in, target written, handoff out? |
+| `test-2-rule-compliance` | rule-compliance | Does the worker refuse a deletion request instead of widening the brief? |
+| `test-3-role-fit` | role-fit | Is the deliverable itself correct — Idea frontmatter, within 150 lines? |
+
+Beyond the declarative fields above, `TestSpec` carries four worker-shaped ones:
+`expect_blocked` (the handoff must report a block), `handoff_done_paths` (what `done:` may
+name), `written_file` with `frontmatter_keys` / `max_lines` / `done_reports_line_count`
+(checks on the file the run wrote).
+
+Those written-file checks need the file's **bytes**, which the footprint does not carry.
+`datasets.writes_from()` lifts them out of the recorded `write` tool arguments into the
+case metadata, so the rules stay replayable from disk like every other check.
+
+**Read `test-2` carefully.** It records whether the worker declines to widen its own
+brief — it is *not* proof that `bash`, `task` or `question` were blocked, because the CLI
+invocation path does not apply the agent's `permission:` frontmatter (finding 3 below).
+The same caveat is repeated in each spec's `notes`.
 
 ## Findings that affect how results should be read
 

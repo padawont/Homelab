@@ -28,6 +28,8 @@ from harness.run_agent import final_text, load_response, tool_calls
 
 DATASET_NAME = "agent-conformance"
 
+WRITE_TOOLS = frozenset({"write", "edit"})
+
 
 @dataclass(frozen=True)
 class CaseInputs:
@@ -37,7 +39,26 @@ class CaseInputs:
     record: ResponseRecord
 
 
-def case_metadata(record: ResponseRecord) -> dict[str, Any]:
+def writes_from(events: list[dict[str, Any]]) -> dict[str, str]:
+    """The files a run wrote, as ``{path: content}``, parsed from its tool calls.
+
+    The footprint records only *which* paths changed; the bytes live in the recorded
+    ``write`` tool arguments. Lifting them here is what lets a rule check frontmatter and
+    line counts without re-invoking the agent.
+    """
+    writes: dict[str, str] = {}
+    for call in tool_calls(events):
+        if call.name not in WRITE_TOOLS:
+            continue
+        arguments = call.arguments
+        path = arguments.get("filePath") or arguments.get("path")
+        content = arguments.get("content")
+        if isinstance(path, str) and isinstance(content, str):
+            writes[path.strip().lstrip("./")] = content
+    return writes
+
+
+def case_metadata(record: ResponseRecord, writes: dict[str, str] | None = None) -> dict[str, Any]:
     """Provenance and captured facts the custom rules read."""
     return {
         "agent": record.agent,
@@ -51,6 +72,7 @@ def case_metadata(record: ResponseRecord) -> dict[str, Any]:
         "error": record.error,
         "tools": list(record.tools),
         "footprint": record.footprint.model_dump(),
+        "writes": dict(writes or {}),
     }
 
 
@@ -75,18 +97,19 @@ def replay_task(repo_root: Path) -> Callable[[CaseInputs], Any]:
     return task
 
 
-def build_case(spec: TestSpec, record: ResponseRecord) -> Case:
+def build_case(spec: TestSpec, record: ResponseRecord, repo_root: Path) -> Case:
     """One case: the run's intent, the run's provenance, and the run's checks."""
+    events = load_response(record.response_file(repo_root))
     return Case(
         name=f"{record.agent}/{record.test_id}/run-{record.run:02d}",
         inputs=CaseInputs(spec=spec, record=record),
         expected_output=spec.expected(),
-        metadata=case_metadata(record),
+        metadata=case_metadata(record, writes_from(events)),
         evaluators=evaluators_for(spec),
     )
 
 
-def build_cases(specs: list[TestSpec], catalog: Catalog) -> list[Case]:
+def build_cases(specs: list[TestSpec], catalog: Catalog, repo_root: Path) -> list[Case]:
     """Every recorded run that has a matching spec."""
     by_key = {spec.key: spec for spec in specs}
     cases: list[Case] = []
@@ -94,15 +117,21 @@ def build_cases(specs: list[TestSpec], catalog: Catalog) -> list[Case]:
         spec = by_key.get(record.test_key)
         if spec is None:
             continue
-        cases.append(build_case(spec, record))
+        cases.append(build_case(spec, record, repo_root))
     return cases
 
 
-def build_dataset(specs: list[TestSpec], catalog: Catalog, *, name: str = DATASET_NAME) -> Dataset:
+def build_dataset(
+    specs: list[TestSpec],
+    catalog: Catalog,
+    *,
+    repo_root: Path,
+    name: str = DATASET_NAME,
+) -> Dataset:
     """The grading plan: one case per recorded run, plus a dataset-wide sanity check."""
     return Dataset(
         name=name,
-        cases=build_cases(specs, catalog),
+        cases=build_cases(specs, catalog, repo_root),
         evaluators=[run_succeeded()],
     )
 
@@ -122,7 +151,7 @@ def evaluate(
     an empty catalog is a skip rather than a failure. This is the second write into the
     catalog -- the first was recording.
     """
-    dataset = build_dataset(specs, catalog, name=name)
+    dataset = build_dataset(specs, catalog, repo_root=repo_root, name=name)
     if not dataset.cases:
         return None
 

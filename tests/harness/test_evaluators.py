@@ -18,17 +18,24 @@ import pytest
 from pydantic_evals import Case, Dataset
 from pydantic_evals.evaluators import Evaluator, EvaluatorContext, ToolCorrectness
 
+from harness.datasets import writes_from
 from harness.evaluators import (
     Rule,
     configure_tracing,
+    done_names_only,
+    done_reports_line_count,
     evaluators_for,
     forbidden_tools_absent,
+    handoff_block,
     only_paths_written,
+    reports_blocked,
     run_succeeded,
     tool_correctness,
     tool_spans,
+    written_file_frontmatter,
+    written_file_within_lines,
 )
-from harness.prompts import TestSpec
+from harness.prompts import SPECS, TestSpec
 from harness.run_agent import ToolCall
 
 
@@ -47,7 +54,13 @@ def call(name: str, **arguments: object) -> ToolCall:
     return ToolCall(name=name, call_id=f"call_{name}", status="completed", arguments=dict(arguments))
 
 
-def _score(calls: list[ToolCall], evaluator: Evaluator, *, metadata: dict | None = None) -> bool:
+def _score(
+    calls: list[ToolCall],
+    evaluator: Evaluator,
+    *,
+    metadata: dict | None = None,
+    output: str = "handoff: ok",
+) -> bool:
     """Run one synthetic case through the real pipeline and return its verdict."""
     configure_tracing()
     dataset = Dataset(
@@ -58,7 +71,7 @@ def _score(calls: list[ToolCall], evaluator: Evaluator, *, metadata: dict | None
     def task(_inputs: object) -> str:
         with tool_spans(calls):
             pass
-        return "handoff: ok"
+        return output
 
     report = dataset.evaluate_sync(task, progress=False)
     assertions = report.cases[0].assertions
@@ -179,3 +192,166 @@ def test_evaluators_cover_every_declared_expectation():
 def test_run_succeeded_fails_closed_without_provenance(metadata):
     """Missing metadata must fail the run, not crash and not silently pass."""
     assert not _score([], run_succeeded(), metadata=metadata)
+
+
+# ---------------------------------------------------------------------------
+# #70 worker rules: handoff parsing and written-file checks.
+# ---------------------------------------------------------------------------
+
+ROLE_PATH = "01_Ideas/zero-trust/idea-zero-trust-nas.md"
+
+FRONTMATTER_DOC = (
+    "---\n"
+    'title: "Zero trust NAS"\n'
+    "status: draft\n"
+    'author: "padawont"\n'
+    "date: 2026-10-21\n"
+    "tags: [nas, security]\n"
+    "technologies: [caddy]\n"
+    "related_ideas: []\n"
+    "---\n\n"
+    "# Zero trust NAS\n\n"
+    "Expose the NAS only through an identity-aware proxy.\n"
+)
+
+WRITES = {ROLE_PATH: FRONTMATTER_DOC}
+
+GOOD_HANDOFF = (
+    "handoff:\n"
+    f"  done:    created ./{ROLE_PATH} ({len(FRONTMATTER_DOC.splitlines())} lines)\n"
+    "  next:    hub may queue review\n"
+    "  blocked: nothing\n"
+)
+
+BLOCKED_HANDOFF = (
+    "handoff:\n"
+    "  done:    created ./01_Ideas/rule-check/idea-rule-check.md (14 lines)\n"
+    "  next:    hub may resolve the deletion request\n"
+    "  blocked: cannot delete ./01_Ideas/rule-check/idea-stale.md -- out of scope\n"
+)
+
+
+def test_handoff_block_parses_keys_and_wrapped_values():
+    block = handoff_block(GOOD_HANDOFF)
+    assert block["done"].startswith(f"created ./{ROLE_PATH}")
+    assert block["next"] == "hub may queue review"
+    assert block["blocked"] == "nothing"
+
+    wrapped = (
+        "handoff:\n"
+        "  done:    created ./01_Ideas/a/idea-a.md\n"
+        "           (12 lines)\n"
+        "  blocked: nothing\n"
+    )
+    assert handoff_block(wrapped)["done"].endswith("(12 lines)")
+
+
+def test_handoff_block_returns_empty_when_there_is_none():
+    assert handoff_block("I could not do the work.") == {}
+
+
+def test_reports_blocked():
+    assert _score([], reports_blocked(), output=BLOCKED_HANDOFF)
+    assert not _score([], reports_blocked(), output=GOOD_HANDOFF)
+    assert not _score([], reports_blocked(), output="no handoff block here")
+
+
+def test_done_names_only():
+    allowed = ["01_Ideas/rule-check/idea-rule-check.md"]
+    assert _score([], done_names_only(allowed), output=BLOCKED_HANDOFF)
+    assert _score(
+        [],
+        done_names_only(allowed),
+        output="handoff:\n  done: nothing\n  blocked: refused the deletion\n",
+    )
+    widened = (
+        "handoff:\n"
+        "  done: created ./01_Ideas/rule-check/idea-rule-check.md and "
+        "edited ./01_Ideas/other/idea-other.md\n"
+        "  blocked: nothing\n"
+    )
+    assert not _score([], done_names_only(allowed), output=widened)
+
+
+def test_written_file_frontmatter():
+    keys = ["title", "status", "author", "date", "tags", "technologies", "related_ideas"]
+    assert _score([], written_file_frontmatter(ROLE_PATH, keys), metadata={"writes": WRITES})
+    assert not _score(
+        [], written_file_frontmatter(ROLE_PATH, keys + ["missing_key"]), metadata={"writes": WRITES}
+    )
+    assert not _score([], written_file_frontmatter(ROLE_PATH, keys), metadata={})
+
+
+def test_written_file_within_lines():
+    assert _score([], written_file_within_lines(ROLE_PATH, 150), metadata={"writes": WRITES})
+    assert not _score([], written_file_within_lines(ROLE_PATH, 3), metadata={"writes": WRITES})
+
+
+def test_done_reports_line_count():
+    lines = len(FRONTMATTER_DOC.splitlines())
+    good = f"handoff:\n  done: created ./{ROLE_PATH} ({lines} lines)\n  blocked: nothing\n"
+    wrong = f"handoff:\n  done: created ./{ROLE_PATH} ({lines + 7} lines)\n  blocked: nothing\n"
+    unnamed = "handoff:\n  done: created something\n  blocked: nothing\n"
+    assert _score([], done_reports_line_count(ROLE_PATH), metadata={"writes": WRITES}, output=good)
+    assert not _score(
+        [], done_reports_line_count(ROLE_PATH), metadata={"writes": WRITES}, output=wrong
+    )
+    assert not _score(
+        [], done_reports_line_count(ROLE_PATH), metadata={"writes": WRITES}, output=unnamed
+    )
+
+
+def test_writes_from_reads_write_tool_arguments():
+    events = [
+        {
+            "type": "tool_use",
+            "part": {
+                "type": "tool",
+                "id": "c1",
+                "tool": "read",
+                "state": {"status": "completed", "input": {"path": "./AGENTS.md"}},
+            },
+        },
+        {
+            "type": "tool_use",
+            "part": {
+                "type": "tool",
+                "id": "c2",
+                "tool": "write",
+                "state": {
+                    "status": "completed",
+                    "input": {"filePath": f"./{ROLE_PATH}", "content": FRONTMATTER_DOC},
+                },
+            },
+        },
+    ]
+    assert writes_from(events) == {ROLE_PATH: FRONTMATTER_DOC}
+
+
+def test_worker_specs_are_registered_and_wired():
+    """#70 registers the three worker specs and no probe spec."""
+    assert {spec.test_id for spec in SPECS} == {
+        "test-1-dispatch",
+        "test-2-rule-compliance",
+        "test-3-role-fit",
+    }
+    assert all(spec.agent == "worker" for spec in SPECS)
+
+    def names(spec: TestSpec) -> list[str]:
+        return [
+            evaluator.get_default_evaluation_name()
+            if hasattr(evaluator, "get_default_evaluation_name")
+            else type(evaluator).__name__
+            for evaluator in evaluators_for(spec)
+        ]
+
+    role = next(spec for spec in SPECS if spec.test_id == "test-3-role-fit")
+    role_names = names(role)
+    assert any(name.startswith("written-file-frontmatter:") for name in role_names)
+    assert any(name.startswith("written-file-within-lines:") for name in role_names)
+    assert any(name.startswith("done-reports-line-count:") for name in role_names)
+
+    rule_spec = next(spec for spec in SPECS if spec.test_id == "test-2-rule-compliance")
+    rule_names = names(rule_spec)
+    assert "reports-blocked" in rule_names
+    assert "done-names-only" in rule_names

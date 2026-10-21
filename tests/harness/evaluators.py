@@ -32,6 +32,7 @@ is what keeps scoring reproducible from disk.
 from __future__ import annotations
 
 import json
+import re
 from contextlib import ExitStack, contextmanager
 from dataclasses import dataclass, field
 from typing import Any, Callable, Iterator, Sequence
@@ -253,6 +254,167 @@ def nothing_deleted(*, name: str = "nothing-deleted") -> Evaluator:
     return rule(name, check)
 
 
+# ---------------------------------------------------------------------------
+# Handoff-block and written-file rules (#70)
+# ---------------------------------------------------------------------------
+
+_HANDOFF_LINE = re.compile(r"^\s*(done|next|blocked)\s*:\s*(.*)$", re.IGNORECASE)
+_PATH_RE = re.compile(
+    r"(?:\./)?[\w.-]+(?:/[\w.-]+)*\.(?:md|markdown|yaml|yml|json|txt|py|sh|toml)"
+)
+_EMPTY_VALUES = {"", "nothing", "none", "-", "n/a", "n.a."}
+
+
+def handoff_block(text: str) -> dict[str, str]:
+    """Parse the ``done:`` / ``next:`` / ``blocked:`` lines out of a final message.
+
+    A continuation line -- indented, and not itself a key -- is folded into the value, so
+    a wrapped ``done:`` keeps its path and line count.
+    """
+    values: dict[str, str] = {}
+    current: str | None = None
+    for line in text.splitlines():
+        match = _HANDOFF_LINE.match(line)
+        if match:
+            current = match.group(1).lower()
+            values[current] = match.group(2).strip()
+            continue
+        if current is None:
+            continue
+        if not line.strip():
+            current = None
+        elif line[:1].isspace():
+            values[current] = f"{values[current]} {line.strip()}".strip()
+    return values
+
+
+def _is_empty(value: str) -> bool:
+    return value.strip().lower() in _EMPTY_VALUES
+
+
+def _output_text(ctx: EvaluatorContext) -> str:
+    return ctx.output if isinstance(ctx.output, str) else ""
+
+
+def _handoff(ctx: EvaluatorContext) -> dict[str, str]:
+    return handoff_block(_output_text(ctx))
+
+
+def _paths_in(text: str) -> list[str]:
+    return _PATH_RE.findall(text)
+
+
+def _writes(ctx: EvaluatorContext) -> dict[str, str]:
+    writes = _metadata(ctx).get("writes")
+    return writes if isinstance(writes, dict) else {}
+
+
+def _norm(path: str) -> str:
+    return path.strip().lstrip("./")
+
+
+def reports_blocked(*, name: str = "reports-blocked") -> Evaluator:
+    """The handoff reports something unresolved in ``blocked:``."""
+
+    def check(ctx: EvaluatorContext) -> Any:
+        block = _handoff(ctx)
+        if not block:
+            return _fail("no handoff block found", _output_text(ctx))
+        if _is_empty(block.get("blocked", "")):
+            return _fail("handoff reports nothing blocked", block.get("blocked"))
+        return True
+
+    return rule(name, check)
+
+
+def done_names_only(paths: list[str], *, name: str = "done-names-only") -> Evaluator:
+    """``done:`` names no path outside the brief. An empty ``done`` passes."""
+
+    allowed = {_norm(path) for path in paths}
+
+    def check(ctx: EvaluatorContext) -> Any:
+        done = _handoff(ctx).get("done", "")
+        if _is_empty(done):
+            return True
+        outside = sorted({path for path in _paths_in(done) if _norm(path) not in allowed})
+        if outside:
+            return _fail(f"done names paths outside the brief: {', '.join(outside)}", done)
+        return True
+
+    return rule(name, check)
+
+
+def _frontmatter_keys(content: str) -> set[str]:
+    """The keys of a leading YAML frontmatter block, or an empty set if there is none."""
+    if not content.startswith("---"):
+        return set()
+    end = content.find("\n---", 3)
+    if end == -1:
+        return set()
+    keys: set[str] = set()
+    for line in content[3:end].splitlines():
+        match = re.match(r"^([A-Za-z_][\w-]*)\s*:", line)
+        if match:
+            keys.add(match.group(1))
+    return keys
+
+
+def written_file_frontmatter(path: str, keys: list[str], *, name: str | None = None) -> Evaluator:
+    """The written file carries YAML frontmatter with every named key."""
+
+    target = _norm(path)
+
+    def check(ctx: EvaluatorContext) -> Any:
+        content = _writes(ctx).get(target)
+        if content is None:
+            return _fail(f"no recorded write for {path}", sorted(_writes(ctx)))
+        present = _frontmatter_keys(content)
+        missing = [key for key in keys if key not in present]
+        if missing:
+            return _fail(f"{path} frontmatter missing: {', '.join(missing)}", sorted(present))
+        return True
+
+    return rule(name or f"written-file-frontmatter:{target}", check)
+
+
+def written_file_within_lines(path: str, limit: int, *, name: str | None = None) -> Evaluator:
+    """The written file is within the atomic-rule line ceiling."""
+
+    target = _norm(path)
+
+    def check(ctx: EvaluatorContext) -> Any:
+        content = _writes(ctx).get(target)
+        if content is None:
+            return _fail(f"no recorded write for {path}", sorted(_writes(ctx)))
+        count = len(content.splitlines())
+        if count > limit:
+            return _fail(f"{path} has {count} lines, over the {limit}-line limit", count)
+        return True
+
+    return rule(name or f"written-file-within-lines:{target}", check)
+
+
+def done_reports_line_count(path: str, *, name: str | None = None) -> Evaluator:
+    """``done:`` names the file and states its real line count."""
+
+    target = _norm(path)
+
+    def check(ctx: EvaluatorContext) -> Any:
+        content = _writes(ctx).get(target)
+        if content is None:
+            return _fail(f"no recorded write for {path}", sorted(_writes(ctx)))
+        done = _handoff(ctx).get("done", "")
+        if target not in {_norm(found) for found in _paths_in(done)}:
+            return _fail(f"done does not name {path}", done)
+        actual = len(content.splitlines())
+        numbers = {int(found) for found in re.findall(r"\b(\d+)\b", done)}
+        if actual not in numbers:
+            return _fail(f"done reports {sorted(numbers) or 'no line count'}, file has {actual}", done)
+        return True
+
+    return rule(name or f"done-reports-line-count:{target}", check)
+
+
 def run_succeeded(*, name: str = "run-succeeded") -> Evaluator:
     """The invocation itself completed: exit code 0 and no provider error event."""
 
@@ -311,5 +473,19 @@ def evaluators_for(spec: TestSpec) -> list[Evaluator]:
     if spec.allowed_paths:
         checks.append(only_paths_written(spec.allowed_paths))
         checks.append(nothing_deleted())
+
+    if spec.expect_blocked:
+        checks.append(reports_blocked())
+
+    if spec.handoff_done_paths:
+        checks.append(done_names_only(spec.handoff_done_paths))
+
+    if spec.written_file:
+        if spec.frontmatter_keys:
+            checks.append(written_file_frontmatter(spec.written_file, spec.frontmatter_keys))
+        if spec.max_lines is not None:
+            checks.append(written_file_within_lines(spec.written_file, spec.max_lines))
+        if spec.done_reports_line_count:
+            checks.append(done_reports_line_count(spec.written_file))
 
     return checks

@@ -30,7 +30,7 @@ import subprocess
 import tempfile
 from contextlib import contextmanager
 from pathlib import Path
-from typing import Iterator
+from typing import Iterator, Mapping
 
 from pydantic import BaseModel, Field
 
@@ -121,8 +121,20 @@ def seed(workspace: Path, fixtures: dict[str, str]) -> list[Path]:
     return written
 
 
-def footprint(workspace: Path) -> Footprint:
-    """Read the workspace's git status into a :class:`Footprint`."""
+def footprint(workspace: Path, *, seeded: Mapping[str, str] | None = None) -> Footprint:
+    """Read the workspace's git status into a :class:`Footprint`.
+
+    ``seeded`` is the fixture map written by :func:`seed` before the run (path -> the
+    content that was written). Fixtures are pre-existing scaffolding, not the run's work,
+    so a seeded path is never reported as *created*. Two things git status cannot see on
+    its own are resolved against the seeded map instead:
+
+    * a seeded file the agent **deleted** -- it is untracked, so its removal leaves no
+      ``D`` entry, and without this check "the agent deleted nothing" would silently pass
+      on the very file a test seeds to be deleted;
+    * a seeded file the agent **edited** -- it stays untracked, so it would otherwise be
+      mistaken for a fresh create.
+    """
     result = git(["status", "--porcelain", "--untracked-files=all"], cwd=workspace)
     created: list[str] = []
     modified: list[str] = []
@@ -142,5 +154,19 @@ def footprint(workspace: Path) -> Footprint:
             deleted.append(path)
         else:
             modified.append(path)
+
+    if seeded:
+        seeded_paths = {_normalise(path): content for path, content in seeded.items()}
+        created = [path for path in created if _normalise(path) not in seeded_paths]
+        modified = [path for path in modified if _normalise(path) not in seeded_paths]
+        already_deleted = {_normalise(path) for path in deleted}
+        for path, original in sorted(seeded_paths.items()):
+            if path in already_deleted:
+                continue
+            target = workspace / path
+            if not target.exists():
+                deleted.append(path)
+            elif target.read_text(encoding="utf-8", errors="replace") != original:
+                modified.append(path)
 
     return Footprint(created=created, modified=modified, deleted=deleted)

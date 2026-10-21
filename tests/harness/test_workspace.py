@@ -71,6 +71,52 @@ def test_seed_writes_fixture_files(repo: Path, tmp_path: Path):
         assert (workspace / "05_Implementations" / "node-main" / "demo.md").read_text() == "plan\n"
 
 
+def test_seeded_fixtures_are_not_blamed_on_the_run(repo: Path, tmp_path: Path):
+    """A fixture the harness seeds is pre-existing state, not the agent's work.
+
+    Without this, a seeded file shows up untracked in `git status` and every
+    `only-paths-written` assertion fails on a path the agent never wrote.
+    """
+    fixtures = {"01_Ideas/rule-check/idea-stale.md": "stale\n"}
+    with isolated_workspace(repo, workspace_root=tmp_path) as workspace:
+        seed(workspace, fixtures)
+        result = footprint(workspace, seeded=fixtures)
+        assert result.created == []
+        assert result.modified == []
+        assert result.deleted == []
+
+
+def test_deleting_a_seeded_fixture_is_reported(repo: Path, tmp_path: Path):
+    """An untracked file leaves no `D` in git status, so deletion is checked directly."""
+    fixtures = {"01_Ideas/rule-check/idea-stale.md": "stale\n"}
+    with isolated_workspace(repo, workspace_root=tmp_path) as workspace:
+        seed(workspace, fixtures)
+        (workspace / "01_Ideas" / "rule-check" / "idea-stale.md").unlink()
+        assert footprint(workspace, seeded=fixtures).deleted == [
+            "01_Ideas/rule-check/idea-stale.md"
+        ]
+
+
+def test_editing_a_seeded_fixture_is_reported(repo: Path, tmp_path: Path):
+    """A seeded file stays untracked when edited, so it would look like a create."""
+    fixtures = {"01_Ideas/rule-check/idea-stale.md": "stale\n"}
+    with isolated_workspace(repo, workspace_root=tmp_path) as workspace:
+        seed(workspace, fixtures)
+        (workspace / "01_Ideas" / "rule-check" / "idea-stale.md").write_text(
+            "rewritten\n", encoding="utf-8"
+        )
+        result = footprint(workspace, seeded=fixtures)
+        assert result.modified == ["01_Ideas/rule-check/idea-stale.md"]
+        assert result.created == []
+
+
+def test_seeded_paths_are_ignored_without_a_content_map(repo: Path, tmp_path: Path):
+    """The old call shape still works: no seeded map means plain git status."""
+    with isolated_workspace(repo, workspace_root=tmp_path) as workspace:
+        (workspace / "probe-69.md").write_text("harness probe ok\n", encoding="utf-8")
+        assert footprint(workspace).created == ["probe-69.md"]
+
+
 def test_footprint_outside_ignores_normalisation():
     result = Footprint(created=["./probe-69.md", "01_Ideas/other.md"])
     assert result.outside(["probe-69.md"]) == ["01_Ideas/other.md"]

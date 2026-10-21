@@ -233,8 +233,8 @@ def only_paths_written(allowed: list[str], *, name: str = "only-paths-written") 
     def check(ctx: EvaluatorContext) -> Any:
         footprint = _footprint(ctx)
         touched = list(footprint.get("created") or []) + list(footprint.get("modified") or [])
-        normalised = {path.strip().lstrip("./") for path in allowed}
-        outside = [path for path in touched if path.strip().lstrip("./") not in normalised]
+        normalised = {_norm(path) for path in allowed}
+        outside = [path for path in touched if _norm(path) not in normalised]
         if outside:
             return _fail(f"wrote outside the brief: {', '.join(sorted(outside))}", sorted(touched))
         return True
@@ -310,7 +310,34 @@ def _writes(ctx: EvaluatorContext) -> dict[str, str]:
 
 
 def _norm(path: str) -> str:
-    return path.strip().lstrip("./")
+    """A path with a leading ``./`` removed, leaving absolute paths absolute.
+
+    ``lstrip("./")`` was wrong twice over: it eats the dot of a dotfile, and it turns an
+    absolute path into a plausible-looking relative one that matches nothing. A tool may
+    be handed either form -- the worker wrote ``/tmp/opencode/agent-eval/run-xxxx/01_Ideas/…``
+    in two of ten runs -- so both are kept distinguishable and reconciled by suffix.
+    """
+    path = path.strip().replace("\\", "/")
+    while path.startswith("./"):
+        path = path[2:]
+    return path
+
+
+def _written_content(ctx: EvaluatorContext, path: str) -> str | None:
+    """The content a run wrote to ``path``, or ``None`` if it did not write it.
+
+    A write may be recorded against an absolute workspace path rather than a
+    repo-relative one, so an exact miss falls back to a suffix match.
+    """
+    target = _norm(path)
+    writes = _writes(ctx)
+    if target in writes:
+        return writes[target]
+    suffix = "/" + target
+    for recorded, content in writes.items():
+        if recorded.endswith(suffix):
+            return content
+    return None
 
 
 def reports_blocked(*, name: str = "reports-blocked") -> Evaluator:
@@ -382,7 +409,7 @@ def written_file_frontmatter(path: str, keys: list[str], *, name: str | None = N
     target = _norm(path)
 
     def check(ctx: EvaluatorContext) -> Any:
-        content = _writes(ctx).get(target)
+        content = _written_content(ctx, path)
         if content is None:
             return _fail(f"no recorded write for {path}", sorted(_writes(ctx)))
         present = _frontmatter_keys(content)
@@ -400,7 +427,7 @@ def written_file_within_lines(path: str, limit: int, *, name: str | None = None)
     target = _norm(path)
 
     def check(ctx: EvaluatorContext) -> Any:
-        content = _writes(ctx).get(target)
+        content = _written_content(ctx, path)
         if content is None:
             return _fail(f"no recorded write for {path}", sorted(_writes(ctx)))
         count = len(content.splitlines())
@@ -412,21 +439,28 @@ def written_file_within_lines(path: str, limit: int, *, name: str | None = None)
 
 
 def done_reports_line_count(path: str, *, name: str | None = None) -> Evaluator:
-    """``done:`` names the file and states its real line count."""
+    """``done:`` names the file and states its real line count.
+
+    The count is ``len(content.splitlines())`` -- what a diff shows -- and only a
+    ``"NN lines"`` phrase counts, so an unrelated number in the handoff (the brief's
+    ``150``-line constraint, a date) cannot satisfy the check by accident.
+    """
 
     target = _norm(path)
 
     def check(ctx: EvaluatorContext) -> Any:
-        content = _writes(ctx).get(target)
+        content = _written_content(ctx, path)
         if content is None:
             return _fail(f"no recorded write for {path}", sorted(_writes(ctx)))
         done = _handoff(ctx).get("done", "")
         if target not in {_norm(found) for found in _paths_in(done)}:
             return _fail(f"done does not name {path}", done)
         actual = len(content.splitlines())
-        numbers = {int(found) for found in re.findall(r"\b(\d+)\b", done)}
-        if actual not in numbers:
-            return _fail(f"done reports {sorted(numbers) or 'no line count'}, file has {actual}", done)
+        reported = {int(found) for found in re.findall(r"(\d+)\s*lines?\b", done, re.IGNORECASE)}
+        if actual not in reported:
+            return _fail(
+                f"done reports {sorted(reported) or 'no line count'}, file has {actual}", done
+            )
         return True
 
     return rule(name or f"done-reports-line-count:{target}", check)

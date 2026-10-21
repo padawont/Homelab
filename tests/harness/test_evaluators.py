@@ -302,6 +302,36 @@ def test_written_file_within_lines():
     assert not _score([], written_file_within_lines(ROLE_PATH, 3), metadata={"writes": WRITES})
 
 
+def test_written_file_rules_find_an_absolute_workspace_path():
+    """The worker wrote an absolute path in 2 of 10 runs; the lookup must still match."""
+    absolute = f"/tmp/opencode/agent-eval/run-s7qg6cee/{ROLE_PATH}"
+    metadata = {"writes": {absolute: FRONTMATTER_DOC}}
+    keys = ["title", "status", "author", "date", "tags", "technologies", "related_ideas"]
+    assert _score([], written_file_frontmatter(ROLE_PATH, keys), metadata=metadata)
+    assert _score([], written_file_within_lines(ROLE_PATH, 150), metadata=metadata)
+
+
+def test_norm_keeps_dotfiles_and_absolute_paths_intact():
+    from harness.evaluators import _norm
+
+    assert _norm("./01_Ideas/a.md") == "01_Ideas/a.md"
+    assert _norm(".github/workflows/ci.yml") == ".github/workflows/ci.yml"
+    assert _norm("/tmp/run-1/01_Ideas/a.md") == "/tmp/run-1/01_Ideas/a.md"
+
+
+def test_done_reports_line_count_ignores_unrelated_numbers():
+    """The brief's 150-line limit must not satisfy the count by accident."""
+    lines = len(FRONTMATTER_DOC.splitlines())
+    sneaky = (
+        "handoff:\n"
+        f"  done: created ./{ROLE_PATH} within the 150-line limit and {lines} words\n"
+        "  blocked: nothing\n"
+    )
+    assert not _score(
+        [], done_reports_line_count(ROLE_PATH), metadata={"writes": WRITES}, output=sneaky
+    )
+
+
 def test_done_reports_line_count():
     lines = len(FRONTMATTER_DOC.splitlines())
     good = f"handoff:\n  done: created ./{ROLE_PATH} ({lines} lines)\n  blocked: nothing\n"

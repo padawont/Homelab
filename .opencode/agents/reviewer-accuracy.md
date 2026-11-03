@@ -51,8 +51,9 @@ nothing else; the criterion is the `accuracy` row of that facet map.
 
 The hub supplies two inputs:
 
-- **folder** — the section the target lives in (e.g. `02_Knowledge`). If the hub
-  omits `folder`, infer it from the target path and state it in the output.
+- **folder** — the section the target lives in (e.g. `02_Knowledge`). Its value,
+  including the out-of-section case, is owned by `./.opencode/REVIEW.md` § Facet
+  Report; echo the supplied value rather than deriving one.
 - **target** — the file under review.
 
 Your output is one JSON object consumed by the hub.

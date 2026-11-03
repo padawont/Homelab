@@ -11,8 +11,8 @@ related_docs: []
 
 # AGENTS.md — Templates
 
-Reusable document templates for the pipeline sections. `06_Archive/` has none — see
-`./06_Archive/AGENTS.md`.
+Section purpose is owned by `./AGENTS.md` § Repository Structure (row `Templates/`).
+`06_Archive/` has none — see `./06_Archive/AGENTS.md`.
 
 ## Template inventory
 

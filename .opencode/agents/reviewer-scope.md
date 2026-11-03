@@ -58,9 +58,10 @@ The hub supplies two inputs:
   (see Loading the Rules).
 - **target** — the file under review.
 
-You never edit, run a command, or delegate; how a spoke escalates instead of
-asking the human is owned by `./.opencode/WORKFLOW.md` § Escalation. Your output
-is one JSON object consumed by the hub.
+You never edit, run a command, or delegate. Your output is one JSON object
+consumed by the hub. Anything you cannot judge is not escalated on a separate
+channel: signal it per `./.opencode/REVIEW.md` § Facet Report — return verdict
+`needs_recheck` and leave `unresolved` empty.
 
 ## The One Type
 

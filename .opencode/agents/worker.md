@@ -82,8 +82,12 @@ that may delete; `editor` holds the briefed `rm ./0*` grant.
 You may create and edit ONLY the files your brief names. Nothing else.
 
 - If the target exists, read it first and edit it in place, preserving every line
-  the brief did not tell you to change — **except** `./05_Implementations/**/spec-*.md`:
-  append-only per `./05_Implementations/AGENTS.md` § Spec files.
+  the brief did not tell you to change.
+- `./05_Implementations/**/spec-*.md` is outside your write surface — those files
+  belong to `spec-writer` alone (`./05_Implementations/AGENTS.md` § Spec files,
+  `./.opencode/agents/spec-writer.md` § Write Surface). A brief naming one is
+  returned in `blocked:` for `spec-writer`; write nothing for that path and never
+  append to it.
 - Never touch a neighbouring file, even one the target links to.
 - Never widen the brief: no extra sections, no bonus files, no "while I was in
   there" changes.

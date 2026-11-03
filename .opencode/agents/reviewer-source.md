@@ -88,14 +88,13 @@ has no row in that table (e.g. `.opencode/`, `.opencode/agents/`), has no sectio
 file: load the root `./AGENTS.md` only. Which frontmatter fields are citations
 comes from the loaded files, and the section file wins where they conflict; the
 root supplies the defaults (line limit, link format). Three sections carry
-citations in more than one place, and each must be checked:
+citations in more than one place; every citation field counts and must be
+checked, and each section's own § Frontmatter (required) names its fields:
 
-- `03_Research` — `sources` and `references`; see
-  `./03_Research/AGENTS.md` § Frontmatter (required).
-- `04_ADRs` — `sources` and `references`; see
-  `./04_ADRs/AGENTS.md` § Frontmatter (required).
-- `05_Implementations` — the split `references` block; see
-  `./05_Implementations/AGENTS.md` § Frontmatter (required).
+- `03_Research` — see `./03_Research/AGENTS.md` § Frontmatter (required).
+- `04_ADRs` — see `./04_ADRs/AGENTS.md` § Frontmatter (required).
+- `05_Implementations` — see `./05_Implementations/AGENTS.md` § Frontmatter
+  (required).
 
 ## Output Contract
 

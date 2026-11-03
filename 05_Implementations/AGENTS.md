@@ -161,5 +161,4 @@ Copy from `./Templates/implementations/rollback.md`. Required for every implemen
 - Every folder ships `overview.md` + `rollback.md` (+ `configs/` where applicable)
 - Document the rollback procedure before deploy
 - Retiring a service moves its folder to `./06_Archive/implementations/node-main/<service>/`
-  with `status: retired` and the archival block added on top — see
-  `./06_Archive/AGENTS.md` § Conventions
+  — see `./06_Archive/AGENTS.md` § Conventions and § Frontmatter (required)

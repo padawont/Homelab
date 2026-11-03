@@ -11,7 +11,7 @@ related_docs: []
 
 # AGENTS.md — 01_Ideas
 
-Raw, unstructured concept capture. Low friction — just enough context to remember.
+Section purpose is owned by `./AGENTS.md` § Repository Structure (row `01_Ideas/`).
 
 ## Why have ideas?
 
@@ -19,7 +19,7 @@ To capture every thought about the homelab before it's lost. Ideas are the seed 
 
 ## When to create
 
-Any thought about new tech, homelab changes, or wishlist items.
+The moment the thought occurs — a one-line capture is enough to start.
 
 ## Status Lifecycle
 

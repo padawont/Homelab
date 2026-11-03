@@ -11,7 +11,7 @@ related_docs: []
 
 # AGENTS.md — 06_Archive
 
-Terminal storage for failed experiments, rejected proposals, retired services, and deprecated decisions.
+Section purpose is owned by `./AGENTS.md` § Repository Structure (row `06_Archive/`).
 No new content originates here. Content here is time-limited — see § Conventions for the
 purge rule.
 

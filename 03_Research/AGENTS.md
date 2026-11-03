@@ -19,7 +19,7 @@ To make informed decisions. Research is the bridge between "this seems interesti
 
 ## When to create
 
-Before making a significant homelab decision — an ADR requires a Research doc (`./AGENTS.md` § Dependency Rules).
+Before making a significant homelab decision — see `./AGENTS.md` § Dependency Rules.
 
 ## Status Lifecycle
 
@@ -54,10 +54,8 @@ Names follow the repo naming rule (`./AGENTS.md` § General Conventions).
 ## Frontmatter (required)
 
 Applies to every file in the topic folder — `overview.md`, `alternatives.md` and
-`alternative-{name}.md` all carry the same keys below. The `alternatives.md` and
-`alternative.md` templates are body-only snippets, per `./Templates/AGENTS.md`
-§ Conventions: when copying one, wrap its body in this frontmatter before saving it as
-`alternatives.md` or `alternative-{name}.md`.
+`alternative-{name}.md` all carry the same keys below. How the fragment templates are
+handled when copied: `./Templates/AGENTS.md` § Conventions.
 
 ```yaml
 ---
@@ -72,6 +70,7 @@ references:
   - url: ""
     title: ""
 last_audit_date: YYYY-MM-DD
+related_docs: []
 ---
 ```
 
@@ -92,12 +91,12 @@ references:
   - url: "https://doc.traefik.io/traefik/"
     title: "Traefik documentation"
 last_audit_date: 2026-08-13
+related_docs: []
 ---
 ```
 
 See `./Templates/research/overview.md`, `./Templates/research/alternatives.md` and
-`./Templates/research/alternative.md` for copyable templates — the two fragment templates
-are bodies only and need the frontmatter above.
+`./Templates/research/alternative.md` for copyable templates.
 
 ## Structure of overview.md
 
@@ -163,6 +162,6 @@ Why this was or wasn't selected.
 
 - Each alternative technology gets its own file under the topic folder
 - Each research topic requires at least 3 `alternative-{name}.md` files
-- Must reference at least one Knowledge note or online source (`./AGENTS.md` § Dependency Rules)
+- Minimum sources: `./AGENTS.md` § Dependency Rules
 - Output must be detailed enough to write the ADR directly from the overview
 - If rejected, archive the entire topic folder to `./06_Archive/research/` — see `./06_Archive/AGENTS.md` § Conventions

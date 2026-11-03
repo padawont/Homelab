@@ -58,8 +58,9 @@ The hub supplies three inputs:
 - **comparison scope** — supplied **only** so you can judge `overlap`; its
   definition lives in § Overlap Rule.
 
-Your output is one JSON object consumed by the hub; anything you cannot judge
-escalates per `./.opencode/WORKFLOW.md` § Escalation.
+Your output is one JSON object consumed by the hub. Anything you cannot judge is
+not escalated on a separate channel: signal it per `./.opencode/REVIEW.md` § Facet
+Report — return verdict `needs_recheck` and leave `unresolved` empty.
 
 ## The One Type
 
@@ -102,8 +103,6 @@ For the `fix_hint` its dry-audit consumer reads verbatim, use one of
 `./.opencode/skills/dry-audit/SKILL.md` § 2 · Fan out. `totals` counts
 your `overlap` findings only. Verdict follows `./.opencode/REVIEW.md` § Verdict
 Precedence; this facet can emit no S1 or S2 finding.
-
-If the cap drops findings, drop them silently.
 
 ## One Type Only
 

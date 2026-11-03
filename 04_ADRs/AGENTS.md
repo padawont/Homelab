@@ -25,12 +25,13 @@ After Research is accepted. Every significant architecture or technology choice 
 
 ```
 draft → accepted → (proceed to 05_Implementations/)
-  L__> archived → (move to 06_Archive/adrs/)
+  |         L__> archived → (move to 06_Archive/adrs/)   [superseded or deprecated]
+  L__> archived → (move to 06_Archive/adrs/)             [rejected while draft]
 ```
 
 - **draft**: Proposed, under review
 - **accepted**: Decision made — create an Implementation
-- **archived**: Deprecated or superseded
+- **archived**: Deprecated or superseded — set `replaced-by` when a newer ADR supersedes it
 
 ## Frontmatter (required)
 

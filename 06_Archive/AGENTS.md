@@ -1,3 +1,14 @@
+---
+title: "AGENTS.md — 06_Archive"
+status: accepted
+author: "padawont"
+date: 2026-11-03
+tags: []
+sources: []
+last_audit_date: 2026-11-03
+related_docs: []
+---
+
 # AGENTS.md — 06_Archive
 
 Terminal storage for failed experiments, rejected proposals, retired services, and deprecated decisions.
@@ -18,16 +29,23 @@ Example:
 │       ├── overview.md
 │       ├── alternatives.md
 │       ├── alternative-traefik.md
-│       └── alternative-nginx.md
+│       ├── alternative-nginx.md
+│       └── alternative-haproxy.md
 ├── adrs/
 ├── implementations/
 │   └── node-main/
 │       └── old-service/
 │           ├── overview.md
+│           ├── rollback.md
+│           ├── spec-service-stack.md
 │           └── configs/
 ```
 
-All names in kebab-case. Each subfolder mirrors the source section's internal structure.
+Naming follows `./AGENTS.md` § General Conventions; each subfolder mirrors the
+source section's internal structure. Research topics keep at least three
+`alternative-{name}.md` files (see `./03_Research/AGENTS.md` § File system layout) and
+implementation folders keep `overview.md` + `rollback.md` + specs (see
+`./05_Implementations/AGENTS.md` § Conventions).
 
 ## Frontmatter (required)
 
@@ -39,9 +57,11 @@ title: "Deploy Traefik as ingress"
 original_location: "./04_ADRs/42-deploy-traefik-ingress.md"
 archived_date: 2026-08-13
 reason: "Replaced by Caddy ingress"
-superseded_by: "./04_ADRs/43-deploy-caddy-ingress.md"
+superseded_by: "./04_ADRs/43-deploy-caddy-ingress.md"   # optional
 ---
 ```
+
+`superseded_by` is optional — include it only when a successor exists.
 
 ## Conventions
 

@@ -1,3 +1,14 @@
+---
+title: "AGENTS.md — 03_Research"
+status: accepted
+author: "padawont"
+date: 2026-11-03
+tags: []
+sources: []
+last_audit_date: 2026-11-03
+related_docs: []
+---
+
 # AGENTS.md — 03_Research
 
 Deep dives that combine Ideas + Knowledge + online docs into a concrete plan for an ADR.
@@ -8,7 +19,7 @@ To make informed decisions. Research is the bridge between "this seems interesti
 
 ## When to create
 
-Before making a significant homelab decision. Research is required before an ADR.
+Before making a significant homelab decision — an ADR requires a Research doc (`./AGENTS.md` § Dependency Rules).
 
 ## Status Lifecycle
 
@@ -23,9 +34,7 @@ draft → accepted → (proceed to 04_ADRs/)
 
 ## Inputs
 
-- Ideas from `./01_Ideas/` (what sparked this)
-- Knowledge from `./02_Knowledge/` (foundational understanding)
-- Online documentation (vendor docs, articles, comparisons)
+Knowledge + Ideas + online docs, per `./AGENTS.md` § Content Pipeline.
 
 ## File system layout
 
@@ -40,7 +49,7 @@ Example:
 └── alternative-haproxy.md
 ```
 
-All names in kebab-case.
+Names follow the repo naming rule (`./AGENTS.md` § General Conventions).
 
 ## Frontmatter (required)
 
@@ -70,7 +79,7 @@ author: "padawont"
 date: 2026-08-13
 tags: [kubernetes, networking, ingress]
 sources:
-  - knowledge: "./02_Knowledge/technologies/kubernetes/ingress.md"
+  - knowledge: "./02_Knowledge/technologies/kubernetes/concepts/ingress.md"
 references:
   - url: "https://nginx.org/en/docs/"
     title: "NGINX documentation"
@@ -141,10 +150,11 @@ Why this was or wasn't selected.
 | NGINX | ./alternative-nginx.md | Rejected — complexity |
 | HAProxy | ./alternative-haproxy.md | Rejected — no k8s CRDs |
 ```
+
 ## Conventions
 
 - Each alternative technology gets its own file under the topic folder
 - Each research topic requires at least 3 `alternative-{name}.md` files
-- Must reference at least one Knowledge note or online source
+- Must reference at least one Knowledge note or online source (`./AGENTS.md` § Dependency Rules)
 - Output must be detailed enough to write the ADR directly from the overview
-- If rejected, move entire topic folder to `./06_Archive/research/`
+- If rejected, move (never copy) the entire topic folder to `./06_Archive/research/` — see `./AGENTS.md` § General Conventions

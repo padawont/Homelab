@@ -1,3 +1,14 @@
+---
+title: "AGENTS.md — 04_ADRs"
+status: accepted
+author: "padawont"
+date: 2026-11-03
+tags: []
+sources: []
+last_audit_date: 2026-11-03
+related_docs: []
+---
+
 # AGENTS.md — 04_ADRs
 
 Architectural Decision Records. The final greenlight — committing to a path forward.
@@ -70,64 +81,56 @@ See `./Templates/adr/adr.md` for a copyable template.
 
 ## Structure
 
-The ADR follows this layout:
+The ADR follows the layout of `./Templates/adr/adr.md` — headings, diagram type and order:
 
-```
-# ADR-{number}: Title
-```
+````markdown
+# ADR-{NNNN}: {Title}
 
-### Context
+## Context and Problem Statement
 
 What is the problem? What constraints exist? Which research informed this?
 
-### Decision
+## Decision
 
 What was decided? Why this technology?
 
-Include a mermaid diagram showing how the solution works internally:
-
-```
-┌──────────┐     ┌──────────┐     ┌───────────┐
-│ Internet │ ──► │ Traefik  │ ──► │ Service A │
-└──────────┘     └──────────┘     └───────────┘
+```mermaid
+graph TD
+    Internet --> Traefik
+    Traefik --> ServiceA["Service A"]
 ```
 
-### Fit into Homelab
+## Fit into Homelab
 
 How does this integrate with existing infrastructure?
 
-Include a mermaid diagram showing how it fits into the broader homelab:
-
+```mermaid
+graph TD
+    CloudLB["Cloud LB"] --> Node1["Node 1"]
+    Node1 --> Traefik
+    Node1 --> CertManager["Cert-Manager"]
+    Traefik --> Internal["Internal Services"]
 ```
-┌──────────┐     ┌──────────┐     ┌───────────┐
-│ Cloud LB │ ──► │ Node 1   │ ──► │ Traefik   │
-└──────────┘     └──────────┘     └───────────┘
-                          └──►  Cert-Manager
-                          └──►  Internal Services
-```
+````
 
 ## Conventions
 
 - Naming: `{issue-number}-{kebab-description}.md`
 - Use GitHub issue number as ADR number
-- Every ADR must link to its Research doc in `related_docs`
+- Every ADR must trace back to its Research doc via `related_docs`
 - `draft → accepted` requires a review (PR with at least 1 approving review)
 - Every ADR must contain at least two mermaid diagrams:
   1. How the solution works internally
   2. How it fits into the homelab
 - No alternatives or considered options section — those belong in Research
+- Duplicates and contradictions with another note or ADR are `overlap` findings — link instead of repeating (`./.opencode/REVIEW.md` § The Five Facets)
 
 ## Agent Behaviour
 
-| Role | May | Must not |
-|---|---|---|
-| `worker` | read, gather sources, create and edit the ADR | edit files outside its brief, add unsourced claims |
-| `reviewer-*` | run one review type each (`source`, `accuracy`, `scope`, `structure`, `overlap`); the hub merges their reports | edit, judge another type, propose unverified fixes |
-| `editor` | revise the ADR and its JSON with a cited source or rule | change anything without a citation |
-| `spec-writer` | append a spec section referencing this ADR | rewrite or delete ADR content |
-| `cluster-worker` | not applicable to this folder | run operational plans here |
+Role permissions and handoff contracts are shared across sections — see the roster in
+`./.opencode/WORKFLOW.md` and the per-role contracts in `./.opencode/agents/`; the review
+facets and the report shape are owned by `./.opencode/REVIEW.md` § The Five Facets.
 
-Review types: `source`, `accuracy`, `scope`, `structure`, `overlap`.
-Escalation: anything unresolved goes to the hub in the handoff `blocked:` field — never a guess.
-- Every decision must trace back to its Research doc (`related_docs`).
-- `overlap` covers contradictions with existing ADRs.
+No spoke asks the human. Anything unresolved returns in the spoke's own report — the
+editor's `questions:`, or `unresolved` in the merged envelope — and `runesmith` routes it
+(`./.opencode/WORKFLOW.md` § Escalation, `./.opencode/REVIEW.md` § Verdict Precedence).

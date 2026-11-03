@@ -1,3 +1,14 @@
+---
+title: "Workflow — hub-and-spoke agent model"
+status: accepted
+author: "padawont"
+date: 2026-11-03
+tags: []
+sources: []
+last_audit_date: 2026-11-03
+related_docs: []
+---
+
 # Workflow — hub-and-spoke agent model
 
 How the roster agents compose. Defines the topology, the two flows, the
@@ -7,12 +18,12 @@ skills and `runesmith` execute — not the agents themselves (see
 
 ## Coordination Rule
 
-**No spoke spawns another spoke.** Only `runesmith` holds `task: allow`; every
+**No spoke spawns another spoke.** Only `runesmith` holds `subagent: allow`; every
 handoff goes through it, and it is the only agent that speaks to the human.
 Two lanes run under it: the PKM pipeline (the spokes `worker`, `editor`,
-`cluster-worker`, `spec-writer`, plus the five reviewer facets `reviewer-source`,
-`reviewer-accuracy`, `reviewer-scope`, `reviewer-structure`, `reviewer-overlap`,
-merged by the hub) and the code pipeline (the `rs-*` specialists).
+`cluster-worker`, `spec-writer`, plus the five reviewer facets) and the code
+pipeline (the `rs-*` specialists). The facet roster and the fan-out/merge
+exclusivity are owned by `./.opencode/REVIEW.md` (§ The Five Facets).
 
 ## Topology
 
@@ -77,6 +88,9 @@ a single-document review.
 Each column boundary is a handoff through `runesmith` — the vertical arrows show
 data flow, not agent-to-agent calls.
 
+Flow D and Flow B are the only canonical flows — the labels stay because external
+documents reference them; no Flow A or Flow C is documented.
+
 ## Flow B — Operational Chain
 
 ```
@@ -97,7 +111,7 @@ Every spoke owns its own return schema; nothing is restated here.
 | Spoke | Contract | Owner |
 |---|---|---|
 | `worker` | `handoff:` block (`done` / `next` / `blocked`) | `./.opencode/agents/worker.md` |
-| `reviewer-*` | one-type envelope — the facet populates its own key; the shape is owned by `./.opencode/REVIEW.md` | `./.opencode/agents/reviewer-<type>.md` |
+| `reviewer-*` | one-type envelope — the facet populates its own key; the shape is owned by `./.opencode/REVIEW.md` | `./.opencode/agents/reviewer-{source,accuracy,scope,structure,overlap}.md` |
 | merged review report | five always-present type keys | `./.opencode/REVIEW.md` |
 | `editor` | `changes:` report | `./.opencode/agents/editor.md` |
 | `spec-writer` | spec report | `./.opencode/agents/spec-writer.md` |
@@ -110,14 +124,17 @@ Every spoke owns its own return schema; nothing is restated here.
 | 10 rounds reached | Stop, report what's still open |
 | 7 consecutive clean rounds | Ask the human: keep / stop all / just this file |
 | A lane blocked | Other lanes continue; batch reports partial |
-| `cluster-worker` step refused or failed | Stop the chain, report `state_after` |
+| `cluster-worker` step refused | Stop the chain, report the refusal payload (no `state_after`) |
+| `cluster-worker` step failed | Stop the chain, report `state_after` |
 
 ## Escalation
 
 No spoke asks the human. A spoke that needs a decision returns it in its own
 report (`blocked:`, `questions:`, or `status: "refused"` with
 `escalate_to: "runesmith"`); `runesmith` puts the question to the human and
-relaunches.
+relaunches. This section owns the rule; the per-section Agent Behaviour rows
+(`./02_Knowledge/AGENTS.md`, `./04_ADRs/AGENTS.md` § Agent Behaviour) point here
+instead of defining the channel themselves.
 
 ## Ownership Matrix
 
@@ -129,7 +146,7 @@ relaunches.
 | `reviewer-<type>` | `runesmith` | one-type envelope |
 | `runesmith` | `editor` | confirmed findings from the JSON |
 | `editor` | `runesmith` | change report (`source_or_rule` when it was cited) |
-| `runesmith` | `cluster-worker` | a committed plan under `05_Implementations/` |
+| `runesmith` | `cluster-worker` | a committed plan under `./05_Implementations/` |
 | `cluster-worker` | `runesmith` | JSON handoff or refusal |
 | `runesmith` | `spec-writer` | a spec or diagram request |
 | `spec-writer` | `runesmith` | spec report / diagram appended |

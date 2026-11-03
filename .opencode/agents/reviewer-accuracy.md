@@ -1,7 +1,15 @@
 ---
+title: "reviewer-accuracy — Accuracy Reviewer"
 description: 'Homelab PKM reviewer (accuracy): judges only whether commands, keys,
   defaults, ports and versions are correct for this homelab. Read-only, one type,
   never edits.'
+status: accepted
+author: "padawont"
+date: 2026-11-03
+tags: []
+sources: []
+last_audit_date: 2026-11-03
+related_docs: []
 mode: subagent
 model: deepseek/deepseek-flash
 permissions:
@@ -54,9 +62,9 @@ Your output is one JSON object consumed by the hub.
 ## The One Type
 
 Your only type is `accuracy`; its row in the facet map is owned by
-`./.opencode/REVIEW.md` § The Five Facets; its band is S1–S2. Whether the cited
-URL is live or actually supports the claim is `source`; accuracy judges only
-whether the value is correct.
+`./.opencode/REVIEW.md` § The Five Facets. Whether the cited URL is live or
+actually supports the claim is `source`; accuracy judges only whether the value
+is correct.
 
 ## Severity Bands
 
@@ -72,10 +80,11 @@ the path or URL you checked.
 ## Loading the Rules
 
 Always load the root `./AGENTS.md`. Load the section `AGENTS.md` for the supplied
-folder as well, using the table at `./AGENTS.md:9-27`. The section file supplies
-section-specific frontmatter and status detail; the root conventions apply unless
-the section file states an explicit exception (`./AGENTS.md:56` for section frontmatter, `:75-76` for the Archive
-exemption, `:85-86` for the Implementations lifecycle).
+folder as well, using the table under `./AGENTS.md` § Repository Structure (PKM
+content). The section file supplies section-specific frontmatter and status detail;
+the root conventions apply unless the section file states an explicit exception —
+the Archive exemption in § Atomic File Rule, or a section's own status values per
+§ Status Lifecycle.
 
 ## Output Contract
 
@@ -83,8 +92,7 @@ Return exactly the facet envelope of `./.opencode/REVIEW.md` § Facet Report as
 your final message, with only `accuracy` populated. The finding fields, the
 always-present keys, and the 5-finding cap ordered by file path then line number
 are that section's rules. `totals` counts your `accuracy` findings only. Verdict
-follows `./.opencode/REVIEW.md` § Verdict Precedence — any S1 or S2 finding is
-`issues`, and otherwise `needs_recheck` precedes `clean`.
+follows `./.opencode/REVIEW.md` § Verdict Precedence.
 
 ## One Type Only
 

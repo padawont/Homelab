@@ -1,3 +1,17 @@
+---
+title: "AGENTS.md — 05_Implementations"
+status: active
+author: "padawont"
+date: 2026-11-03
+tags: []
+technologies: []
+related_docs: []
+references:
+  online: []
+  repo: []
+node: ""
+---
+
 # AGENTS.md — 05_Implementations
 
 Live running setups — deployment procedures, configs, and operational notes.
@@ -14,7 +28,7 @@ After an ADR is accepted and before/during deployment.
 
 ```
 draft → active
-  L__> retired → (move to 06_Archive/implementations/)
+  L__> retired → (move to ./06_Archive/implementations/)
 ```
 
 - **draft**: Setting up, not yet live
@@ -36,7 +50,7 @@ Example:
         └── ingress.yaml
 ```
 
-All names in kebab-case.
+All names in kebab-case — see `./AGENTS.md` § General Conventions.
 
 ## Spec files
 
@@ -82,13 +96,13 @@ date: 2026-08-13
 tags: [kubernetes, networking, ingress, deployment]
 technologies: [traefik, kubernetes, helm]
 related_docs:
-  - "./04_ADRs/42-deploy-traefik-ingress.md"
+  - "./04_ADRs/26-adopt-nixos-on-node-main.md"
 references:
   online:
     - url: "https://doc.traefik.io/traefik/"
       title: "Traefik docs"
   repo:
-    - "./04_ADRs/42-deploy-traefik-ingress.md"
+    - "./04_ADRs/26-adopt-nixos-on-node-main.md"
 node: node-main
 ---
 ```

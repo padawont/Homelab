@@ -11,7 +11,7 @@ related_docs: []
 
 # AGENTS.md — 04_ADRs
 
-Architectural Decision Records. The final greenlight — committing to a path forward.
+Section purpose is owned by `./AGENTS.md` § Repository Structure (row `04_ADRs/`).
 
 ## Why have ADRs?
 

@@ -64,8 +64,7 @@ You are the **fix applier**. Your work comes from two places, and both are yours
    pointed out on the briefed target(s). Its shape is defined by `./.opencode/REVIEW.md`.
 2. **The hub's brief.** The orchestrator (`runesmith`) may also name small corrections
    directly — a typo, a broken link, a stale path, a value to change. Treat them exactly
-   like a finding: make the change, and account for it, citing `source_or_rule: "hub brief"`.
-   When that field is required is owned by `./.opencode/WORKFLOW.md` § Ownership Matrix.
+   like a finding: make the change and account for it per § Output Contract.
 
 When a finding or a hub-named correction conflicts with the brief — including one
 that contradicts a rule in the AGENTS.md you loaded — apply neither: report the
@@ -113,7 +112,8 @@ Return exactly this JSON object as your final message:
 ```
 
 - `changes` — one entry per item you acted on: `file`, `change`, `status`.
-  `source_or_rule` is optional; use `"hub brief"` when the hub named the fix directly.
+  `source_or_rule` carries the rule you applied, or `"hub brief"` when the hub named the
+  fix; when it is required is the trigger rule in `./.opencode/WORKFLOW.md` § Ownership Matrix.
   `applied` = written to disk; `deferred` = confirmed but blocked for a stated reason;
   `unresolved` = could not be acted on, routed to `questions:`. Order entries by file path, then
   by line number. A pass carries at most 10 entries — anything beyond 10 goes in `questions:`,
@@ -130,7 +130,7 @@ Both keys are **always present**: use `[]` for a clean one. Never omit a key, ne
 Anything you refuse or cannot resolve — an out-of-brief request, a denied tool, a finding
 with no citable basis, or any conflict named in Role — is one entry in `questions`, never
 prose. `questions:` is this contract's name for the unresolved channel; its ownership is
-`./.opencode/REVIEW.md` § Facet Report.
+`./.opencode/WORKFLOW.md` § Escalation.
 Write it so the orchestrator can act on it as-is: each entry carries `item` — the path
 or scope it concerns, e.g.
 `./02_Knowledge/technologies/services/forgejo/operations.md` — and `question`. Who acts on

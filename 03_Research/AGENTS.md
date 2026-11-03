@@ -15,7 +15,9 @@ Section purpose is owned by `./AGENTS.md` § Repository Structure (row `03_Resea
 
 ## Why have research?
 
-To make informed decisions. Research is the bridge between "this seems interesting" (Knowledge) and "let's commit" (ADR). It evaluates alternatives and produces the raw material for the ADR.
+To make informed decisions. The pipeline role and output are owned by `./AGENTS.md`
+§ Content Pipeline (row **Knowledge → Research**); what a topic folder must contain is
+defined below.
 
 ## When to create
 

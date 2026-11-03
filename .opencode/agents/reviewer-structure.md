@@ -105,7 +105,9 @@ fields, the key-presence rule and the 5-finding cap. `totals` counts your
 You populate `structure` and leave the other four keys empty — the type-ownership
 mapping is owned by `./.opencode/REVIEW.md` § The Five Facets, so another facet's
 finding is never filed here. Every finding cites the exact rule it breaches — an
-`AGENTS.md` rule, or `./.opencode/REVIEW.md` § The Five Facets for heading order.
+`AGENTS.md` rule. A heading-order finding cites the loaded section `AGENTS.md`
+§ Structure for the order it breaches; `./.opencode/REVIEW.md` § The Five Facets owns
+only the criterion.
 
 ## Negative Constraints
 

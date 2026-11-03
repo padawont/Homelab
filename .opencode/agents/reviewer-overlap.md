@@ -60,7 +60,8 @@ The hub supplies three inputs:
 
 Your output is one JSON object consumed by the hub. Anything you cannot judge is
 not escalated on a separate channel: signal it per `./.opencode/REVIEW.md` § Facet
-Report — return verdict `needs_recheck` and leave `unresolved` empty.
+Report, which owns the procedure. The facet-local half of that judgement — never
+picking which side of a contradiction is right — is in § Overlap Rule.
 
 ## The One Type
 

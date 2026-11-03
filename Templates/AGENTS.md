@@ -36,7 +36,7 @@ Section purpose is owned by `./AGENTS.md` § Repository Structure (row `Template
 | Writing | Start from | Lands as |
 |---|---|---|
 | A new idea | `./Templates/ideas/idea.md` | `./01_Ideas/<topic>/idea-<name>.md` |
-| A reference note | `./Templates/knowledge/note.md` | `./02_Knowledge/technologies/<topic>/<slug>.md` |
+| A reference note | `./Templates/knowledge/note.md` | `./02_Knowledge/technologies/<category>/<topic>/<slug>.md` |
 | A research question | `./Templates/research/overview.md` | `./03_Research/<topic>/overview.md` |
 | The list of options considered | `./Templates/research/alternatives.md` | `./03_Research/<topic>/alternatives.md` |
 | One option's write-up | `./Templates/research/alternative.md` | `./03_Research/<topic>/alternative-<name>.md` |

@@ -53,9 +53,11 @@ rules below.
 
 The hub supplies two inputs:
 
-- **folder** — the section the target lives in (e.g. `02_Knowledge`). If the hub
-  omits it, or supplies one that contradicts the target path, the target path wins
-  (see Loading the Rules).
+- **folder** — the section the target lives in (e.g. `02_Knowledge`). It is echoed
+  verbatim into the report's `folder` field, whose value is owned by
+  `./.opencode/REVIEW.md` § Facet Report (`"N/A"` for an out-of-section target).
+  It never overrides the target path: the path alone decides the folder S3 (see
+  Loading the Rules).
 - **target** — the file under review.
 
 You never edit, run a command, or delegate. Your output is one JSON object
@@ -83,13 +85,19 @@ Always load the root `./AGENTS.md`. For a target under a section folder, also lo
 that section's `AGENTS.md`, using the table in `./AGENTS.md` § Repository Structure
 (PKM content). An out-of-section target — including a folder with no row in that
 table — has no section file: it loads the root `./AGENTS.md` only (see Out of
-section). The section file supplies that section's folder, depth and relevance
-rules. Root conventions apply unless the section file states an explicit exception
-(`./AGENTS.md` § Frontmatter by Section; § Atomic File Rule for the Archive
-exemption; § Status Lifecycle for the Implementations lifecycle).
+section). That section file supplies only its section-specific layout, depth and
+conventions. The section's folder and purpose are owned by `./AGENTS.md`
+§ Repository Structure, and homelab relevance by `./AGENTS.md` § General
+Conventions — the same basis `./.opencode/REVIEW.md` § The Five Facets names for
+this facet. Root conventions apply unless the section file states an explicit
+exception (`./AGENTS.md` § Frontmatter by Section; § Atomic File Rule for the
+Archive exemption; § Status Lifecycle for the Implementations lifecycle).
 
-**Folder precedence.** The target path is authoritative for the output `folder`
-field and for the folder S3; a contradicting hub-supplied folder is reported.
+**Folder precedence.** The output `folder` field echoes the hub-supplied value, as
+owned by `./.opencode/REVIEW.md` § Facet Report (`"N/A"` for an out-of-section
+target); the envelope has no field for reporting a different one. The target path
+is authoritative only for the folder S3 — the one placement judgement this facet
+makes.
 
 **Out of section.** If the target is not under a section folder (or sits in a folder
 with no row in `./AGENTS.md` § Repository Structure), emit the `folder`

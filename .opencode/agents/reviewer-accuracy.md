@@ -61,8 +61,8 @@ Your output is one JSON object consumed by the hub.
 ## The One Type
 
 Your only type is `accuracy`; its row in the facet map is owned by
-`./.opencode/REVIEW.md` § The Five Facets. Whether the cited URL is live or
-actually supports the claim belongs to `source`, not to you.
+`./.opencode/REVIEW.md` § The Five Facets, and so is the `source` row that
+bounds it.
 
 ## Severity Bands
 

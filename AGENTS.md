@@ -103,7 +103,8 @@ Each section owns its status values and transitions — see the section's AGENTS
 | PR workflow | draft → tests pass → review → merge |
 | Merge strategy | Squash merge (default); merge commits or rebase merge by exception |
 | Code review | Code/tooling changes: at least 1 approving review, all threads resolved. PKM notes: their section's convention (e.g. `./01_Ideas/AGENTS.md`) |
-| Labels | `bug`, `enhancement`, `documentation`, `epic`, `idea`, `knowledge`, `research`, `adr`, `proposal`, `implementation` |
+| Labels (existing) | `adr`, `area: python`, `area: tools`, `bug`, `configs`, `dagger`, `deployment`, `devspace`, `documentation`, `duplicate`, `enhancement`, `epic`, `good first issue`, `help wanted`, `implementation`, `invalid`, `knowledge`, `question`, `research`, `testing`, `wontfix` |
+| Labels (to create before use) | `idea` and `proposal` are required by `./.opencode/skills/create-github-issues/SKILL.md` for the Idea and Proposal pipeline stages, but are not part of the existing label set — create them on the issue repo before use. Do not substitute an existing label |
 | Tests | `devbox run test` (pytest) must pass before merge; no hosted CI is configured |
 
 ## General Conventions

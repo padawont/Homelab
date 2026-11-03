@@ -44,10 +44,10 @@ Example:
 ---
 title: "Deploy NetBox as IPAM"
 status: archived          # the source section's terminal value, unchanged
-original_location: "./04_ADRs/37-deploy-netbox.md"
+original_location: "./04_ADRs/<issue-number>-<kebab-description>.md"
 archived_date: 2026-08-13
 reason: "Replaced by NetBox on its own VLAN"
-superseded_by: "./04_ADRs/58-deploy-netbox-vlan.md"
+superseded_by: "./04_ADRs/<successor-issue-number>-<kebab-description>.md"
 ---
 ```
 

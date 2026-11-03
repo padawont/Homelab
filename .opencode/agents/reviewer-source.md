@@ -83,11 +83,11 @@ A `source` finding must name the URL or the `./` path it rests on.
 
 Always load the root `./AGENTS.md`. Load the section `AGENTS.md` for the supplied
 folder as well — the table in `./AGENTS.md` § Repository Structure (PKM content)
-names the one for that folder. A target whose `folder` is `"N/A"`, or whose folder
-has no row in that table (e.g. `.opencode/`, `.opencode/agents/`), has no section
-file: load the root `./AGENTS.md` only. Which frontmatter fields are citations
-comes from the loaded files, and the section file wins where they conflict; the
-root supplies the defaults (line limit, link format). Three sections carry
+names the one for that folder. An out-of-section target carries `folder: "N/A"`
+per `./.opencode/REVIEW.md` § Facet Report and has no section file: load the root
+`./AGENTS.md` only. Which frontmatter fields are citations comes from the loaded
+files, and the section file wins where they conflict; the root supplies the
+defaults (line limit, link format). Three sections carry
 citations in more than one place; every citation field counts and must be
 checked, and each section's own § Frontmatter (required) names its fields:
 

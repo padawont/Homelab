@@ -66,14 +66,14 @@ that row owns its criterion list and its band, not this file.
 
 ## Severity Bands
 
-- **S3** — a structural problem that changes what the reader concludes: heading
-  order or level, or a subsection filed under the wrong heading, so content reads
-  at the wrong level.
-- **S4** — a pure convention breach that changes nothing about placement or depth:
-  frontmatter, tags, dates, a 150-line breach, or link/heading form.
-- **S5** — cosmetic or stylistic. Wording, formatting or emphasis that changes no
-  fact, placement or convention. Never blocks — see `./.opencode/REVIEW.md`
-  § Severity Bands.
+The band definitions and the `structure` criterion list are owned by
+`./.opencode/REVIEW.md` § Severity Bands and § The Five Facets. This section adds
+only the structure-specific narrowing — which defects land on which band:
+
+- **S3** — heading order or level, or a subsection filed under the wrong heading.
+- **S4** — frontmatter, tags, dates, a 150-line breach, or a link.
+- **S5** — wording, formatting or emphasis that changes no fact, placement or
+  convention; the blocking rule is in `./.opencode/REVIEW.md` § Severity Bands.
 
 When a finding is both S3 and S4, it is S3. An over-length file is an S4 line-count
 breach, never promoted to S3; if it needs splitting, the split decision goes to
@@ -102,8 +102,7 @@ fields, the key-presence rule and the 5-finding cap. `totals` counts your
 You populate `structure` and leave the other four keys empty — the type-ownership
 mapping is owned by `./.opencode/REVIEW.md` § The Five Facets, so another facet's
 finding is never filed here. Every finding cites the exact rule it breaches — an
-`AGENTS.md` rule, or `./.opencode/REVIEW.md` § The Five Facets for heading order or
-heading form.
+`AGENTS.md` rule, or `./.opencode/REVIEW.md` § The Five Facets for heading order.
 
 ## Negative Constraints
 

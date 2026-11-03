@@ -22,8 +22,13 @@ skills and `runesmith` execute — not the agents themselves (see
 handoff goes through it, and it is the only agent that speaks to the human.
 Two lanes run under it: the PKM pipeline (the spokes `worker`, `editor`,
 `cluster-worker`, `spec-writer`, plus the five reviewer facets) and the code
-pipeline (the `rs-*` specialists). The facet roster and the fan-out/merge
-exclusivity are owned by `./.opencode/REVIEW.md` (§ The Five Facets).
+pipeline (the `rs-*` specialists).
+
+Fan-out and merge are `runesmith`-only, and this section is their canonical home:
+no facet, worker, editor, `spec-writer` or `cluster-worker` launches another
+agent's facet set or merges facet reports. Other files link to § Coordination
+Rule for that rule rather than restating it; the facet roster itself is owned by
+`./.opencode/REVIEW.md` (§ The Five Facets).
 
 ## Topology
 
@@ -124,7 +129,7 @@ Every spoke owns its own return schema; nothing is restated here.
 | 10 rounds reached | Stop, report what's still open |
 | 7 consecutive clean rounds | Ask the human: keep / stop all / just this file |
 | A lane blocked | Other lanes continue; batch reports partial |
-| `cluster-worker` step refused | Stop the chain, report the refusal payload (no `state_after`) |
+| `cluster-worker` step refused | Stop the chain, report the refusal payload — `state_after` present but empty: `applied`, `skipped_already_applied` and `not_run` are empty lists and `observed` says nothing executed |
 | `cluster-worker` step failed | Stop the chain, report `state_after` |
 
 ## Escalation
@@ -132,9 +137,10 @@ Every spoke owns its own return schema; nothing is restated here.
 No spoke asks the human. A spoke that needs a decision returns it in its own
 report (`blocked:`, `questions:`, or `status: "refused"` with
 `escalate_to: "runesmith"`); `runesmith` puts the question to the human and
-relaunches. This section owns the rule; the per-section Agent Behaviour rows
-(`./02_Knowledge/AGENTS.md`, `./04_ADRs/AGENTS.md` § Agent Behaviour) point here
-instead of defining the channel themselves.
+relaunches. This section is canonical for the rule: the per-section Agent
+Behaviour rows (`./02_Knowledge/AGENTS.md`, `./04_ADRs/AGENTS.md` § Agent
+Behaviour) link here rather than define the channel themselves, and the same
+applies to any other file that still restates it.
 
 ## Ownership Matrix
 

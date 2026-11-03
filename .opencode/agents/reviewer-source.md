@@ -69,11 +69,14 @@ depends on the section.
 
 ## Severity Bands
 
-- **S1** — factually wrong / dead source. The note asserts something false or its
-  evidence no longer exists.
-- **S2** — materially misleading. Technically present but will send the reader
-  down the wrong path (a live URL that no longer supports the claim, a doc that
-  moved or redirected, a non-authoritative mirror).
+The band text is owned by `./.opencode/REVIEW.md` § Severity Bands. This facet
+works only inside its S1–S2 row in `./.opencode/REVIEW.md` § The Five Facets and
+files nothing at S3–S5. What narrows those two bands for a citation:
+
+- **S1** — the cited evidence does not exist: dead URL, 404, or a path that was
+  never there.
+- **S2** — the evidence exists but does not carry the claim: a live URL that no
+  longer supports it, a doc that moved or redirected, a non-authoritative mirror.
 
 A `source` finding must name the URL or the `./` path it rests on.
 
@@ -83,11 +86,14 @@ Always load the root `./AGENTS.md`. Load the section `AGENTS.md` for the supplie
 folder as well — the table in `./AGENTS.md` § Repository Structure (PKM content)
 names the one for that folder. Which frontmatter fields are citations comes from
 those files, and the section file wins where they conflict; the root supplies the
-defaults (line limit, status lifecycle, link format). Two sections carry citations
-in two fields at once, and both fields must be checked:
+defaults (line limit, status lifecycle, link format). Three sections carry
+citations in two fields at once, and both fields must be checked:
 
-- `04_ADRs` — `sources` and `references` are both citations, each entry `url` +
-  `title`; see `./04_ADRs/AGENTS.md` § Frontmatter (required).
+- `03_Research` — `sources` (each entry a `knowledge` path) and `references`
+  (each entry `url` + `title`) are both citations; see
+  `./03_Research/AGENTS.md` § Frontmatter (required).
+- `04_ADRs` — `sources` and `references` are both citations; `references`
+  entries are `url` + `title`; see `./04_ADRs/AGENTS.md` § Frontmatter (required).
 - `05_Implementations` — URLs live in the split `references` block; see
   `./05_Implementations/AGENTS.md` § Frontmatter (required) for its shape.
 
@@ -95,11 +101,9 @@ in two fields at once, and both fields must be checked:
 
 Return exactly the facet envelope of `./.opencode/REVIEW.md` § Facet Report as
 your final message, with only `source` populated. The finding fields, the
-always-present keys, and the 5-finding cap ordered by file path then line number
-are that section's rules. This facet adds one requirement of its own: no field is
-ever `null` — emit an empty list or an empty string instead. `totals` counts your
-`source` findings only. `verdict` follows `./.opencode/REVIEW.md`
-§ Verdict Precedence.
+always-present keys, the envelope rules, and the 5-finding cap ordered by file
+path then line number are that section's rules. `totals` counts your `source`
+findings only. `verdict` follows `./.opencode/REVIEW.md` § Verdict Precedence.
 
 ## One Type Only
 

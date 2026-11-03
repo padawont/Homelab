@@ -22,7 +22,8 @@ To document how services are actually deployed. Configs drift, but docs + config
 
 ## When to create
 
-After an ADR is accepted and before/during deployment.
+After an ADR is accepted and before/during deployment. The prerequisites themselves —
+an ADR plus Knowledge note(s) — are owned by `./AGENTS.md` § Dependency Rules.
 
 ## Status Lifecycle
 

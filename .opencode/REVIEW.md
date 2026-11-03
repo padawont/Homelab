@@ -12,12 +12,12 @@ related_docs: []
 # Review contract — five facets, one merged report
 
 How the Homelab PKM review works after the single `reviewer` was split into five
-single-type subagents. Owns the facet map, the merged report shape, the merge
-rule and the verdict precedence — the facts `runesmith`, `editor` and the skills
-all depend on. Each facet's own rules live in its agent file.
+single-type subagents. Owns the facet map, the merged report shape and the
+verdict precedence — the facts `runesmith`, `editor` and the skills all depend
+on. Each facet's own rules live in its agent file.
 
-Fan-out and merge are `runesmith`-only. The hub-and-spoke rule — why a facet
-never calls another facet — is `./.opencode/WORKFLOW.md` § Coordination Rule.
+Fan-out, merge and the hub-and-spoke rule — why a facet never calls another
+facet — are defined in `./.opencode/WORKFLOW.md` § Coordination Rule.
 
 ## The Five Facets
 
@@ -109,10 +109,8 @@ A facet that did not run, crashed, or returned no report makes the merge
 
 ## Routing
 
-`REVIEW.md` owns which consumer receives which report; every handoff still runs
-through `runesmith` (`./.opencode/WORKFLOW.md` § Coordination Rule). "Directly"
-below means the hub launches that facet for the consumer — never a spoke-to-spoke
-call.
+`REVIEW.md` owns which consumer receives which report. "Directly" below means
+the hub launches that facet for the consumer.
 
 | consumer | gets |
 |---|---|

@@ -96,11 +96,7 @@ it. Who may promote it is `runesmith`'s call per
   folder beside its committed `./05_Implementations/node-main/k3s/overview.md`.
   The spec inventory is `./05_Implementations/AGENTS.md` § Spec files, which also
   states the append-only rule; the kebab-case naming rule is § File system layout
-  (`:39`) and the frontmatter is § Frontmatter (required) (`:56-72`).
-- **`./02_Knowledge` and `./04_ADRs`** — the documented append grant only, exactly
-  the `spec-writer` row of each Agent Behaviour table
-  (`./02_Knowledge/AGENTS.md:132`, `./04_ADRs/AGENTS.md:127`). Research docs stay
-  out of scope.
+  and the frontmatter is § Frontmatter (required).
 - **Never** `./05_Implementations/**/overview.md`,
   `./05_Implementations/**/rollback.md`, `./05_Implementations/**/configs/`, or any
   other path — not to fix, not to correct, not while passing through.

@@ -268,17 +268,12 @@ Return exactly this JSON object as your final message:
   artifacts yourself — notes, specs, configs, and code always come from a
   specialist you launch. Your own writes are limited to pipeline state under
   `./.runesmith/*/pipeline/`, gate reports, and the `status:` frontmatter line
-  of the `./05_Implementations/**/spec-*.md` files you promote: `draft` →
-  `active`, and `active` → `retired`. That status line is the whole of your
-  grant there — the body stays `spec-writer`'s append-only replacement block,
-  never an edit to existing content (`./05_Implementations/AGENTS.md`
-  § Spec files). The folder move to `./06_Archive/implementations/` is never
-  yours: `worker` writes the archive copy and `editor` holds the only
-  `rm ./0*`, exactly as their own files define it
+  of `./05_Implementations/**/spec-*.md` (`./05_Implementations/AGENTS.md`
+  § Status Lifecycle, § Spec files). The archive handoff is never yours:
+  `worker` writes the archive copy and `editor` holds the only `rm ./0*`
   (`./.opencode/agents/worker.md` § Inputs; `./05_Implementations/AGENTS.md`
-  § Status Lifecycle). A permission-denied write means a specialist is missing,
-  not that the permission is too tight.
-- Every handoff goes through you alone — no specialist launches another, and
-  none of your work passes through an intermediate orchestrator
-  (`./.opencode/WORKFLOW.md` § Coordination Rule).
+  § Conventions; `./06_Archive/AGENTS.md` § Conventions). A permission-denied
+  write means a specialist is missing, not that the permission is too tight.
+- Handoffs follow `./.opencode/WORKFLOW.md` § Coordination Rule; no intermediate
+  orchestrator sits between you and a specialist.
 - Question routing follows the Question Routing Contract above.

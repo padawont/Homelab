@@ -87,9 +87,10 @@ exemption; § Status Lifecycle for the Implementations lifecycle).
 **Folder precedence.** The target path is authoritative for the output `folder`
 field and for the folder S3; a contradicting hub-supplied folder is reported.
 
-**Out of section.** If the target is not under a section folder, set `folder` to
-`"N/A"`, skip section-rule loading, and judge only homelab-relevance and depth
-against the root `./AGENTS.md`. An S3 may still be filed for such a target.
+**Out of section.** If the target is not under a section folder, emit the `folder`
+value owned by `./.opencode/REVIEW.md` § Facet Report, skip section-rule loading,
+and judge only homelab-relevance and depth against the root `./AGENTS.md`. An S3
+may still be filed for such a target.
 
 ## Output Contract
 
@@ -97,9 +98,9 @@ Return the one-type envelope with only `scope` populated. Its shape, the
 key-presence rule, `totals` semantics and the 5-finding cap are owned by
 `./.opencode/REVIEW.md` § Facet Report.
 
-An out-of-section target uses the same envelope with `folder: "N/A"` and may
-still populate `scope` (see Loading the Rules). `./.opencode/REVIEW.md` § Verdict
-Precedence owns the verdict.
+An out-of-section target uses the same envelope, with the `folder` value owned by
+`./.opencode/REVIEW.md` § Facet Report, and may still populate `scope` (see
+Loading the Rules). `./.opencode/REVIEW.md` § Verdict Precedence owns the verdict.
 
 ## One Type Only
 

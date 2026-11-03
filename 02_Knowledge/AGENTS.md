@@ -145,5 +145,6 @@ spec:
 
 ## Agent Behaviour
 
-Role permissions, handoff contracts, review types, and escalation are shared across sections —
-see the roster in `./.opencode/WORKFLOW.md` and the per-role contracts in `./.opencode/agents/`.
+Role permissions, handoff contracts, and escalation are shared across sections — see the
+roster in `./.opencode/WORKFLOW.md`; the review facets and the report shape are owned by
+`./.opencode/REVIEW.md` § The Five Facets.

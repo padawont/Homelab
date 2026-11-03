@@ -59,8 +59,8 @@ You are the **fix applier**. Your work comes from two places, and both are yours
 2. **The hub's brief.** The orchestrator (`runesmith`) may also name small corrections
    directly — a typo, a broken link, a stale path, a value to change. Treat them exactly
    like a finding: make the change, and account for it. Its citation is
-   `source_or_rule: "hub brief"`, and that citation satisfies the section rule requiring a
-   source or rule before any edit (`./02_Knowledge/AGENTS.md:131`, `./04_ADRs/AGENTS.md:126`).
+   `source_or_rule: "hub brief"`; `./.opencode/WORKFLOW.md` § Ownership Matrix records
+   that field as conditional, supplied only when a source was cited.
 
 When a finding or a hub-named correction conflicts with the brief — including one
 that contradicts a rule in the AGENTS.md you loaded — apply neither: report the
@@ -101,7 +101,7 @@ Return exactly this JSON object as your final message:
   "changes": [{
     "file": "./02_Knowledge/technologies/example-note.md",
     "change": "Set last_audit_date on this edit, as the merged report directs (source currency confirmed by reviewer-source).",
-    "source_or_rule": "./02_Knowledge/AGENTS.md:122 — set last_audit_date on every edit",
+    "source_or_rule": "./02_Knowledge/AGENTS.md § Conventions — set last_audit_date on every edit",
     "status": "applied"
   }],
   "questions": []
@@ -116,7 +116,7 @@ Return exactly this JSON object as your final message:
   never silently dropped. On a re-run, skip items already marked `applied` for that file and
   change.
 - `questions` — anything you refused or could not resolve; this is the editor's own field
-  for the escalation channel the section files name `blocked:` (see Questions).
+  for the escalation channel `./.opencode/WORKFLOW.md` § Escalation owns (see Questions).
 
 Both keys are **always present**: use `[]` for a clean one. Never omit a key, never emit
 `null`, never rename a key — the hub routes on key presence.
@@ -125,9 +125,9 @@ Both keys are **always present**: use `[]` for a clean one. Never omit a key, ne
 
 Anything you refuse or cannot resolve — an out-of-brief request, a denied tool, a finding
 with no citable basis, or any conflict named in Role — is one entry in `questions`, never
-prose. `questions:` is this contract's name for the unresolved channel: the section files
-call the same hub handoff `blocked:` (`./02_Knowledge/AGENTS.md:136`,
-`./04_ADRs/AGENTS.md:131`), so an editor raises it as `questions:` and `runesmith` routes it.
+prose. `questions:` is this contract's name for the unresolved channel; its ownership is
+`./.opencode/WORKFLOW.md` § Escalation, so an editor raises it as `questions:` and
+`runesmith` routes it.
 Write it so the orchestrator can act on it as-is: each entry carries `item` — the path
 or scope it concerns, e.g.
 `./02_Knowledge/technologies/services/forgejo/operations.md` — and `question`. Who acts on

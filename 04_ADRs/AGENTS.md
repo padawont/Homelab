@@ -117,7 +117,7 @@ graph TD
 
 - Naming: `{issue-number}-{kebab-description}.md`
 - Use GitHub issue number as ADR number
-- Every ADR must trace back to its Research doc via `related_docs`
+- Trace back to the Research doc via `related_docs` — the ADR→Research requirement is owned by `./AGENTS.md` § Dependency Rules
 - `draft → accepted` requires a review (PR with at least 1 approving review)
 - Every ADR must contain at least two mermaid diagrams:
   1. How the solution works internally
@@ -129,8 +129,8 @@ graph TD
 
 Role permissions and handoff contracts are shared across sections — see the roster in
 `./.opencode/WORKFLOW.md` and the per-role contracts in `./.opencode/agents/`; the review
-facets and the report shape are owned by `./.opencode/REVIEW.md` § The Five Facets.
+facets are owned by `./.opencode/REVIEW.md` § The Five Facets, and the report shape by
+§ Facet Report.
 
-No spoke asks the human. Anything unresolved returns in the spoke's own report — the
-editor's `questions:`, or `unresolved` in the merged envelope — and `runesmith` routes it
-(`./.opencode/WORKFLOW.md` § Escalation, `./.opencode/REVIEW.md` § Verdict Precedence).
+No spoke asks the human — escalation is owned by `./.opencode/WORKFLOW.md` § Escalation and
+the unresolved channel by `./.opencode/REVIEW.md` § Facet Report.

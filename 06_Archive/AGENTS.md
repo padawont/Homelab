@@ -42,10 +42,8 @@ Example:
 ```
 
 Naming follows `./AGENTS.md` § General Conventions; each subfolder mirrors the
-source section's internal structure. Research topics keep at least three
-`alternative-{name}.md` files (see `./03_Research/AGENTS.md` § File system layout) and
-implementation folders keep `overview.md` + `rollback.md` + specs (see
-`./05_Implementations/AGENTS.md` § Conventions).
+source section's internal structure — see `./03_Research/AGENTS.md` § Conventions and
+`./05_Implementations/AGENTS.md` § Conventions.
 
 ## Frontmatter (required)
 

@@ -79,9 +79,10 @@ Envelope rules owned here — a facet may reference, never redefine them: every 
 is always present; `folder` is the section folder or `"N/A"` for an out-of-section
 target; no field is ever `null` (emit an empty list or empty string); `fix_hint` is
 a fixed recommendation value consumers read verbatim; and `verdict` is one of
-`clean`, `issues`, `needs_recheck`. A facet may return `needs_recheck` to flag a
-finding it could not settle; the hub recomputes the final verdict at merge and
-populates `unresolved` from those findings (§ Verdict Precedence).
+`clean`, `issues`, `needs_recheck`. Each facet computes its own report's `verdict`
+per § Verdict Precedence — it may return `needs_recheck` to flag a finding it
+could not settle. Only the merged report's verdict is recomputed by `runesmith`
+at merge time, which also populates `unresolved` from those findings.
 
 ## Merged Report
 

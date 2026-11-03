@@ -5,8 +5,9 @@ description: >
   (node-main, 192.168.111.7). Trigger when the user asks to deploy, install,
   upgrade, or update a service, container, or helm chart on the cluster.
   Finds the service's Implementation overview.md and follows its documented
-  deployment steps. ONLY usable from the build or runesmith agents — refuses
-  to run from any other agent.
+  deployment steps. Creating/mutating steps run in runesmith (or by the human
+  following the doc); cluster-worker may run only the whitelisted verify,
+  rollback and restart subset.
 ---
 
 # deploy-service
@@ -16,39 +17,46 @@ Standard, repeatable flow for deploying services to the homelab k3s cluster
 folder, reads its `overview.md`, and follows the documented deployment steps.
 Run the steps in order.
 
-> Agent handoff model: cluster execution is Flow B (operational chain) — see
-> `./.opencode/WORKFLOW.md`.
+> Cluster execution is Flow B (operational chain) — see `./.opencode/WORKFLOW.md`.
 
 ## Guardrails (non-negotiable)
 
-- **Agent gate**: this skill runs ONLY when the active agent is `build` or
-  `runesmith`. Check your own agent identity in context. If it is neither,
-  STOP immediately — run no commands, do not proceed — and tell the user to
-  switch to the build or runesmith agent.
+- **Two separate execution modes**:
+  - **Mode A — create/mutate**: `runesmith` (or the human following the doc)
+    runs discovery, manifest generation, `helm install`/`upgrade` and `kubectl
+    apply`. These verbs are outside `cluster-worker`'s whitelist, so it never
+    runs them.
+  - **Mode B — verify/rollback/restart**: `cluster-worker`, only from a
+    committed plan in the service's Implementation folder and only its
+    whitelisted verbs (`kubectl get`/`describe`/`logs`, `rollout undo`/
+    `restart`, `helm status`/`history`/`rollback`, `ssh` transport).
+  - No other agent runs this skill: `spec-writer` has bash denied.
 - **Follow the Implementation doc**: deployment MUST follow the steps in the
   service's `05_Implementations/node-main/{service}/overview.md`. Do not
   improvise the procedure.
-- **Target confirmation**: always confirm the target cluster and the service
-  name with the user before running anything. The only documented target is
-  node-main k3s.
+- **Target confirmation**: `runesmith` always confirms the target cluster and
+  the service name with the user before the plan is committed. The only
+  documented target is node-main k3s.
 - **Read-only before deploy**: discovery and checks use inspection commands
   only (`kubectl get/describe/logs`, `helm list`, `helm show values`). Nothing
-  mutates cluster state until the user has confirmed the deploy plan.
+  mutates cluster state until `runesmith` has confirmed the deploy plan with
+  the user and committed it.
 - **No secrets in the repo**: never hardcode passwords, tokens, or keys. Pull
   from env vars or existing Secrets. Never write secrets to a file or commit
   them.
 - **Destructive ops need confirmation**: any `delete`, `uninstall`, namespace
   removal, PVC deletion, or data-destroying action requires explicit user
-  confirmation first.
+  confirmation obtained by `runesmith` before the plan is committed.
 - **Rollback documented**: every deploy must have a corresponding
   `rollback.md` entry (created/updated in the PKM step below).
-- **When in doubt whether a command mutates state, do not run it — ask.**
+- **When in doubt whether a command mutates state, do not run it** —
+  `runesmith` asks the user, before the plan is committed.
 
 ## Connection (via login-server skill)
 
 - Use the `login-server` skill for ALL SSH to node-main (192.168.111.7): it
-  handles `SSHPASS`, `sshpass`, the key-based fallback, and connection
-  details. Do not duplicate connection info here.
+  handles `SSHPASS`, `sshpass`, and connection details. Do not duplicate
+  connection info here.
 - kubectl on the node:
   `KUBECONFIG=/etc/rancher/k3s/k3s.yaml kubectl` (runic) or
   `sudo k3s kubectl` (root).
@@ -58,7 +66,7 @@ Run the steps in order.
 
 ### Step 1 — Find the service's Implementation doc
 
-- Confirm the service name with the user.
+- `runesmith` confirms the service name with the user.
 - Check `05_Implementations/node-main/` for a folder matching the service.
 - Read its `overview.md` (deployment steps) and `rollback.md` (revert steps).
 - If no Implementation folder exists, STOP and tell the user — do not
@@ -66,11 +74,12 @@ Run the steps in order.
 
 ### Step 2 — Pre-deploy checks (read-only)
 
-- Confirm the cluster and service with the user.
+- `runesmith` confirms the cluster and service with the user.
 - Run the pre-deploy checks listed in the service's `overview.md` (node Ready,
   namespace present, existing chart/manifests, secrets/values sourcing).
 - Present the plan to the user: target, service, namespace, method (Helm vs
-  manifests), and version. Get confirmation.
+  manifests), and version. `runesmith` gets confirmation before committing the
+  plan.
 
 ### Step 3 — Deploy (follow the Implementation doc)
 
@@ -98,14 +107,21 @@ rollout undo` yourself. Hand it to `cluster-worker` (Flow B — see
   "plan_source": "./05_Implementations/node-main/{service}/rollback.md",
   "steps": ["..."],
   "step_range": "1-6",
-  "dry_run": true
+  "dry_run": false
 }
 ```
 
+Set `dry_run: false` for the rollback itself. A `dry_run: true` launch inspects
+and reports only, so a rollback plan submitted with it never mutates anything —
+use `true` only for the pre-flight verification launch, then re-launch the same
+plan with `false` to execute.
+
 - `cluster-worker` is limited to the whitelisted revert verbs
   (`kubectl rollout undo` / `helm rollback`) plus read-only inspection; it
-  dry-runs first, refuses the whole plan if any step falls outside its
-  whitelist, and is the only agent that may ask the human directly.
+  dry-runs first and refuses the whole plan if any step falls outside its
+  whitelist. `runesmith` is the only agent that asks the human: a
+  `cluster-worker` that needs a decision returns a refusal with
+  `escalate_to: "runesmith"`.
 - The **hub** launches `cluster-worker` and chains it — this skill never spawns
   it. The rollback path must exist in `rollback.md` before launch.
 
@@ -124,10 +140,10 @@ After a successful verified deploy, update the implementation records under
 
 ## Rules
 
-- Always confirm the target and service before deploying.
+- `runesmith` always confirms the target and service before deploying.
 - NEVER improvise a deployment procedure — follow the Implementation doc.
 - Never hardcode or commit secrets.
-- No destructive action without explicit user confirmation.
+- No destructive action without explicit user confirmation by `runesmith`.
 - **Rollback goes through `cluster-worker`** — never run `helm rollback` or
   `kubectl rollout undo` directly.
 - Document every deploy in the PKM (overview + rollback).

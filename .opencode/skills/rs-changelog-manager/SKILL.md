@@ -257,7 +257,6 @@ When this skill is active, the calling agent may invoke these skills as part of 
 | ------------------ | ----------------------------------------------- | --------------------------------------------- |
 | `rs-pr-packager`   | After changelog is updated for a release        | Prepare the PR body with changelog summary    |
 | `rs-issue-to-plan` | When a manual change list is needed from issues | Convert issues into structured change entries |
-| `gh`               | When fetching tags or releases                  | Resolve version tags, release history         |
 
 ## Keep a Changelog 2.0.0 Compliance Checklist
 

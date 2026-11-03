@@ -16,8 +16,12 @@ Source verifier executed by RuneSmith. Pins reliable sources for every
 planned file so `implement` writers can cite them. `research` and `implement`
 are modular — each can run without the other.
 
-> Agent handoff model: `reviewer` (`source`) returns JSON to the hub — see
-> `./.opencode/WORKFLOW.md`.
+> Agent handoff model: `reviewer-source` returns JSON to the hub — see
+> `./.opencode/REVIEW.md`.
+
+Division of labour: the hub (RuneSmith, `webfetch: allow`) runs the KB check and
+fetches the one authoritative source per file; `reviewer-source` verifies the
+citations, as `./.opencode/agents/reviewer-source.md` defines.
 
 ## When to use
 
@@ -66,34 +70,43 @@ issue). It is not a standalone Knowledge-base audit.
 ### Phase 2 — One online source (only if the KB is insufficient)
 
 1. For each file the KB did not fully cover, fetch its ONE candidate source.
-2. Classify it: `live | dead | wrong | unverifiable`.
+2. Classify it: live, dead, or wrong — not saying what's claimed.
 3. If dead/wrong, record a working replacement only if the SAME website
    yields one — do not open a second website.
-4. Return `{file, source {url, status, notes}, kb_refs[], flags[]}`.
+4. Record the outcome through `reviewer-source`'s report (see Report below) —
+   never as a parallel per-file record.
 
 ### Report
 
-Aggregate per file: source origin (`kb | online | plan-only`), status, and
-the pinned references. Report to RuneSmith, then STOP. Do NOT load implement
-— RuneSmith drives the next step.
+Aggregate per file: source origin (`kb | online | plan-only`) and the pinned
+references, stated through `reviewer-source`'s `source` findings. The report is
+the five-key JSON object defined in `./.opencode/REVIEW.md`, with only the
+`source` key populated — the other four come back empty.
+Report to RuneSmith, then STOP. Do NOT load implement — RuneSmith drives the
+next step.
 
 > [!NOTE]
-> The reported per-file reference list is the hand-off contract for
-> `implement` — writers cite only these, never a dead, wrong, or
-> unverifiable URL.
+> The pinned reference list is the hand-off contract for `implement` — writers
+> cite only URLs that carry no S1–S2 `source` finding.
 
 ## Role contract (no new agent file — bind existing subagent)
 
-### Reviewer (`reviewer`, `source` type)
+### Reviewer (`reviewer-source`)
 
-- Behavior: check the KB (target file + same folder) first; fetch ONE source
-  per file only when the KB does not fully cover it.
-- Permissions: read/glob/grep/webfetch; read-only (`edit: deny`) — never edits.
-- Never fabricates a result: unreachable URLs are `unverifiable`, not `live`.
-- Bound to the `source` type only: the reviewer's JSON `source` findings
-  (`severity`, `issue`, `evidence`, `fix_hint`) are this skill's verification
-  result; the other four type keys come back empty.
-- Output: `{file, source {url, status, notes}, kb_refs[], flags[]}`.
+- Behavior: verify the citations in the written file — every `sources[]` /
+  `references[]` URL live, authoritative, and actually saying what's claimed.
+  The hub does the KB check and the one-source fetch; this skill does not hand
+  fetching to `reviewer-source`.
+- Permissions: read/glob/grep/webfetch as `reviewer-source.md` defines;
+  read-only (`edit: deny`) — never edits.
+- Never fabricates a result: an unreachable URL is a `source` finding, not
+  `live`; if it cannot be settled without a guess, `verdict: needs_recheck`.
+- Launched as `reviewer-source` (all five keys still emitted, only `source`
+  populated): its JSON `source` findings (`severity`, `issue`, `evidence`,
+  `fix_hint`) are this skill's verification result; the other four type keys
+  come back empty.
+- Output: the five-key JSON report from `./.opencode/REVIEW.md` — this skill
+  defines no second record shape.
 
 ## Edge cases
 
@@ -101,8 +114,8 @@ the pinned references. Report to RuneSmith, then STOP. Do NOT load implement
 |---|---|
 | KB fully covers the file | Pin KB paths as sources; no web lookup |
 | KB partially covers the file | Use KB for covered facts; ONE online source for the rest |
-| All sources dead | Report `dead`; implement writes from plan refs marked `unverified` |
-| One online source irrelevant | Mark `wrong`; do NOT open a second website — fall back to plan refs |
+| All sources dead | Report it as a `source` finding; implement writes from plan refs marked `unverified` |
+| One online source irrelevant | Report it as a `source` finding; do NOT open a second website — fall back to plan refs |
 | Candidate URL moved | Record a replacement only from the same website |
 | No candidate source for a file | KB-only; otherwise plan refs |
 
@@ -119,5 +132,6 @@ the pinned references. Report to RuneSmith, then STOP. Do NOT load implement
 - Do NOT load or chain foundation, implement, or loop-validation — RuneSmith drives.
 - Do NOT load rs-* skills.
 - Idea/S1: skip research entirely.
-- Never fabricate a verification result — unverifiable stays marked.
+- Never fabricate a verification result — an unsettled citation stays
+  `needs_recheck`.
 - The plan is session-scoped in the main chat — no file is written or deleted.

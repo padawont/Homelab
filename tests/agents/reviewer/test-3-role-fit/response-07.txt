@@ -1,0 +1,78 @@
+===== PROMPT =====
+
+Folder: 02_Knowledge
+Target: ./02_Knowledge/technologies/services/forgejo/backup-restore.md
+Siblings: ./02_Knowledge/technologies/services/forgejo/dump-schedule.md
+
+Run your full five-type review of the target and return the JSON report as your final message. Judge `overlap` only against the sibling supplied.
+
+===== RESPONSE =====
+
+```json
+{
+  "file": "./02_Knowledge/technologies/services/forgejo/backup-restore.md",
+  "folder": "02_Knowledge",
+  "types": {
+    "source": [
+      {
+        "severity": "S1",
+        "issue": "Placeholder/dead source URL that does not resolve.",
+        "evidence": "Frontmatter source (line 8) and Sources section (line 43) cite https://example.invalid/forgejo/restore. 'example.invalid' is an RFC 2606 reserved domain; a fetch fails with a transport error, so the evidence does not exist.",
+        "fix_hint": "Replace with a live, authoritative source — e.g. the current Forgejo backup/restore doc (https://forgejo.org/docs/latest/admin/setup/backup/) or the actual homelab restore runbook."
+      },
+      {
+        "severity": "S1",
+        "issue": "Cited Forgejo docs URL is dead (404); the page moved.",
+        "evidence": "GET https://forgejo.org/docs/latest/admin/backup-and-restore/ returns 404. The live page is https://forgejo.org/docs/latest/admin/setup/backup/ (linked as 'Backups and Backup Restoration' from /docs/latest/admin/).",
+        "fix_hint": "Update both the frontmatter and the Sources line to https://forgejo.org/docs/latest/admin/setup/backup/."
+      }
+    ],
+    "accuracy": [
+      {
+        "severity": "S2",
+        "issue": "Stated port contradicts the accompanying config block, which will mislead a restore.",
+        "evidence": "Line 31 states 'Forgejo's HTTP listener runs on port 3000', but the [server] block at lines 34-37 sets HTTP_PORT = 3001. The sibling dump-schedule.md (line 24) also states port 3000.",
+        "fix_hint": "Make the port internally consistent — if 3000 is correct use HTTP_PORT = 3000, otherwise state the homelab's real port in both the prose and the block."
+      }
+    ],
+    "scope": [
+      {
+        "severity": "S3",
+        "issue": "History/origin-story content is not homelab-relevant.",
+        "evidence": "The '## History' section (lines 23-26) recounts Forgejo's 2022 fork from Gitea and tooling lineage. Root AGENTS.md: 'Do not include technology history, origin stories, or sales/marketing points.' It also breaks the prescribed Overview → Details → Sources heading order.",
+        "fix_hint": "Remove the History section; keep only restore-relevant content."
+      }
+    ],
+    "structure": [
+      {
+        "severity": "S4",
+        "issue": "Tags are not lowercase kebab-case.",
+        "evidence": "Line 6: tags: [Forgejo, Restore_Procedure] — uppercase and underscore violate the convention ^[a-z0-9]+(-[a-z0-9]+)*$.",
+        "fix_hint": "Use tags: [forgejo, restore-procedure]."
+      },
+      {
+        "severity": "S4",
+        "issue": "Required frontmatter field last_audit_date is missing.",
+        "evidence": "Frontmatter (lines 1-14) has no last_audit_date, which is required by ./02_Knowledge/AGENTS.md and by the convention 'Set last_audit_date on every edit'.",
+        "fix_hint": "Add last_audit_date: 2026-10-21 (or the actual audit date)."
+      },
+      {
+        "severity": "S4",
+        "issue": "Config code block is not labeled as abstract or real.",
+        "evidence": "The ```ini block at lines 34-37 has no 'Example — abstract' / 'Example — real config' label, contrary to the 02_Knowledge Conventions.",
+        "fix_hint": "Prefix the block with a label such as 'Example — real config' or 'Example — abstract'."
+      }
+    ],
+    "overlap": [
+      {
+        "severity": "S4",
+        "issue": "Duplicates restore steps, port claim, and source URL already present in the sibling note instead of linking to it.",
+        "evidence": "Target lines 30-31 repeat 'Stop the instance, restore the dump, then start it again' and 'Forgejo's HTTP listener runs on port 3000', which also appear in dump-schedule.md lines 22-24; both notes cite the same Forgejo backup-and-restore URL.",
+        "fix_hint": "Keep one canonical copy and cross-link via related_docs instead of restating the same steps/port in both notes."
+      }
+    ]
+  },
+  "totals": { "S1": 2, "S2": 1, "S3": 1, "S4": 4 },
+  "verdict": "issues"
+}
+```

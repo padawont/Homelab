@@ -53,8 +53,9 @@ issue so `research` can consume the plan passed in chat.
      (modular: each can run alone; Idea/S1: `implement → loop-validation`;
      user declines implementation: stop after foundation).
    - batch note: the planned file set is produced as a Flow D batch —
-     `worker` fan-out (one per file) → `reviewer` → `editor` — executed by
-     `implement`. foundation itself stays read-only and never fans out.
+     `worker` fan-out (one per file) → five reviewer facets + hub merge →
+     `editor` — executed by `implement`. foundation itself stays read-only and
+     never fans out.
    - one row in the top-of-file execution table (Sx | topic | skills chain).
    - downstream stages as `follow-up` lines only.
 7. Emit the FULL plan to RuneSmith in the main chat and STOP. Report as

@@ -1,32 +1,62 @@
 ---
-description: "Deep-knowledge, deep-code-analysis, and plan-review specialist: maps architecture, analyzes impact, evaluates designs, and reviews plans/specs with structured verdicts. Read-only leaf subagent launched by RuneSmith."
+description: 'Deep-knowledge, deep-code-analysis, and plan-review specialist: maps
+  architecture, analyzes impact, evaluates designs, and reviews plans/specs with structured
+  verdicts. Read-only leaf subagent launched by RuneSmith.'
 mode: subagent
 model: opencode/deepseek-v4.1-flash
-temperature: 0.0
-reasoningEffort: high
+permissions:
+- action: read
+  resource: '*'
+  effect: allow
+- action: glob
+  resource: '*'
+  effect: allow
+- action: grep
+  resource: '*'
+  effect: allow
+- action: edit
+  resource: '*'
+  effect: deny
+- action: webfetch
+  resource: '*'
+  effect: allow
+- action: question
+  resource: '*'
+  effect: deny
+- action: skill
+  resource: '*'
+  effect: deny
+- action: skill
+  resource: rs-*
+  effect: allow
+- action: shell
+  resource: '*'
+  effect: deny
+- action: shell
+  resource: git log
+  effect: allow
+- action: shell
+  resource: git status
+  effect: allow
+- action: shell
+  resource: git show
+  effect: allow
+- action: shell
+  resource: gh pr view
+  effect: allow
+- action: shell
+  resource: gh pr list
+  effect: allow
+- action: shell
+  resource: gh issue view
+  effect: allow
+- action: shell
+  resource: gh issue list
+  effect: allow
+- action: subagent
+  resource: '*'
+  effect: deny
 steps: 80
-max_thinking_tokens: 16000
-permission:
-  read: allow
-  glob: allow
-  grep: allow
-  webfetch: allow
-  question: deny
-  edit: deny
-  bash:
-    "*": deny
-    "git log": allow
-    "git status": allow
-    "git show": allow
-    "gh pr view": allow
-    "gh pr list": allow
-    "gh issue view": allow
-    "gh issue list": allow
-  task:
-    "*": deny
-  skill:
-    "*": deny
-    "rs-*": allow
 ---
 
 # rs-architect — Deep Knowledge, Deep Code Analysis & Plan Review Specialist

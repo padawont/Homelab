@@ -1,0 +1,32 @@
+===== PROMPT =====
+
+Target files (both are in scope for this pass):
+- ./02_Knowledge/technologies/services/homepage/backups.md
+- ./02_Knowledge/technologies/services/homepage/services.json
+
+Apply the confirmed findings from the reviewer's report below.
+
+Reviewer report:
+{"file":"./02_Knowledge/technologies/services/homepage/backups.md","folder":"02_Knowledge","types":{"source":[],"accuracy":[{"severity":"S2","issue":"The services index records port 3001, but the note records port 3000.","evidence":"./02_Knowledge/technologies/services/homepage/backups.md states the listener runs on port 3000.","fix_hint":"Change \"port\": 3001 to 3000 in ./02_Knowledge/technologies/services/homepage/services.json."}],"scope":[],"structure":[{"severity":"S4","issue":"`last_audit_date` is missing from the frontmatter.","evidence":"./02_Knowledge/AGENTS.md requires a `last_audit_date` field.","fix_hint":"Add `last_audit_date: 2026-10-21`."}],"overlap":[]},"totals":{"S1":0,"S2":1,"S3":0,"S4":1},"verdict":"issues"}
+
+Return your changes: report as your final message.
+
+===== RESPONSE =====
+
+Both findings applied.
+
+```yaml
+changes:
+  - file: "./02_Knowledge/technologies/services/homepage/services.json"
+    change: 'Corrected the service port from 3001 to 3000 so the index matches the note (and the note''s stated HTTP listener).'
+    source_or_rule: "./02_Knowledge/technologies/services/homepage/backups.md (port 3000)"
+    status: applied
+  - file: "./02_Knowledge/technologies/services/homepage/backups.md"
+    change: "Added missing `last_audit_date: 2026-10-21` to the frontmatter, placed after `sources` and before `related_docs` per the section template."
+    source_or_rule: "./02_Knowledge/AGENTS.md (required `last_audit_date` field)"
+    status: applied
+```
+
+Notes:
+- The accuracy finding's `fix_hint` pointed at `services.json`; the target of the change was the JSON index, not the note's port text (which was already correct at 3000).
+- No `source`, `scope`, or `overlap` findings were present in the report.

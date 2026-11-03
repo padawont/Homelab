@@ -127,7 +127,7 @@ spec:
 | Role | May | Must not |
 |---|---|---|
 | `worker` | read, gather sources, create and edit the note | edit files outside its brief, add unsourced claims |
-| `reviewer` | run all five review types, emit the JSON report | edit, propose unverified fixes |
+| `reviewer-*` | run one review type each (`source`, `accuracy`, `scope`, `structure`, `overlap`); the hub merges their reports | edit, judge another type, propose unverified fixes |
 | `editor` | revise the note and its JSON with a cited source or rule | change anything without a citation |
 | `spec-writer` | append a spec section referencing this note | rewrite or delete note content |
 | `cluster-worker` | not applicable to this folder | run operational plans here |

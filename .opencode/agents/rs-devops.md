@@ -1,44 +1,103 @@
 ---
-description: "DevOps agent that manages CI/CD pipelines, Docker configurations, Kubernetes deployments, and security hardening. Scans project infrastructure, generates deployment configs, validates environment variables, audits dependencies, and produces LLM-friendly documentation indexes. Operates within Runesmith structured workflows — never deploys to production without RuneSmith approval."
+description: DevOps agent that manages CI/CD pipelines, Docker configurations, Kubernetes
+  deployments, and security hardening. Scans project infrastructure, generates deployment
+  configs, validates environment variables, audits dependencies, and produces LLM-friendly
+  documentation indexes. Operates within Runesmith structured workflows — never deploys
+  to production without RuneSmith approval.
 mode: subagent
 model: opencode/deepseek-v4.1-flash
-temperature: 0.1
-reasoningEffort: high
+permissions:
+- action: read
+  resource: '*'
+  effect: allow
+- action: glob
+  resource: '*'
+  effect: allow
+- action: grep
+  resource: '*'
+  effect: allow
+- action: edit
+  resource: '*'
+  effect: allow
+- action: webfetch
+  resource: '*'
+  effect: allow
+- action: question
+  resource: '*'
+  effect: deny
+- action: skill
+  resource: '*'
+  effect: deny
+- action: skill
+  resource: rs-*
+  effect: allow
+- action: skill
+  resource: rs-scratchpad
+  effect: allow
+- action: skill
+  resource: rs-discover
+  effect: allow
+- action: skill
+  resource: rs-consult
+  effect: allow
+- action: skill
+  resource: rs-dependency-checker
+  effect: allow
+- action: skill
+  resource: rs-doc-llm-txt
+  effect: allow
+- action: skill
+  resource: rs-env-validator
+  effect: allow
+- action: shell
+  resource: '*'
+  effect: allow
+- action: shell
+  resource: rm -rf*
+  effect: deny
+- action: shell
+  resource: sudo *
+  effect: deny
+- action: shell
+  resource: 'git push --force '
+  effect: deny
+- action: shell
+  resource: git push --force
+  effect: deny
+- action: shell
+  resource: git push -f *
+  effect: deny
+- action: shell
+  resource: git push --force-with-lease *
+  effect: deny
+- action: shell
+  resource: git push --force-with-lease
+  effect: deny
+- action: shell
+  resource: kubectl apply *
+  effect: deny
+- action: shell
+  resource: kubectl delete *
+  effect: deny
+- action: shell
+  resource: kubectl edit *
+  effect: deny
+- action: shell
+  resource: terraform apply *
+  effect: deny
+- action: shell
+  resource: terraform destroy *
+  effect: deny
+- action: shell
+  resource: docker push *
+  effect: deny
+- action: shell
+  resource: aws *
+  effect: deny
+- action: subagent
+  resource: '*'
+  effect: deny
 steps: 120
-max_thinking_tokens: 12000
-permission:
-  read: allow
-  edit: allow
-  glob: allow
-  grep: allow
-  bash:
-    "*": allow
-    "rm -rf*": deny
-    "sudo *": deny
-    "git push --force ": deny
-    "git push --force": deny
-    "git push -f *": deny
-    "git push --force-with-lease *": deny
-    "git push --force-with-lease": deny
-    "kubectl apply *": deny
-    "kubectl delete *": deny
-    "kubectl edit *": deny
-    "terraform apply *": deny
-    "terraform destroy *": deny
-    "docker push *": deny
-    "aws *": deny
-  webfetch: allow
-  task:
-    "*": deny
-  skill:
-    "*": deny
-    "rs-*": allow
-    rs-scratchpad: allow
-    rs-discover: allow
-    rs-consult: allow
-    rs-dependency-checker: allow
-    rs-doc-llm-txt: allow
-    rs-env-validator: allow
 ---
 
 # rs-devops — DevOps Infrastructure Agent

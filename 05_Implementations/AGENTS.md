@@ -38,6 +38,21 @@ Example:
 
 All names in kebab-case.
 
+## Spec files
+
+Descriptive specs record *observed* state, not intent. `spec-writer` owns them and
+they are **append-only**: a correction is appended as a replacement block, never an
+edit to existing content.
+
+- `spec-cluster.md` — nodes, k3s version, namespaces
+- `spec-topology.md` — ingress → service → workload wiring
+- `spec-service-stack.md` — one service's deployed components
+
+They live inside the service folder beside `overview.md`, are copied from
+`./Templates/specs/`, and take `status` from the lifecycle above. Append-only
+starts once the file exists: on first fill the template's own placeholder diagram
+is replaced.
+
 ## Frontmatter (required)
 
 ```yaml
@@ -127,5 +142,6 @@ Copy from `./Templates/implementations/rollback.md`. Required for every implemen
 - One folder per service under the relevant node
 - Link back to governing ADR and relevant Knowledge notes via `related_docs`
 - Every folder ships `overview.md` + `rollback.md` (+ `configs/` where applicable)
+- Specs (`spec-*.md`) sit beside `overview.md` and are append-only
 - Rollback procedure lives in `rollback.md`, documented before deploy
 - `active` → `retired` transition: move entire service folder to `./06_Archive/implementations/`

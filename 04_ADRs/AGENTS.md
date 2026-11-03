@@ -122,7 +122,7 @@ Include a mermaid diagram showing how it fits into the broader homelab:
 | Role | May | Must not |
 |---|---|---|
 | `worker` | read, gather sources, create and edit the ADR | edit files outside its brief, add unsourced claims |
-| `reviewer` | run all five review types, emit the JSON report | edit, propose unverified fixes |
+| `reviewer-*` | run one review type each (`source`, `accuracy`, `scope`, `structure`, `overlap`); the hub merges their reports | edit, judge another type, propose unverified fixes |
 | `editor` | revise the ADR and its JSON with a cited source or rule | change anything without a citation |
 | `spec-writer` | append a spec section referencing this ADR | rewrite or delete ADR content |
 | `cluster-worker` | not applicable to this folder | run operational plans here |

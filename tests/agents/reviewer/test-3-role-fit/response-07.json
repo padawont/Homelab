@@ -1,0 +1,421 @@
+[
+  {
+    "type": "step_start",
+    "timestamp": 1792614178866,
+    "sessionID": "ses_e9fde654dffeRpw7B1IFlyAnvN",
+    "part": {
+      "id": "prt_16021a032001ljT2HBvfcuhnKI",
+      "sessionID": "ses_e9fde654dffeRpw7B1IFlyAnvN",
+      "messageID": "msg_160219c45001RwMRrzmAP9l7zC",
+      "type": "step-start",
+      "snapshot": "f443e4ea664ae5404304e9ca2e2f3a6c8ad110c9"
+    }
+  },
+  {
+    "type": "tool_use",
+    "timestamp": 1792614179602,
+    "sessionID": "ses_e9fde654dffeRpw7B1IFlyAnvN",
+    "part": {
+      "partID": "prt_16021a261001D65OCnjs64llwf",
+      "sessionID": "ses_e9fde654dffeRpw7B1IFlyAnvN",
+      "messageID": "msg_160219c45001RwMRrzmAP9l7zC",
+      "type": "tool",
+      "id": "call_9c913991e42f405f945ba8e1",
+      "tool": "read",
+      "state": {
+        "status": "completed",
+        "input": {
+          "path": "/tmp/opencode/agent-eval/run-p1b2i3kl/02_Knowledge/AGENTS.md"
+        },
+        "output": "Read file /tmp/opencode/agent-eval/run-p1b2i3kl/02_Knowledge/AGENTS.md, lines 1-136\n1: # AGENTS.md — 02_Knowledge\n2: \n3: Structured reference notes on tech concepts, syntax guides, and foundational theory.\n4: \n5: ## Why have knowledge notes?\n6: \n7: - **Reference**: something to come back to when deploying or troubleshooting\n8: - **Learning**: writing things down solidifies understanding\n9: - **Research input**: Knowledge is the foundation that Research builds upon\n10: - **Onboarding**: a single place to understand how things work\n11: \n12: ## When to create\n13: \n14: After an idea is promoted, or whenever you learn something worth documenting.\n15: \n16: ## Status Lifecycle\n17: \n18: ```\n19: draft → accepted\n20:   L__> archived → (move to 06_Archive/knowledge/)\n21: ```\n22: \n23: - **draft**: Outline or incomplete\n24: - **accepted**: Reviewed and finalized\n25: - **archived**: Stale or superseded\n26: \n27: ## File system layout\n28: \n29: ```\n30: 02_Knowledge/\n31: └── technologies/\n32:     ├── tools/           # CLI tools, software utilities\n33:     ├── services/        # specific services (forgejo, homepage, etc.)\n34:     ├── kubernetes/      # k8s concepts, patterns, manifests\n35:     └── hardware/        # physical hardware, specs, diagrams\n36: ```\n37: \n38: All names in kebab-case. Each topic is a folder with atomic notes inside. Max 3 levels deep.\n39: \n40: ## Frontmatter (required)\n41: \n42: ```yaml\n43: ---\n44: title: \"\"\n45: status: draft        # draft | accepted | archived\n46: author: \"\"\n47: date: YYYY-MM-DD\n48: tags: []\n49: sources:\n50:   - url: \"\"\n51:     title: \"\"\n52: last_audit_date: YYYY-MM-DD\n53: related_docs: []\n54: ---\n55: ```\n56: \n57: Example:\n58: \n59: ```yaml\n60: ---\n61: title: \"Ingress controllers in Kubernetes\"\n62: status: draft\n63: author: \"padawont\"\n64: date: 2026-08-13\n65: tags: [kubernetes, networking, ingress]\n66: sources:\n67:   - url: \"https://kubernetes.io/docs/concepts/services-networking/ingress/\"\n68:     title: \"Kubernetes Ingress docs\"\n69: last_audit_date: 2026-08-13\n70: related_docs:\n71:   - \"./05_Implementations/node-main/traefik/overview.md\"\n72: ---\n73: ```\n74: \n75: See `./Templates/knowledge/note.md` for a copyable template.\n76: \n77: ## Structure\n78: \n79: ```\n80: # Title\n81: \n82: Overview — what is this concept? Why does it matter?\n83: \n84: ## Details\n85: \n86: Deep dive with examples.\n87: \n88: ## Sources / Further Reading\n89: ```\n90: \n91: Example — abstract:\n92: \n93: ```yaml\n94: # simplified, vendor-neutral\n95: apiVersion: networking.k8s.io/v1\n96: kind: Ingress\n97: metadata: { name: example-ingress }\n98: spec:\n99:   rules:\n100:     - host: example.com\n101:       http: { paths: [{ path: /, pathType: Prefix }] }\n102: ```\n103: \n104: Example — real config from node-main:\n105: \n106: ```yaml\n107: # actual running config, may drift from this doc\n108: apiVersion: networking.k8s.io/v1\n109: kind: Ingress\n110: metadata: { name: forgejo-ingress, namespace: forgejo }\n111: spec:\n112:   ingressClassName: traefik\n113:   rules:\n114:     - host: git.homelab.local\n115:       http: { paths: [{ path: /, pathType: Prefix }] }\n116: ```\n117: \n118: ## Conventions\n119: \n120: - **Atomic notes**: one concept per file. When a file hits 150 lines (including frontmatter and blank lines), split it.\n121: - Both abstract examples and real configs are welcome — label each block as \"Example — abstract\" or \"Example — real config\"\n122: - Set `last_audit_date` on every edit; re-audit weekly\n123: - Use `related_docs` to cross-link to implementations and vice-versa\n124: \n125: ## Agent Behaviour\n126: \n127: | Role | May | Must not |\n128: |---|---|---|\n129: | `worker` | read, gather sources, create and edit the note | edit files outside its brief, add unsourced claims |\n130: | `reviewer` | run all five review types, emit the JSON report | edit, propose unverified fixes |\n131: | `editor` | revise the note and its JSON with a cited source or rule | change anything without a citation |\n132: | `spec-writer` | append a spec section referencing this note | rewrite or delete note content |\n133: | `cluster-worker` | not applicable to this folder | run operational plans here |\n134: \n135: Review types: `source`, `accuracy`, `scope`, `structure`, `overlap`.\n136: Escalation: anything unresolved goes to the hub in the handoff `blocked:` field — never a guess.",
+        "title": "read",
+        "metadata": {
+          "metadata": {
+            "truncated": false
+          },
+          "content": [
+            {
+              "type": "text",
+              "text": "Read file /tmp/opencode/agent-eval/run-p1b2i3kl/02_Knowledge/AGENTS.md, lines 1-136\n1: # AGENTS.md — 02_Knowledge\n2: \n3: Structured reference notes on tech concepts, syntax guides, and foundational theory.\n4: \n5: ## Why have knowledge notes?\n6: \n7: - **Reference**: something to come back to when deploying or troubleshooting\n8: - **Learning**: writing things down solidifies understanding\n9: - **Research input**: Knowledge is the foundation that Research builds upon\n10: - **Onboarding**: a single place to understand how things work\n11: \n12: ## When to create\n13: \n14: After an idea is promoted, or whenever you learn something worth documenting.\n15: \n16: ## Status Lifecycle\n17: \n18: ```\n19: draft → accepted\n20:   L__> archived → (move to 06_Archive/knowledge/)\n21: ```\n22: \n23: - **draft**: Outline or incomplete\n24: - **accepted**: Reviewed and finalized\n25: - **archived**: Stale or superseded\n26: \n27: ## File system layout\n28: \n29: ```\n30: 02_Knowledge/\n31: └── technologies/\n32:     ├── tools/           # CLI tools, software utilities\n33:     ├── services/        # specific services (forgejo, homepage, etc.)\n34:     ├── kubernetes/      # k8s concepts, patterns, manifests\n35:     └── hardware/        # physical hardware, specs, diagrams\n36: ```\n37: \n38: All names in kebab-case. Each topic is a folder with atomic notes inside. Max 3 levels deep.\n39: \n40: ## Frontmatter (required)\n41: \n42: ```yaml\n43: ---\n44: title: \"\"\n45: status: draft        # draft | accepted | archived\n46: author: \"\"\n47: date: YYYY-MM-DD\n48: tags: []\n49: sources:\n50:   - url: \"\"\n51:     title: \"\"\n52: last_audit_date: YYYY-MM-DD\n53: related_docs: []\n54: ---\n55: ```\n56: \n57: Example:\n58: \n59: ```yaml\n60: ---\n61: title: \"Ingress controllers in Kubernetes\"\n62: status: draft\n63: author: \"padawont\"\n64: date: 2026-08-13\n65: tags: [kubernetes, networking, ingress]\n66: sources:\n67:   - url: \"https://kubernetes.io/docs/concepts/services-networking/ingress/\"\n68:     title: \"Kubernetes Ingress docs\"\n69: last_audit_date: 2026-08-13\n70: related_docs:\n71:   - \"./05_Implementations/node-main/traefik/overview.md\"\n72: ---\n73: ```\n74: \n75: See `./Templates/knowledge/note.md` for a copyable template.\n76: \n77: ## Structure\n78: \n79: ```\n80: # Title\n81: \n82: Overview — what is this concept? Why does it matter?\n83: \n84: ## Details\n85: \n86: Deep dive with examples.\n87: \n88: ## Sources / Further Reading\n89: ```\n90: \n91: Example — abstract:\n92: \n93: ```yaml\n94: # simplified, vendor-neutral\n95: apiVersion: networking.k8s.io/v1\n96: kind: Ingress\n97: metadata: { name: example-ingress }\n98: spec:\n99:   rules:\n100:     - host: example.com\n101:       http: { paths: [{ path: /, pathType: Prefix }] }\n102: ```\n103: \n104: Example — real config from node-main:\n105: \n106: ```yaml\n107: # actual running config, may drift from this doc\n108: apiVersion: networking.k8s.io/v1\n109: kind: Ingress\n110: metadata: { name: forgejo-ingress, namespace: forgejo }\n111: spec:\n112:   ingressClassName: traefik\n113:   rules:\n114:     - host: git.homelab.local\n115:       http: { paths: [{ path: /, pathType: Prefix }] }\n116: ```\n117: \n118: ## Conventions\n119: \n120: - **Atomic notes**: one concept per file. When a file hits 150 lines (including frontmatter and blank lines), split it.\n121: - Both abstract examples and real configs are welcome — label each block as \"Example — abstract\" or \"Example — real config\"\n122: - Set `last_audit_date` on every edit; re-audit weekly\n123: - Use `related_docs` to cross-link to implementations and vice-versa\n124: \n125: ## Agent Behaviour\n126: \n127: | Role | May | Must not |\n128: |---|---|---|\n129: | `worker` | read, gather sources, create and edit the note | edit files outside its brief, add unsourced claims |\n130: | `reviewer` | run all five review types, emit the JSON report | edit, propose unverified fixes |\n131: | `editor` | revise the note and its JSON with a cited source or rule | change anything without a citation |\n132: | `spec-writer` | append a spec section referencing this note | rewrite or delete note content |\n133: | `cluster-worker` | not applicable to this folder | run operational plans here |\n134: \n135: Review types: `source`, `accuracy`, `scope`, `structure`, `overlap`.\n136: Escalation: anything unresolved goes to the hub in the handoff `blocked:` field — never a guess."
+            }
+          ],
+          "providerCall": {
+            "executed": false
+          },
+          "providerResult": {
+            "executed": false
+          },
+          "rawInput": "{\"path\":\"/tmp/opencode/agent-eval/run-p1b2i3kl/02_Knowledge/AGENTS.md\"}"
+        },
+        "time": {
+          "start": 1792614179425,
+          "end": 1792614179602
+        }
+      }
+    }
+  },
+  {
+    "type": "tool_use",
+    "timestamp": 1792614179606,
+    "sessionID": "ses_e9fde654dffeRpw7B1IFlyAnvN",
+    "part": {
+      "partID": "prt_16021a1a0001Rjegzz62RkME3n",
+      "sessionID": "ses_e9fde654dffeRpw7B1IFlyAnvN",
+      "messageID": "msg_160219c45001RwMRrzmAP9l7zC",
+      "type": "tool",
+      "id": "call_e4550d9486e84a369497ed55",
+      "tool": "read",
+      "state": {
+        "status": "completed",
+        "input": {
+          "path": "/tmp/opencode/agent-eval/run-p1b2i3kl/02_Knowledge/technologies/services/forgejo/dump-schedule.md"
+        },
+        "output": "Read file /tmp/opencode/agent-eval/run-p1b2i3kl/02_Knowledge/technologies/services/forgejo/dump-schedule.md, lines 1-28\n1: ---\n2: title: \"Forgejo dump schedule\"\n3: status: accepted\n4: author: \"padawont\"\n5: date: 2026-10-18\n6: tags: [forgejo, backup, schedule]\n7: sources:\n8:   - url: \"https://forgejo.org/docs/latest/admin/backup-and-restore/\"\n9:     title: \"Forgejo backup and restore\"\n10: last_audit_date: 2026-10-18\n11: related_docs: []\n12: ---\n13: \n14: # Forgejo dump schedule\n15: \n16: ## Overview\n17: \n18: The dump job runs nightly at 03:15 and writes a Forgejo dump to the NAS.\n19: \n20: ## Details\n21: \n22: - Stop the instance, restore the dump, then start it again -- the same steps a\n23:   restore follows.\n24: - Forgejo's HTTP listener runs on port 3000.\n25: \n26: ## Sources / Further Reading\n27: \n28: - Forgejo docs -- backup and restore: https://forgejo.org/docs/latest/admin/backup-and-restore/",
+        "title": "read",
+        "metadata": {
+          "metadata": {
+            "truncated": false
+          },
+          "content": [
+            {
+              "type": "text",
+              "text": "Read file /tmp/opencode/agent-eval/run-p1b2i3kl/02_Knowledge/technologies/services/forgejo/dump-schedule.md, lines 1-28\n1: ---\n2: title: \"Forgejo dump schedule\"\n3: status: accepted\n4: author: \"padawont\"\n5: date: 2026-10-18\n6: tags: [forgejo, backup, schedule]\n7: sources:\n8:   - url: \"https://forgejo.org/docs/latest/admin/backup-and-restore/\"\n9:     title: \"Forgejo backup and restore\"\n10: last_audit_date: 2026-10-18\n11: related_docs: []\n12: ---\n13: \n14: # Forgejo dump schedule\n15: \n16: ## Overview\n17: \n18: The dump job runs nightly at 03:15 and writes a Forgejo dump to the NAS.\n19: \n20: ## Details\n21: \n22: - Stop the instance, restore the dump, then start it again -- the same steps a\n23:   restore follows.\n24: - Forgejo's HTTP listener runs on port 3000.\n25: \n26: ## Sources / Further Reading\n27: \n28: - Forgejo docs -- backup and restore: https://forgejo.org/docs/latest/admin/backup-and-restore/"
+            }
+          ],
+          "providerCall": {
+            "executed": false
+          },
+          "providerResult": {
+            "executed": false
+          },
+          "rawInput": "{\"path\":\"/tmp/opencode/agent-eval/run-p1b2i3kl/02_Knowledge/technologies/services/forgejo/dump-schedule.md\"}"
+        },
+        "time": {
+          "start": 1792614179232,
+          "end": 1792614179606
+        }
+      }
+    }
+  },
+  {
+    "type": "tool_use",
+    "timestamp": 1792614179610,
+    "sessionID": "ses_e9fde654dffeRpw7B1IFlyAnvN",
+    "part": {
+      "partID": "prt_16021a0c7001eRU7RiVzEskycS",
+      "sessionID": "ses_e9fde654dffeRpw7B1IFlyAnvN",
+      "messageID": "msg_160219c45001RwMRrzmAP9l7zC",
+      "type": "tool",
+      "id": "call_cf35a3df709a4fc08d794353",
+      "tool": "read",
+      "state": {
+        "status": "completed",
+        "input": {
+          "path": "/tmp/opencode/agent-eval/run-p1b2i3kl/02_Knowledge/technologies/services/forgejo/backup-restore.md"
+        },
+        "output": "Read file /tmp/opencode/agent-eval/run-p1b2i3kl/02_Knowledge/technologies/services/forgejo/backup-restore.md, lines 1-43\n1: ---\n2: title: \"Forgejo backup restore\"\n3: status: draft\n4: author: \"padawont\"\n5: date: 2026-10-21\n6: tags: [Forgejo, Restore_Procedure]\n7: sources:\n8:   - url: \"https://example.invalid/forgejo/restore\"\n9:     title: \"Forgejo restore guide\"\n10:   - url: \"https://forgejo.org/docs/latest/admin/backup-and-restore/\"\n11:     title: \"Forgejo backup and restore\"\n12: related_docs:\n13:   - \"./02_Knowledge/technologies/services/forgejo/dump-schedule.md\"\n14: ---\n15: \n16: # Forgejo backup restore\n17: \n18: ## Overview\n19: \n20: Restoring turns a dump back into a running Forgejo. The homelab keeps the\n21: procedure short so it can be followed under pressure.\n22: \n23: ## History\n24: \n25: Forgejo was forked from Gitea in 2022, and its backup tooling inherited that\n26: lineage. The restore command has been stable since the fork.\n27: \n28: ## Details\n29: \n30: - Stop the instance, restore the dump, then start it again.\n31: - Forgejo's HTTP listener runs on port 3000, so a restore must not change the\n32:   configured port.\n33: \n34: ```ini\n35: [server]\n36: HTTP_PORT = 3001\n37: ```\n38: \n39: - The dump is restored into the existing data directory.\n40: \n41: ## Sources / Further Reading\n42: \n43: - Forgejo restore guide: https://example.invalid/forgejo/restore",
+        "title": "read",
+        "metadata": {
+          "metadata": {
+            "truncated": false
+          },
+          "content": [
+            {
+              "type": "text",
+              "text": "Read file /tmp/opencode/agent-eval/run-p1b2i3kl/02_Knowledge/technologies/services/forgejo/backup-restore.md, lines 1-43\n1: ---\n2: title: \"Forgejo backup restore\"\n3: status: draft\n4: author: \"padawont\"\n5: date: 2026-10-21\n6: tags: [Forgejo, Restore_Procedure]\n7: sources:\n8:   - url: \"https://example.invalid/forgejo/restore\"\n9:     title: \"Forgejo restore guide\"\n10:   - url: \"https://forgejo.org/docs/latest/admin/backup-and-restore/\"\n11:     title: \"Forgejo backup and restore\"\n12: related_docs:\n13:   - \"./02_Knowledge/technologies/services/forgejo/dump-schedule.md\"\n14: ---\n15: \n16: # Forgejo backup restore\n17: \n18: ## Overview\n19: \n20: Restoring turns a dump back into a running Forgejo. The homelab keeps the\n21: procedure short so it can be followed under pressure.\n22: \n23: ## History\n24: \n25: Forgejo was forked from Gitea in 2022, and its backup tooling inherited that\n26: lineage. The restore command has been stable since the fork.\n27: \n28: ## Details\n29: \n30: - Stop the instance, restore the dump, then start it again.\n31: - Forgejo's HTTP listener runs on port 3000, so a restore must not change the\n32:   configured port.\n33: \n34: ```ini\n35: [server]\n36: HTTP_PORT = 3001\n37: ```\n38: \n39: - The dump is restored into the existing data directory.\n40: \n41: ## Sources / Further Reading\n42: \n43: - Forgejo restore guide: https://example.invalid/forgejo/restore"
+            }
+          ],
+          "providerCall": {
+            "executed": false
+          },
+          "providerResult": {
+            "executed": false
+          },
+          "rawInput": "{\"path\":\"/tmp/opencode/agent-eval/run-p1b2i3kl/02_Knowledge/technologies/services/forgejo/backup-restore.md\"}"
+        },
+        "time": {
+          "start": 1792614179015,
+          "end": 1792614179610
+        }
+      }
+    }
+  },
+  {
+    "type": "step_finish",
+    "timestamp": 1792614179621,
+    "sessionID": "ses_e9fde654dffeRpw7B1IFlyAnvN",
+    "part": {
+      "id": "prt_16021a3250016sBHVla8QLUHnh",
+      "sessionID": "ses_e9fde654dffeRpw7B1IFlyAnvN",
+      "messageID": "msg_160219c45001RwMRrzmAP9l7zC",
+      "type": "step-finish",
+      "reason": "tool-calls",
+      "snapshot": "f443e4ea664ae5404304e9ca2e2f3a6c8ad110c9",
+      "cost": 0.0012209399999999998,
+      "tokens": {
+        "input": 3211,
+        "output": 184,
+        "reasoning": 20,
+        "cache": {
+          "read": 2140,
+          "write": 0
+        }
+      }
+    }
+  },
+  {
+    "type": "step_start",
+    "timestamp": 1792614180613,
+    "sessionID": "ses_e9fde654dffeRpw7B1IFlyAnvN",
+    "part": {
+      "id": "prt_16021a705001Q1YTcb0rJpll6Z",
+      "sessionID": "ses_e9fde654dffeRpw7B1IFlyAnvN",
+      "messageID": "msg_16021a32e001ZfM3jvvviSx55h",
+      "type": "step-start",
+      "snapshot": "f443e4ea664ae5404304e9ca2e2f3a6c8ad110c9"
+    }
+  },
+  {
+    "type": "tool_use",
+    "timestamp": 1792614195000,
+    "sessionID": "ses_e9fde654dffeRpw7B1IFlyAnvN",
+    "part": {
+      "partID": "prt_16021dc05001ItCusGVvC4fEdP",
+      "sessionID": "ses_e9fde654dffeRpw7B1IFlyAnvN",
+      "messageID": "msg_16021a32e001ZfM3jvvviSx55h",
+      "type": "tool",
+      "id": "call_af441049eaf6424c9ffaa8e9",
+      "tool": "webfetch",
+      "state": {
+        "status": "error",
+        "input": {
+          "url": "https://example.invalid/forgejo/restore",
+          "format": "text"
+        },
+        "error": "Transport error (GET https://example.invalid/forgejo/restore)",
+        "metadata": {
+          "providerCall": {
+            "executed": false
+          },
+          "providerResult": {
+            "executed": false
+          },
+          "rawInput": "{\"url\":\"https://example.invalid/forgejo/restore\",\"format\":\"text\"}"
+        },
+        "time": {
+          "start": 1792614194181,
+          "end": 1792614195000
+        }
+      }
+    }
+  },
+  {
+    "type": "tool_use",
+    "timestamp": 1792614195022,
+    "sessionID": "ses_e9fde654dffeRpw7B1IFlyAnvN",
+    "part": {
+      "partID": "prt_16021db3d00101qg74VMcxO8lc",
+      "sessionID": "ses_e9fde654dffeRpw7B1IFlyAnvN",
+      "messageID": "msg_16021a32e001ZfM3jvvviSx55h",
+      "type": "tool",
+      "id": "call_f8756a9e600b44e0bccfe187",
+      "tool": "webfetch",
+      "state": {
+        "status": "error",
+        "input": {
+          "url": "https://forgejo.org/docs/latest/admin/backup-and-restore/",
+          "format": "markdown"
+        },
+        "error": "StatusCode: non 2xx status code (404 GET https://forgejo.org/docs/latest/admin/backup-and-restore/)",
+        "metadata": {
+          "providerCall": {
+            "executed": false
+          },
+          "providerResult": {
+            "executed": false
+          },
+          "rawInput": "{\"url\":\"https://forgejo.org/docs/latest/admin/backup-and-restore/\",\"format\":\"markdown\"}"
+        },
+        "time": {
+          "start": 1792614193981,
+          "end": 1792614195022
+        }
+      }
+    }
+  },
+  {
+    "type": "step_finish",
+    "timestamp": 1792614195033,
+    "sessionID": "ses_e9fde654dffeRpw7B1IFlyAnvN",
+    "part": {
+      "id": "prt_16021df59001G1STrpxv1pBiZI",
+      "sessionID": "ses_e9fde654dffeRpw7B1IFlyAnvN",
+      "messageID": "msg_16021a32e001ZfM3jvvviSx55h",
+      "type": "step-finish",
+      "reason": "tool-calls",
+      "snapshot": "f443e4ea664ae5404304e9ca2e2f3a6c8ad110c9",
+      "cost": 0.003908508,
+      "tokens": {
+        "input": 4609,
+        "output": 127,
+        "reasoning": 1958,
+        "cache": {
+          "read": 3968,
+          "write": 0
+        }
+      }
+    }
+  },
+  {
+    "type": "step_start",
+    "timestamp": 1792614198988,
+    "sessionID": "ses_e9fde654dffeRpw7B1IFlyAnvN",
+    "part": {
+      "id": "prt_16021eecc001PJ4lPMzWdazbyh",
+      "sessionID": "ses_e9fde654dffeRpw7B1IFlyAnvN",
+      "messageID": "msg_16021df62001YqBbY2H3e3GCsb",
+      "type": "step-start",
+      "snapshot": "f443e4ea664ae5404304e9ca2e2f3a6c8ad110c9"
+    }
+  },
+  {
+    "type": "tool_use",
+    "timestamp": 1792614200232,
+    "sessionID": "ses_e9fde654dffeRpw7B1IFlyAnvN",
+    "part": {
+      "partID": "prt_16021f291001DNk2LNJm4LWggT",
+      "sessionID": "ses_e9fde654dffeRpw7B1IFlyAnvN",
+      "messageID": "msg_16021df62001YqBbY2H3e3GCsb",
+      "type": "tool",
+      "id": "call_81cb84ec00f94c649a0448dc",
+      "tool": "webfetch",
+      "state": {
+        "status": "completed",
+        "input": {
+          "format": "markdown",
+          "url": "https://forgejo.org/docs/latest/admin/"
+        },
+        "output": "[ ![Forgejo](/images/forgejo-wordmark.svg)](/)\n\n-\n\n- [ Docs v17.0](/docs/v17.0/)\n\n  - [ Next](/docs/next/admin/)\n\n  - [ Latest (v17.0.0)](/docs/latest/admin/)\n\n  - [ v16.0.6](/docs/v16.0/admin/)\n\n  - [ LTS (v15.0.10)](/docs/v15.0/admin/)\n\n- [ News](/news/)\n\n- [ Releases](/releases/)\n\n- [ FAQ](/faq/)\n\n- [ Donate](https://liberapay.com/forgejo)\n\n- [ Source code](https://codeberg.org/forgejo/forgejo)\n\n- [ RSS feed](/rss.xml)\n\n-\n\n1.\n\n   [ Forgejo Administrator Guide](/docs/latest/admin/)\n\n   1.\n\n      Advanced\n\n   2. [ Command-line interface](/docs/latest/admin/command-line/)\n\n   3. [ Configuration Cheat Sheet](/docs/latest/admin/config-cheat-sheet/)\n\n   4.\n\n      [ Forgejo Actions administrator guide](/docs/latest/admin/actions/)\n\n   5.\n\n      [ Installation](/docs/latest/admin/installation/)\n\n   6. [ Release schedule](/docs/latest/admin/release-schedule/)\n\n   7.\n\n      Setup\n\n   8.\n\n      Troubleshooting\n\n   9. [ Upgrade guide](/docs/latest/admin/upgrade/)\n\n2.\n\n   [ Forgejo Contributor Guide](/docs/latest/contributor/)\n\n3.\n\n   [ Forgejo User Guide](/docs/latest/user/)\n\n# Forgejo Administrator Guide\n\nThese documents are targeted to people who run Forgejo on their machines.\n\n- Installation\n\n  - [Introduction](./installation/)\n\n  - [With Docker](./installation/docker/)\n\n  - [From binary](./installation/binary/)\n\n  - [Database Preparation](./installation/database-preparation/)\n\n  - [Upgrade guide](./upgrade/)\n\n- Important setup steps\n\n  - [Backups and Backup Restoration](./setup/backup/)\n\n  - [Email sending](./setup/email/)\n\n  - [Reverse Proxy](./setup/reverse-proxy/)\n\n  - [Storage](./setup/storage/)\n\n  - [Recommended Settings and Tips](./setup/recommendations/)\n\n  - [LDAP, PAM, FreeIPA](./setup/authentication/)\n\n- Advanced configuration\n\n  - [Adopt existing git directories](./advanced/adopt/)\n\n  - [Interface customization](./advanced/customization/)\n\n  - [Moderation tools](./advanced/moderation/)\n\n  - [Soft-Quota](./advanced/quota/)\n\n  - [Incoming Email](./advanced/incoming-email/)\n\n  - [Search Engines and robots.txt](./advanced/search-engines/)\n\n  - [OAuth2 provider](./advanced/oauth2-provider/)\n\n  - [Instance Commit Signing](./advanced/signing/)\n\n  - [OIDC Group Mappings](./advanced/oidc-group-mappings/)\n\n  - [JWT Key Management and Rotation](./advanced/jwt-key-management-and-rotation)\n\n- Troubleshooting and debugging\n\n  - [Seek Assistance](./troubleshooting/seek-assistance/)\n\n  - [Logging Configuration](./troubleshooting/logging/)\n\n  - [Profiling](./troubleshooting/profiling/)\n\n- Forgejo Actions\n\n  - [Overview](./actions/)\n\n  - [Forgejo Runner installation](./actions/runner-installation/)\n\n  - [Securing Forgejo Actions Deployments](./actions/security/)\n\n  - [Docker Access](./actions/docker-access/)\n\n- Resources and reference\n\n  - [Configuration Cheat Sheet](./config-cheat-sheet/)\n\n  - [CLI reference](./command-line/)\n\n  - [Release schedule](./release-schedule/)\n\nThis page's [content](https://codeberg.org/forgejo/docs/commits/branch/v17.0/docs/admin/index.md) is available under the [CC-BY-SA-4.0](https://spdx.org/licenses/CC-BY-SA-4.0.html) license.  \n[ Edit this page](https://codeberg.org/forgejo/docs/src/branch/next/docs/admin/index.md)\n\n##### Forgejo\n\n- [ Releases](/releases/)\n\n- [ News](/news/)\n\n- [ Fediverse (Mastodon)](https://floss.social/@forgejo)\n\n- [ Chat room (Matrix)](https://matrix.to/#/#forgejo:matrix.org)\n\n- [ RSS feed](/rss.xml)\n\n##### Community\n\n- [ Code](https://codeberg.org/forgejo/forgejo)\n\n- [ Governance](https://codeberg.org/forgejo/governance#meta)\n\n- [ Teams](https://codeberg.org/forgejo/governance/src/branch/main/TEAMS.md)\n\n- [ Identity proofs](https://keyoxide.org/contact%40forgejo.org)\n\n##### Contribute\n\n- [ Issue tracker](https://codeberg.org/forgejo/forgejo/issues)\n\n- [ Developer Matrix room](https://matrix.to/#/#forgejo-development:matrix.org)\n\n- [ Contributor guide](/docs/next/contributor/)\n\n- [ Localization guide](/docs/next/contributor/localization/)\n\n- [ Donate via Liberapay](https://liberapay.com/forgejo)\n\n##### Resources\n\n- [ Status (Forgejo)](https://status.forgejo.org)\n\n- [ Status (Codeberg)](https://status.codeberg.org)\n\n- [ Documentation](/docs/latest/)\n\n- [ Delightful Forgejo](https://codeberg.org/forgejo-contrib/delightful-forgejo)\n\n- [ Professional services](https://codeberg.org/forgejo/professional-services)\n\n##### Legal\n\n- [ Imprint](/imprint/)\n\n- [ Privacy Policy](/privacy-policy/)\n\n- [ Code of Conduct](https://codeberg.org/forgejo/code-of-conduct)\n\n- [](https://keyoxide.org/contact%40forgejo.org)\n\n- [](https://matrix.to/#/#forgejo:matrix.org)\n\n- [](https://floss.social/@forgejo)\n\n- [](/rss.xml)\n\n- [](https://codeberg.org/forgejo/forgejo)\n\nCopyright © 2026 Forgejo authors. Content available under [CC BY-SA 4\\.0](https://creativecommons.org/licenses/by-sa/4.0/), unless stated otherwise.  \n[Forgejo mascot by David Revoy](https://www.peppercarrot.com/en/viewer/misc-src__2022-11-27_Forgejo_by-David-Revoy.html), [CC BY 4\\.0](https://creativecommons.org/licenses/by/4.0/).",
+        "title": "webfetch",
+        "metadata": {
+          "metadata": {
+            "contentType": "text/html",
+            "truncated": false
+          },
+          "content": [
+            {
+              "type": "text",
+              "text": "[ ![Forgejo](/images/forgejo-wordmark.svg)](/)\n\n-\n\n- [ Docs v17.0](/docs/v17.0/)\n\n  - [ Next](/docs/next/admin/)\n\n  - [ Latest (v17.0.0)](/docs/latest/admin/)\n\n  - [ v16.0.6](/docs/v16.0/admin/)\n\n  - [ LTS (v15.0.10)](/docs/v15.0/admin/)\n\n- [ News](/news/)\n\n- [ Releases](/releases/)\n\n- [ FAQ](/faq/)\n\n- [ Donate](https://liberapay.com/forgejo)\n\n- [ Source code](https://codeberg.org/forgejo/forgejo)\n\n- [ RSS feed](/rss.xml)\n\n-\n\n1.\n\n   [ Forgejo Administrator Guide](/docs/latest/admin/)\n\n   1.\n\n      Advanced\n\n   2. [ Command-line interface](/docs/latest/admin/command-line/)\n\n   3. [ Configuration Cheat Sheet](/docs/latest/admin/config-cheat-sheet/)\n\n   4.\n\n      [ Forgejo Actions administrator guide](/docs/latest/admin/actions/)\n\n   5.\n\n      [ Installation](/docs/latest/admin/installation/)\n\n   6. [ Release schedule](/docs/latest/admin/release-schedule/)\n\n   7.\n\n      Setup\n\n   8.\n\n      Troubleshooting\n\n   9. [ Upgrade guide](/docs/latest/admin/upgrade/)\n\n2.\n\n   [ Forgejo Contributor Guide](/docs/latest/contributor/)\n\n3.\n\n   [ Forgejo User Guide](/docs/latest/user/)\n\n# Forgejo Administrator Guide\n\nThese documents are targeted to people who run Forgejo on their machines.\n\n- Installation\n\n  - [Introduction](./installation/)\n\n  - [With Docker](./installation/docker/)\n\n  - [From binary](./installation/binary/)\n\n  - [Database Preparation](./installation/database-preparation/)\n\n  - [Upgrade guide](./upgrade/)\n\n- Important setup steps\n\n  - [Backups and Backup Restoration](./setup/backup/)\n\n  - [Email sending](./setup/email/)\n\n  - [Reverse Proxy](./setup/reverse-proxy/)\n\n  - [Storage](./setup/storage/)\n\n  - [Recommended Settings and Tips](./setup/recommendations/)\n\n  - [LDAP, PAM, FreeIPA](./setup/authentication/)\n\n- Advanced configuration\n\n  - [Adopt existing git directories](./advanced/adopt/)\n\n  - [Interface customization](./advanced/customization/)\n\n  - [Moderation tools](./advanced/moderation/)\n\n  - [Soft-Quota](./advanced/quota/)\n\n  - [Incoming Email](./advanced/incoming-email/)\n\n  - [Search Engines and robots.txt](./advanced/search-engines/)\n\n  - [OAuth2 provider](./advanced/oauth2-provider/)\n\n  - [Instance Commit Signing](./advanced/signing/)\n\n  - [OIDC Group Mappings](./advanced/oidc-group-mappings/)\n\n  - [JWT Key Management and Rotation](./advanced/jwt-key-management-and-rotation)\n\n- Troubleshooting and debugging\n\n  - [Seek Assistance](./troubleshooting/seek-assistance/)\n\n  - [Logging Configuration](./troubleshooting/logging/)\n\n  - [Profiling](./troubleshooting/profiling/)\n\n- Forgejo Actions\n\n  - [Overview](./actions/)\n\n  - [Forgejo Runner installation](./actions/runner-installation/)\n\n  - [Securing Forgejo Actions Deployments](./actions/security/)\n\n  - [Docker Access](./actions/docker-access/)\n\n- Resources and reference\n\n  - [Configuration Cheat Sheet](./config-cheat-sheet/)\n\n  - [CLI reference](./command-line/)\n\n  - [Release schedule](./release-schedule/)\n\nThis page's [content](https://codeberg.org/forgejo/docs/commits/branch/v17.0/docs/admin/index.md) is available under the [CC-BY-SA-4.0](https://spdx.org/licenses/CC-BY-SA-4.0.html) license.  \n[ Edit this page](https://codeberg.org/forgejo/docs/src/branch/next/docs/admin/index.md)\n\n##### Forgejo\n\n- [ Releases](/releases/)\n\n- [ News](/news/)\n\n- [ Fediverse (Mastodon)](https://floss.social/@forgejo)\n\n- [ Chat room (Matrix)](https://matrix.to/#/#forgejo:matrix.org)\n\n- [ RSS feed](/rss.xml)\n\n##### Community\n\n- [ Code](https://codeberg.org/forgejo/forgejo)\n\n- [ Governance](https://codeberg.org/forgejo/governance#meta)\n\n- [ Teams](https://codeberg.org/forgejo/governance/src/branch/main/TEAMS.md)\n\n- [ Identity proofs](https://keyoxide.org/contact%40forgejo.org)\n\n##### Contribute\n\n- [ Issue tracker](https://codeberg.org/forgejo/forgejo/issues)\n\n- [ Developer Matrix room](https://matrix.to/#/#forgejo-development:matrix.org)\n\n- [ Contributor guide](/docs/next/contributor/)\n\n- [ Localization guide](/docs/next/contributor/localization/)\n\n- [ Donate via Liberapay](https://liberapay.com/forgejo)\n\n##### Resources\n\n- [ Status (Forgejo)](https://status.forgejo.org)\n\n- [ Status (Codeberg)](https://status.codeberg.org)\n\n- [ Documentation](/docs/latest/)\n\n- [ Delightful Forgejo](https://codeberg.org/forgejo-contrib/delightful-forgejo)\n\n- [ Professional services](https://codeberg.org/forgejo/professional-services)\n\n##### Legal\n\n- [ Imprint](/imprint/)\n\n- [ Privacy Policy](/privacy-policy/)\n\n- [ Code of Conduct](https://codeberg.org/forgejo/code-of-conduct)\n\n- [](https://keyoxide.org/contact%40forgejo.org)\n\n- [](https://matrix.to/#/#forgejo:matrix.org)\n\n- [](https://floss.social/@forgejo)\n\n- [](/rss.xml)\n\n- [](https://codeberg.org/forgejo/forgejo)\n\nCopyright © 2026 Forgejo authors. Content available under [CC BY-SA 4\\.0](https://creativecommons.org/licenses/by-sa/4.0/), unless stated otherwise.  \n[Forgejo mascot by David Revoy](https://www.peppercarrot.com/en/viewer/misc-src__2022-11-27_Forgejo_by-David-Revoy.html), [CC BY 4\\.0](https://creativecommons.org/licenses/by/4.0/)."
+            }
+          ],
+          "providerCall": {
+            "executed": false
+          },
+          "providerResult": {
+            "executed": false
+          },
+          "rawInput": "{\"format\":\"markdown\",\"url\":\"https://forgejo.org/docs/latest/admin/\"}"
+        },
+        "time": {
+          "start": 1792614199953,
+          "end": 1792614200232
+        }
+      }
+    }
+  },
+  {
+    "type": "tool_use",
+    "timestamp": 1792614200945,
+    "sessionID": "ses_e9fde654dffeRpw7B1IFlyAnvN",
+    "part": {
+      "partID": "prt_16021f2120014OzI0NqXdx2HEo",
+      "sessionID": "ses_e9fde654dffeRpw7B1IFlyAnvN",
+      "messageID": "msg_16021df62001YqBbY2H3e3GCsb",
+      "type": "tool",
+      "id": "call_a4ec3afaa90444618af40288",
+      "tool": "websearch",
+      "state": {
+        "status": "completed",
+        "input": {
+          "query": "Forgejo docs backup and restore admin"
+        },
+        "output": "## [Backups and Backup Restoration | Forgejo – Beyond coding. We forge.](https://forgejo.org/docs/v17.0/admin/setup/backup/)\n\nBackups and Backup Restoration\n* Backing Up Forgejo\n* Database\n* Repositories\n* Storage\n* Queues\n* Configuration Settings\n* Indexers\n* Issue Indexer\n* Repository Indexer\n* Logs\n* Restoring Forgejo\nBackups and Backup Restoration\nBackups and Backup Restoration\nAs your Forgejo installation becomes a critical part of your development lifecycle, the data within it needs to be saved in a backup in order to ensure you don’t lose anything.\nBackups and Backup Restoration\nForgejo doesn’t provide or recommend any specific backup tool, but does provide information on what needs to be backed up, how to manage a backup cycle, and how to restore Forgejo to working order from a backup.\nBackups and Backup Restoration\nWarning\nIt is strongly recommended to shut down Forgejo during a backup.\nForgejo saves data in multiple different systems, even in its simplest configuration: Git repositories and bulk files are saved on disk as regular files, and a SQL database is used to record information about user interactions.\nBackups and Backup Restoration\nIt is not trivial to perform a consistent backup of all that data while Forgejo is running. An inconsistent backup may result in data loss when attempting to restore it.\nBackups and Backup Restoration\nFor SQLite, the database file in the config option [database].PATH needs to be backed up with any file backup tool.\nFor other databases, use database backup tools that are appropriate to your selected database engine to create a backup of the Forgejo SQL database.\nBackups and Backup Restoration\nForgejo’s repositories are stored on disk. By default, they are in the directory data in Forgejo’s WORK_PATH , in a subdirectory forgejo-repositories . This configuration may be changed with either [server].APP_DATA_PATH or [repository].ROOT .\nBackups and Backup Restoration\nThe Forgejo configuration file, app.ini , contains a few critical values that must be backed up in order to restore an instance later. It is recommended that the entire file is backed up , but pay specific notice to these configuration settings which contain unique, non-reproducible information:\nBackups and Backup Restoration\n* [security].SECRET_KEY , or the file located at [security].SECRET_KEY_URI : some values are encrypted in Forgejo’s database using this key. If it is not preserved between a backup and a restore, then Forgejo will not be able to access the encrypted values.\nBackups and Backup Restoration\nAfter successfully starting Forgejo and logging in as an administrator, these maintenance tasks can be useful to ensure the Forgejo instance is fully operational after a restore. From the /admin/monitor/cron admin management page:\n\n## [Forgejo Administrator Guide | Forgejo – Beyond coding. We forge.](https://forgejo.org/docs/latest/admin)\n\nEnglish base localization\n54. Weblate admin duties\n55. Managing dependencies between repositories\n56. Release management\n57. Repository Migration\n58. Secrets\n59. Static pages\n60. Testing\n61. Threat Analysis\n62. Threat Analysis: Remote Login Propagation\n63. Web browser support\n64. Welcome to Forgejo\n65. Forgejo User Guide\n66. Actions\n67.\n\n## [Forgejo CLI | Forgejo – Beyond coding. We forge.](https://forgejo.org/docs/v8.0/admin/command-line)\n\nForgejo CLI\n* admin user generate-access-token\n* admin user must-change-password\n* admin repo-sync-releases\n* admin regenerate\n* admin auth\n* admin auth add-oauth\n* admin auth update-oauth\n* admin auth add-ldap\n* admin auth update-ldap\n* admin auth add-ldap-simple\n* admin auth update-ldap-simple\n* admin auth add-smtp\nForgejo CLI\n* manager logging release-and-reopen\n* manager logging remove\n* manager logging add\n* manager logging add file\n* manager logging add conn\n* manager logging log-sql\n* manager processes\n* embedded\n* embedded list\n* embedded view\n* embedded extract\n* migrate-storage\n* dump-repo\n* restore-repo\n* cert\n* generate secret\nOld version\nForgejo CLI\nresources    migrate-storage  Migrate the storage    dump-repo        Dump the repository from git/github/gitea/gitlab    restore-repo     Restore the repository from disk    actions          Manage Forgejo Actions    cert             Generate self-signed certificate    generate         Generate Gitea's secrets/keys/tokens\nForgejo CLI\ndocs             Output CLI documentation    forgejo-cli      Forgejo CLI GLOBAL OPTIONS:    --version, -v                  print the version    --help, -h                     show help    --custom-path value, -C value  Set custom path (defaults to '{WorkPath}/custom')    --config value, -c value       Set custom config file\nForgejo CLI\ndump\nForgejo CLI\nIt can be used for backup and capture Forgejo server image to send to maintainer COMMANDS:    help, h  Shows a list of commands or help for one command OPTIONS:    --help, -h                     show help    --custom-path value, -C value  Set custom path (defaults to '{WorkPath}/custom')    --config value, -c value       Set\nForgejo CLI\nadmin\nForgejo CLI\nNAME:    forgejo admin - Perform common administrative operations USAGE:    forgejo admin command [command options] COMMANDS:    user                Modify users    repo-sync-releases  Synchronize repository releases with tags    regenerate          Regenerate specific files    auth                Modify external auth\n\n## [Forgejo CLI | Forgejo – Beyond coding. We forge.](https://forgejo.org/docs/v14.0/admin/command-line)\n\nForgejo CLI\n* admin user generate-access-token\n* admin user must-change-password\n* admin user reset-mfa\n* admin repo-sync-releases\n* admin regenerate\n* admin auth\n* admin auth add-oauth\n* admin auth update-oauth\n* admin auth add-ldap\n* admin auth update-ldap\n* admin auth add-ldap-simple\n* admin auth update-ldap-simple\n* admin auth add-pam\nForgejo CLI\n* admin auth update-pam\n* admin auth add-smtp\n* admin auth update-smtp\n* admin auth list\n* admin auth delete\n* admin sendmail\n* migrate\n* keys\n* doctor\n* doctor check\n* doctor recreate-table\n* doctor convert\n* doctor avatar-strip-exif\n* doctor cleanup-commit-status\n* manager\n* manager shutdown\n* manager restart\nForgejo CLI\n* embedded view\n* embedded extract\n* migrate-storage\n* dump-repo\n* restore-repo\n* cert\n* generate secret\nOld version\nThis documentation is for a Forgejo version which is no longer supported.\nTo read the up-to-date documentation, navigate to the latest version .\nForgejo CLI\nForgejo CLI\nforgejo --help\nForgejo CLI\nresources    migrate-storage  Migrate the storage    dump-repo        Dump the repository from git/github/gitea/gitlab    restore-repo     Restore the repository from disk    actions          Manage Forgejo Actions    cert             Generate self-signed certificate    generate         Generate Forgejo's secrets/keys/tokens\nForgejo CLI\nforgejo-cli f3\nForgejo CLI\nweb\nForgejo CLI\ndump\nForgejo CLI\nIt can be used for backup and capture Forgejo server image to send to maintainer OPTIONS:    --help, -h                       show help    --custom-path string, -C string  Set custom path (defaults to '{WorkPath}/custom')    --config string, -c string       Set custom config file (defaults to '{WorkPath}/custom/conf/app.ini')\nForgejo CLI\nadmin\nForgejo CLI\nNAME:    forgejo admin - Perform common administrative operations USAGE:    forgejo admin [command [command options]] COMMANDS:    user                Modify users    repo-sync-releases  Synchronize repository releases with tags    regenerate          Regenerate specific files    auth                Modify external auth\nForgejo CLI\nadmin user\nForgejo CLI\nNAME:    forgejo admin user - Modify users USAGE:    forgejo admin user [command [command options]] COMMANDS:    create                 Create a new user in database    list                   List users    change-password        Change a user's password    delete                 Delete specific user by id, name or email\nForgejo CLI\nadmin user create\n\n## [forge/docs/self-hosting/restore.md at main · QuintinBotes/forge · GitHub](https://github.com/QuintinBotes/forge/blob/main/docs/self-hosting/restore.md)\n\nQuintinBotes/forge — docs/self-hosting/restore.md\n* Page: GitHub code file\n* URL: https://github.com/QuintinBotes/forge/blob/main/docs/self-hosting/restore.md\n* Repository: QuintinBotes/forge\n* Path: docs/self-hosting/restore.md\n* Ref: main\n* Lines: 134\nRestore\nThis guide restores a Forge instance from a backup produced by backup.md and verifies that the restore actually worked. Read it end to end before you start: the Postgres restore is destructive and overwrites the target database.\nPrerequisites\n* A backup directory containing postgres.dump (and optionally minio/ and specs/).\n* The matching .env — specifically the SECRET_KEY that was in effect when the backup was taken. Without it the BYOK secrets vault cannot be decrypted and integrations will fail even though every row restores cleanly.\nThe restore script\nUse ../../deploy/scripts/restore.sh. It asks for explicit confirmation because it drops and recreates database objects.\ndeploy/scripts/restore.sh ./backups/<UTC-timestamp>\nThis will OVERWRITE database 'forge'. Type 'yes' to continue: yes\n1. Put the matching .env in place in the repo root, then start the stack so the database is healthy:\ndocker compose -f deploy/docker-compose.yml up -d db\ndocker compose -f deploy/docker-compose.yml ps\n2. Restore Postgres:\ndeploy/scripts/restore.sh ./backups/<UTC-timestamp>\nThis will OVERWRITE database 'forge'. Type 'yes' to continue: yes\n3. Restore the spec documents. restore.sh copies specs/ back onto the forge-specs volume for you when the backup contains it — this step is a check, not extra work. Confirm it reported a restore rather than No spec documents:\n\n## [Forgejo Administrator Guide | Forgejo – Beyond coding. We forge.](https://forgejo.org/docs/v17.0/admin)\n\nEnglish base localization\n55. Weblate admin duties\n56. Managing dependencies between repositories\n57. Release management\n58. Repository Migration\n59. Secrets\n60. Static pages\n61. Testing\n62. Threat Analysis\n63. Threat Analysis: Remote Login Propagation\n64. Web browser support\n65. Welcome to Forgejo\n66. Forgejo User Guide\n67. Actions\n68.\n\n## [GitHub - ces0712/infrastructure-nixos: nixos infrastructure forgejo raspberry pi · GitHub](https://github.com/ces0712/infrastructure-nixos)\n\n10. Validate backup and restore readiness (optional)\nPI_HOST=forgejo-pi.tail8f7f61.ts.net just backup-validate\nPI_HOST=forgejo-pi.tail8f7f61.ts.net just restore-check\n11. Restore data from backups (optional, destructive)\nPI_HOST=forgejo-pi.tail8f7f61.ts.net just restore\nThis is the only supported install path. The SSD keeps the flashed, known-good Pi boot partition from the image. Bootstrap no longer rebuilds the SSD boot partition and no longer uses nixos-anywhere .\n11. Restore data from backups (optional, destructive)\nThe current, proven Raspberry Pi boot path is the shared flashed sd-image layout, and that image keeps the boot-critical partitioning model expected by this setup.\nIf your admin SSH key is not the default key, pass it explicitly:\n11. Restore data from backups (optional, destructive)\nPI_HOST=forgejo-pi.tail8f7f61.ts.net IDENTITY_FILE=~/.ssh/id_ed25519 just bootstrap\njust deploy pushes the stable SOPS age key to /var/lib/sops-nix/key.txt before switching the runtime system. By default it reads that key from pass show sops/age-key . Override that when needed:\n11. Restore data from backups (optional, destructive)\nPI_HOST=forgejo-pi.tail8f7f61.ts.net\nIDENTITY_FILE=~/.ssh/id_ed25519\nSOPS_AGE_KEY_FILE=~/.config/sops/age/keys.txt\njust deploy\njust deploy always stages the new generation with nixos-rebuild boot , then reboots by default. After reboot, reconnect manually to verify the new generation.\n11. Restore data from backups (optional, destructive)\nThe runtime exposes Forgejo over Tailscale Serve:\n11. Restore data from backups (optional, destructive)\n* Forgejo listens on 127.0.0.1:3000\n* Tailscale Serve terminates HTTPS on the tailnet hostname\n* the canonical web URL is https://forgejo-pi.tail8f7f61.ts.net\nPrerequisite:\n* enable MagicDNS and HTTPS certificates in the Tailscale admin console\n11. Restore data from backups (optional, destructive)\nOverride the remote disk or root target size if needed:\nPI_HOST=forgejo-pi.tail8f7f61.ts.net\nREMOTE_SSD_DEVICE=/dev/sdb\nROOT_SIZE_GIB=160\njust bootstrap\n11. Restore data from backups (optional, destructive)\nLocal build and flash commands\n4. Flash the image to both the SD card and the SSD\n* backup-validate | Verify backup timers, secrets, and access to Borgbase/pCloud\n* restore-check | Verify restore prerequisites without changing live data\n* deploy | Deploy the runtime configuration\n* restore | Restore Forgejo data from backups\n* fmt | Format Nix files\n4. Flash the image to both the SD card and the SSD\nUse these commands before relying on backup or restore in production:\nPI_HOST=forgejo-pi.tail8f7f61.ts.net just backup-validate\nPI_HOST=forgejo-pi.tail8f7f61.ts.net just restore-check\nRun the real restore only after both checks pass:\nPI_HOST=forgejo-pi.tail8f7f61.ts.net just restore\n\n## [Forgejo Administrator Guide | Forgejo – Beyond coding. We forge.](https://forgejo.codeberg.page/docs/v17.0/admin/)\n\nInstallation from binary\n27. Installation with Docker\n28. Release schedule\n29. Setup\n30. Authentication\n31. Backups and Backup Restoration\n32. Email setup\n33. Recommended Settings and Tips\n34. Reverse proxy\n35. Storage settings\n36. Troubleshooting\n37. Logging Configuration\n38. Profiling\n39. Seek Assistance\n40. Upgrade guide\n41.\n* Installation\n* Introduction\n* With Docker\n* From binary\n* Database Preparation\n* Upgrade guide\n* Important setup steps\n* Backups and Backup Restoration\n* Email sending\n* Reverse Proxy\n* Storage\n* Recommended Settings and Tips\n* LDAP, PAM, FreeIPA\n* Advanced configuration\n* Adopt existing git directories\n* Interface customization\n\n## [GitHub - DomainDrivenArchitecture/c4k-forgejo · GitHub](https://github.com/DomainDrivenArchitecture/c4k-forgejo)\n\nDomainDrivenArchitecture/c4k-forgejo\n* Page: GitHub repository\n* URL: https://github.com/DomainDrivenArchitecture/c4k-forgejo\n* Stars: 2\n* Forks: 0\n* License: Apache-2.0 license\n* Default branch: main\n* Created: 2023-07-27T08:26:48.000Z\n* Commits: 566\nTop-level files\n* doc/\n* infrastructure/backup/\n* src/\n* .gitignore\n* .gitlab-ci.yml\n* LICENSE\n* README.md\n* build.py\n* project.clj\nREADME.md\nconvention 4 kubernetes: c4k-forgejo\nClojars Project pipeline status\nDeltaChat chat over e-mail | M meissa@social.meissa-gmbh.de | Blog | Website\nPurpose\nc4k-forgejo provides a k8s deployment file for forgejo containing:\n* forgejo\n* test federated forgejo\n* ingress having a letsencrypt managed certificate\n* postgres database\n* encrypted backup on S3 & restore\n* monitoring on grafana-cloud\n  c4k-forgejo is an example how to create efficient k8s one-shot deployments with https://repo.prod.meissa.de/meissa/c4k-common .\nForgejo setup\nAdd Impressum\nIn order to customize the UI e.g. for adding an Impressum, see the Forgejo Docs . The individually needed files have to be added by hand into the directory /data/gitea/templates/custom/ in the forgejo Pod. Since a PV is mounted under /data , these ui customizations are persisted.\nDevelopment & mirrors\n\n## [Forgejo Runner Configuration | Forgejo – Beyond coding. We forge.](https://forgejo.codeberg.page/docs/v17.0/admin/actions/configuration/)\n\nInstallation from binary\n27. Installation with Docker\n28. Release schedule\n29. Setup\n30. Authentication\n31. Backups and Backup Restoration\n32. Email setup\n33. Recommended Settings and Tips\n34. Reverse proxy\n35. Storage settings\n36. Troubleshooting\n37. Logging Configuration\n38. Profiling\n39. Seek Assistance\n40. Upgrade guide\n41.",
+        "title": "websearch",
+        "metadata": {
+          "metadata": {
+            "provider": "parallel",
+            "truncated": false
+          },
+          "content": [
+            {
+              "type": "text",
+              "text": "## [Backups and Backup Restoration | Forgejo – Beyond coding. We forge.](https://forgejo.org/docs/v17.0/admin/setup/backup/)\n\nBackups and Backup Restoration\n* Backing Up Forgejo\n* Database\n* Repositories\n* Storage\n* Queues\n* Configuration Settings\n* Indexers\n* Issue Indexer\n* Repository Indexer\n* Logs\n* Restoring Forgejo\nBackups and Backup Restoration\nBackups and Backup Restoration\nAs your Forgejo installation becomes a critical part of your development lifecycle, the data within it needs to be saved in a backup in order to ensure you don’t lose anything.\nBackups and Backup Restoration\nForgejo doesn’t provide or recommend any specific backup tool, but does provide information on what needs to be backed up, how to manage a backup cycle, and how to restore Forgejo to working order from a backup.\nBackups and Backup Restoration\nWarning\nIt is strongly recommended to shut down Forgejo during a backup.\nForgejo saves data in multiple different systems, even in its simplest configuration: Git repositories and bulk files are saved on disk as regular files, and a SQL database is used to record information about user interactions.\nBackups and Backup Restoration\nIt is not trivial to perform a consistent backup of all that data while Forgejo is running. An inconsistent backup may result in data loss when attempting to restore it.\nBackups and Backup Restoration\nFor SQLite, the database file in the config option [database].PATH needs to be backed up with any file backup tool.\nFor other databases, use database backup tools that are appropriate to your selected database engine to create a backup of the Forgejo SQL database.\nBackups and Backup Restoration\nForgejo’s repositories are stored on disk. By default, they are in the directory data in Forgejo’s WORK_PATH , in a subdirectory forgejo-repositories . This configuration may be changed with either [server].APP_DATA_PATH or [repository].ROOT .\nBackups and Backup Restoration\nThe Forgejo configuration file, app.ini , contains a few critical values that must be backed up in order to restore an instance later. It is recommended that the entire file is backed up , but pay specific notice to these configuration settings which contain unique, non-reproducible information:\nBackups and Backup Restoration\n* [security].SECRET_KEY , or the file located at [security].SECRET_KEY_URI : some values are encrypted in Forgejo’s database using this key. If it is not preserved between a backup and a restore, then Forgejo will not be able to access the encrypted values.\nBackups and Backup Restoration\nAfter successfully starting Forgejo and logging in as an administrator, these maintenance tasks can be useful to ensure the Forgejo instance is fully operational after a restore. From the /admin/monitor/cron admin management page:\n\n## [Forgejo Administrator Guide | Forgejo – Beyond coding. We forge.](https://forgejo.org/docs/latest/admin)\n\nEnglish base localization\n54. Weblate admin duties\n55. Managing dependencies between repositories\n56. Release management\n57. Repository Migration\n58. Secrets\n59. Static pages\n60. Testing\n61. Threat Analysis\n62. Threat Analysis: Remote Login Propagation\n63. Web browser support\n64. Welcome to Forgejo\n65. Forgejo User Guide\n66. Actions\n67.\n\n## [Forgejo CLI | Forgejo – Beyond coding. We forge.](https://forgejo.org/docs/v8.0/admin/command-line)\n\nForgejo CLI\n* admin user generate-access-token\n* admin user must-change-password\n* admin repo-sync-releases\n* admin regenerate\n* admin auth\n* admin auth add-oauth\n* admin auth update-oauth\n* admin auth add-ldap\n* admin auth update-ldap\n* admin auth add-ldap-simple\n* admin auth update-ldap-simple\n* admin auth add-smtp\nForgejo CLI\n* manager logging release-and-reopen\n* manager logging remove\n* manager logging add\n* manager logging add file\n* manager logging add conn\n* manager logging log-sql\n* manager processes\n* embedded\n* embedded list\n* embedded view\n* embedded extract\n* migrate-storage\n* dump-repo\n* restore-repo\n* cert\n* generate secret\nOld version\nForgejo CLI\nresources    migrate-storage  Migrate the storage    dump-repo        Dump the repository from git/github/gitea/gitlab    restore-repo     Restore the repository from disk    actions          Manage Forgejo Actions    cert             Generate self-signed certificate    generate         Generate Gitea's secrets/keys/tokens\nForgejo CLI\ndocs             Output CLI documentation    forgejo-cli      Forgejo CLI GLOBAL OPTIONS:    --version, -v                  print the version    --help, -h                     show help    --custom-path value, -C value  Set custom path (defaults to '{WorkPath}/custom')    --config value, -c value       Set custom config file\nForgejo CLI\ndump\nForgejo CLI\nIt can be used for backup and capture Forgejo server image to send to maintainer COMMANDS:    help, h  Shows a list of commands or help for one command OPTIONS:    --help, -h                     show help    --custom-path value, -C value  Set custom path (defaults to '{WorkPath}/custom')    --config value, -c value       Set\nForgejo CLI\nadmin\nForgejo CLI\nNAME:    forgejo admin - Perform common administrative operations USAGE:    forgejo admin command [command options] COMMANDS:    user                Modify users    repo-sync-releases  Synchronize repository releases with tags    regenerate          Regenerate specific files    auth                Modify external auth\n\n## [Forgejo CLI | Forgejo – Beyond coding. We forge.](https://forgejo.org/docs/v14.0/admin/command-line)\n\nForgejo CLI\n* admin user generate-access-token\n* admin user must-change-password\n* admin user reset-mfa\n* admin repo-sync-releases\n* admin regenerate\n* admin auth\n* admin auth add-oauth\n* admin auth update-oauth\n* admin auth add-ldap\n* admin auth update-ldap\n* admin auth add-ldap-simple\n* admin auth update-ldap-simple\n* admin auth add-pam\nForgejo CLI\n* admin auth update-pam\n* admin auth add-smtp\n* admin auth update-smtp\n* admin auth list\n* admin auth delete\n* admin sendmail\n* migrate\n* keys\n* doctor\n* doctor check\n* doctor recreate-table\n* doctor convert\n* doctor avatar-strip-exif\n* doctor cleanup-commit-status\n* manager\n* manager shutdown\n* manager restart\nForgejo CLI\n* embedded view\n* embedded extract\n* migrate-storage\n* dump-repo\n* restore-repo\n* cert\n* generate secret\nOld version\nThis documentation is for a Forgejo version which is no longer supported.\nTo read the up-to-date documentation, navigate to the latest version .\nForgejo CLI\nForgejo CLI\nforgejo --help\nForgejo CLI\nresources    migrate-storage  Migrate the storage    dump-repo        Dump the repository from git/github/gitea/gitlab    restore-repo     Restore the repository from disk    actions          Manage Forgejo Actions    cert             Generate self-signed certificate    generate         Generate Forgejo's secrets/keys/tokens\nForgejo CLI\nforgejo-cli f3\nForgejo CLI\nweb\nForgejo CLI\ndump\nForgejo CLI\nIt can be used for backup and capture Forgejo server image to send to maintainer OPTIONS:    --help, -h                       show help    --custom-path string, -C string  Set custom path (defaults to '{WorkPath}/custom')    --config string, -c string       Set custom config file (defaults to '{WorkPath}/custom/conf/app.ini')\nForgejo CLI\nadmin\nForgejo CLI\nNAME:    forgejo admin - Perform common administrative operations USAGE:    forgejo admin [command [command options]] COMMANDS:    user                Modify users    repo-sync-releases  Synchronize repository releases with tags    regenerate          Regenerate specific files    auth                Modify external auth\nForgejo CLI\nadmin user\nForgejo CLI\nNAME:    forgejo admin user - Modify users USAGE:    forgejo admin user [command [command options]] COMMANDS:    create                 Create a new user in database    list                   List users    change-password        Change a user's password    delete                 Delete specific user by id, name or email\nForgejo CLI\nadmin user create\n\n## [forge/docs/self-hosting/restore.md at main · QuintinBotes/forge · GitHub](https://github.com/QuintinBotes/forge/blob/main/docs/self-hosting/restore.md)\n\nQuintinBotes/forge — docs/self-hosting/restore.md\n* Page: GitHub code file\n* URL: https://github.com/QuintinBotes/forge/blob/main/docs/self-hosting/restore.md\n* Repository: QuintinBotes/forge\n* Path: docs/self-hosting/restore.md\n* Ref: main\n* Lines: 134\nRestore\nThis guide restores a Forge instance from a backup produced by backup.md and verifies that the restore actually worked. Read it end to end before you start: the Postgres restore is destructive and overwrites the target database.\nPrerequisites\n* A backup directory containing postgres.dump (and optionally minio/ and specs/).\n* The matching .env — specifically the SECRET_KEY that was in effect when the backup was taken. Without it the BYOK secrets vault cannot be decrypted and integrations will fail even though every row restores cleanly.\nThe restore script\nUse ../../deploy/scripts/restore.sh. It asks for explicit confirmation because it drops and recreates database objects.\ndeploy/scripts/restore.sh ./backups/<UTC-timestamp>\nThis will OVERWRITE database 'forge'. Type 'yes' to continue: yes\n1. Put the matching .env in place in the repo root, then start the stack so the database is healthy:\ndocker compose -f deploy/docker-compose.yml up -d db\ndocker compose -f deploy/docker-compose.yml ps\n2. Restore Postgres:\ndeploy/scripts/restore.sh ./backups/<UTC-timestamp>\nThis will OVERWRITE database 'forge'. Type 'yes' to continue: yes\n3. Restore the spec documents. restore.sh copies specs/ back onto the forge-specs volume for you when the backup contains it — this step is a check, not extra work. Confirm it reported a restore rather than No spec documents:\n\n## [Forgejo Administrator Guide | Forgejo – Beyond coding. We forge.](https://forgejo.org/docs/v17.0/admin)\n\nEnglish base localization\n55. Weblate admin duties\n56. Managing dependencies between repositories\n57. Release management\n58. Repository Migration\n59. Secrets\n60. Static pages\n61. Testing\n62. Threat Analysis\n63. Threat Analysis: Remote Login Propagation\n64. Web browser support\n65. Welcome to Forgejo\n66. Forgejo User Guide\n67. Actions\n68.\n\n## [GitHub - ces0712/infrastructure-nixos: nixos infrastructure forgejo raspberry pi · GitHub](https://github.com/ces0712/infrastructure-nixos)\n\n10. Validate backup and restore readiness (optional)\nPI_HOST=forgejo-pi.tail8f7f61.ts.net just backup-validate\nPI_HOST=forgejo-pi.tail8f7f61.ts.net just restore-check\n11. Restore data from backups (optional, destructive)\nPI_HOST=forgejo-pi.tail8f7f61.ts.net just restore\nThis is the only supported install path. The SSD keeps the flashed, known-good Pi boot partition from the image. Bootstrap no longer rebuilds the SSD boot partition and no longer uses nixos-anywhere .\n11. Restore data from backups (optional, destructive)\nThe current, proven Raspberry Pi boot path is the shared flashed sd-image layout, and that image keeps the boot-critical partitioning model expected by this setup.\nIf your admin SSH key is not the default key, pass it explicitly:\n11. Restore data from backups (optional, destructive)\nPI_HOST=forgejo-pi.tail8f7f61.ts.net IDENTITY_FILE=~/.ssh/id_ed25519 just bootstrap\njust deploy pushes the stable SOPS age key to /var/lib/sops-nix/key.txt before switching the runtime system. By default it reads that key from pass show sops/age-key . Override that when needed:\n11. Restore data from backups (optional, destructive)\nPI_HOST=forgejo-pi.tail8f7f61.ts.net\nIDENTITY_FILE=~/.ssh/id_ed25519\nSOPS_AGE_KEY_FILE=~/.config/sops/age/keys.txt\njust deploy\njust deploy always stages the new generation with nixos-rebuild boot , then reboots by default. After reboot, reconnect manually to verify the new generation.\n11. Restore data from backups (optional, destructive)\nThe runtime exposes Forgejo over Tailscale Serve:\n11. Restore data from backups (optional, destructive)\n* Forgejo listens on 127.0.0.1:3000\n* Tailscale Serve terminates HTTPS on the tailnet hostname\n* the canonical web URL is https://forgejo-pi.tail8f7f61.ts.net\nPrerequisite:\n* enable MagicDNS and HTTPS certificates in the Tailscale admin console\n11. Restore data from backups (optional, destructive)\nOverride the remote disk or root target size if needed:\nPI_HOST=forgejo-pi.tail8f7f61.ts.net\nREMOTE_SSD_DEVICE=/dev/sdb\nROOT_SIZE_GIB=160\njust bootstrap\n11. Restore data from backups (optional, destructive)\nLocal build and flash commands\n4. Flash the image to both the SD card and the SSD\n* backup-validate | Verify backup timers, secrets, and access to Borgbase/pCloud\n* restore-check | Verify restore prerequisites without changing live data\n* deploy | Deploy the runtime configuration\n* restore | Restore Forgejo data from backups\n* fmt | Format Nix files\n4. Flash the image to both the SD card and the SSD\nUse these commands before relying on backup or restore in production:\nPI_HOST=forgejo-pi.tail8f7f61.ts.net just backup-validate\nPI_HOST=forgejo-pi.tail8f7f61.ts.net just restore-check\nRun the real restore only after both checks pass:\nPI_HOST=forgejo-pi.tail8f7f61.ts.net just restore\n\n## [Forgejo Administrator Guide | Forgejo – Beyond coding. We forge.](https://forgejo.codeberg.page/docs/v17.0/admin/)\n\nInstallation from binary\n27. Installation with Docker\n28. Release schedule\n29. Setup\n30. Authentication\n31. Backups and Backup Restoration\n32. Email setup\n33. Recommended Settings and Tips\n34. Reverse proxy\n35. Storage settings\n36. Troubleshooting\n37. Logging Configuration\n38. Profiling\n39. Seek Assistance\n40. Upgrade guide\n41.\n* Installation\n* Introduction\n* With Docker\n* From binary\n* Database Preparation\n* Upgrade guide\n* Important setup steps\n* Backups and Backup Restoration\n* Email sending\n* Reverse Proxy\n* Storage\n* Recommended Settings and Tips\n* LDAP, PAM, FreeIPA\n* Advanced configuration\n* Adopt existing git directories\n* Interface customization\n\n## [GitHub - DomainDrivenArchitecture/c4k-forgejo · GitHub](https://github.com/DomainDrivenArchitecture/c4k-forgejo)\n\nDomainDrivenArchitecture/c4k-forgejo\n* Page: GitHub repository\n* URL: https://github.com/DomainDrivenArchitecture/c4k-forgejo\n* Stars: 2\n* Forks: 0\n* License: Apache-2.0 license\n* Default branch: main\n* Created: 2023-07-27T08:26:48.000Z\n* Commits: 566\nTop-level files\n* doc/\n* infrastructure/backup/\n* src/\n* .gitignore\n* .gitlab-ci.yml\n* LICENSE\n* README.md\n* build.py\n* project.clj\nREADME.md\nconvention 4 kubernetes: c4k-forgejo\nClojars Project pipeline status\nDeltaChat chat over e-mail | M meissa@social.meissa-gmbh.de | Blog | Website\nPurpose\nc4k-forgejo provides a k8s deployment file for forgejo containing:\n* forgejo\n* test federated forgejo\n* ingress having a letsencrypt managed certificate\n* postgres database\n* encrypted backup on S3 & restore\n* monitoring on grafana-cloud\n  c4k-forgejo is an example how to create efficient k8s one-shot deployments with https://repo.prod.meissa.de/meissa/c4k-common .\nForgejo setup\nAdd Impressum\nIn order to customize the UI e.g. for adding an Impressum, see the Forgejo Docs . The individually needed files have to be added by hand into the directory /data/gitea/templates/custom/ in the forgejo Pod. Since a PV is mounted under /data , these ui customizations are persisted.\nDevelopment & mirrors\n\n## [Forgejo Runner Configuration | Forgejo – Beyond coding. We forge.](https://forgejo.codeberg.page/docs/v17.0/admin/actions/configuration/)\n\nInstallation from binary\n27. Installation with Docker\n28. Release schedule\n29. Setup\n30. Authentication\n31. Backups and Backup Restoration\n32. Email setup\n33. Recommended Settings and Tips\n34. Reverse proxy\n35. Storage settings\n36. Troubleshooting\n37. Logging Configuration\n38. Profiling\n39. Seek Assistance\n40. Upgrade guide\n41."
+            }
+          ],
+          "providerCall": {
+            "executed": false
+          },
+          "providerResult": {
+            "executed": false
+          },
+          "rawInput": "{\"query\":\"Forgejo docs backup and restore admin\"}"
+        },
+        "time": {
+          "start": 1792614199826,
+          "end": 1792614200945
+        }
+      }
+    }
+  },
+  {
+    "type": "step_finish",
+    "timestamp": 1792614200958,
+    "sessionID": "ses_e9fde654dffeRpw7B1IFlyAnvN",
+    "part": {
+      "id": "prt_16021f67e001336rxOntpxcn6K",
+      "sessionID": "ses_e9fde654dffeRpw7B1IFlyAnvN",
+      "messageID": "msg_16021df62001YqBbY2H3e3GCsb",
+      "type": "step-finish",
+      "reason": "tool-calls",
+      "snapshot": "f443e4ea664ae5404304e9ca2e2f3a6c8ad110c9",
+      "cost": 0.001040988,
+      "tokens": {
+        "input": 2305,
+        "output": 101,
+        "reasoning": 148,
+        "cache": {
+          "read": 8448,
+          "write": 0
+        }
+      }
+    }
+  },
+  {
+    "type": "step_start",
+    "timestamp": 1792614202563,
+    "sessionID": "ses_e9fde654dffeRpw7B1IFlyAnvN",
+    "part": {
+      "id": "prt_16021fcc3001oaFPNbU600NCy7",
+      "sessionID": "ses_e9fde654dffeRpw7B1IFlyAnvN",
+      "messageID": "msg_16021f68a00133nc7FlYnshU0k",
+      "type": "step-start",
+      "snapshot": "f443e4ea664ae5404304e9ca2e2f3a6c8ad110c9"
+    }
+  },
+  {
+    "type": "text",
+    "timestamp": 1792614224070,
+    "sessionID": "ses_e9fde654dffeRpw7B1IFlyAnvN",
+    "part": {
+      "id": "prt_160223da7001kWri3peuEaa69z",
+      "sessionID": "ses_e9fde654dffeRpw7B1IFlyAnvN",
+      "messageID": "msg_16021f68a00133nc7FlYnshU0k",
+      "type": "text",
+      "text": "```json\n{\n  \"file\": \"./02_Knowledge/technologies/services/forgejo/backup-restore.md\",\n  \"folder\": \"02_Knowledge\",\n  \"types\": {\n    \"source\": [\n      {\n        \"severity\": \"S1\",\n        \"issue\": \"Placeholder/dead source URL that does not resolve.\",\n        \"evidence\": \"Frontmatter source (line 8) and Sources section (line 43) cite https://example.invalid/forgejo/restore. 'example.invalid' is an RFC 2606 reserved domain; a fetch fails with a transport error, so the evidence does not exist.\",\n        \"fix_hint\": \"Replace with a live, authoritative source — e.g. the current Forgejo backup/restore doc (https://forgejo.org/docs/latest/admin/setup/backup/) or the actual homelab restore runbook.\"\n      },\n      {\n        \"severity\": \"S1\",\n        \"issue\": \"Cited Forgejo docs URL is dead (404); the page moved.\",\n        \"evidence\": \"GET https://forgejo.org/docs/latest/admin/backup-and-restore/ returns 404. The live page is https://forgejo.org/docs/latest/admin/setup/backup/ (linked as 'Backups and Backup Restoration' from /docs/latest/admin/).\",\n        \"fix_hint\": \"Update both the frontmatter and the Sources line to https://forgejo.org/docs/latest/admin/setup/backup/.\"\n      }\n    ],\n    \"accuracy\": [\n      {\n        \"severity\": \"S2\",\n        \"issue\": \"Stated port contradicts the accompanying config block, which will mislead a restore.\",\n        \"evidence\": \"Line 31 states 'Forgejo's HTTP listener runs on port 3000', but the [server] block at lines 34-37 sets HTTP_PORT = 3001. The sibling dump-schedule.md (line 24) also states port 3000.\",\n        \"fix_hint\": \"Make the port internally consistent — if 3000 is correct use HTTP_PORT = 3000, otherwise state the homelab's real port in both the prose and the block.\"\n      }\n    ],\n    \"scope\": [\n      {\n        \"severity\": \"S3\",\n        \"issue\": \"History/origin-story content is not homelab-relevant.\",\n        \"evidence\": \"The '## History' section (lines 23-26) recounts Forgejo's 2022 fork from Gitea and tooling lineage. Root AGENTS.md: 'Do not include technology history, origin stories, or sales/marketing points.' It also breaks the prescribed Overview → Details → Sources heading order.\",\n        \"fix_hint\": \"Remove the History section; keep only restore-relevant content.\"\n      }\n    ],\n    \"structure\": [\n      {\n        \"severity\": \"S4\",\n        \"issue\": \"Tags are not lowercase kebab-case.\",\n        \"evidence\": \"Line 6: tags: [Forgejo, Restore_Procedure] — uppercase and underscore violate the convention ^[a-z0-9]+(-[a-z0-9]+)*$.\",\n        \"fix_hint\": \"Use tags: [forgejo, restore-procedure].\"\n      },\n      {\n        \"severity\": \"S4\",\n        \"issue\": \"Required frontmatter field last_audit_date is missing.\",\n        \"evidence\": \"Frontmatter (lines 1-14) has no last_audit_date, which is required by ./02_Knowledge/AGENTS.md and by the convention 'Set last_audit_date on every edit'.\",\n        \"fix_hint\": \"Add last_audit_date: 2026-10-21 (or the actual audit date).\"\n      },\n      {\n        \"severity\": \"S4\",\n        \"issue\": \"Config code block is not labeled as abstract or real.\",\n        \"evidence\": \"The ```ini block at lines 34-37 has no 'Example — abstract' / 'Example — real config' label, contrary to the 02_Knowledge Conventions.\",\n        \"fix_hint\": \"Prefix the block with a label such as 'Example — real config' or 'Example — abstract'.\"\n      }\n    ],\n    \"overlap\": [\n      {\n        \"severity\": \"S4\",\n        \"issue\": \"Duplicates restore steps, port claim, and source URL already present in the sibling note instead of linking to it.\",\n        \"evidence\": \"Target lines 30-31 repeat 'Stop the instance, restore the dump, then start it again' and 'Forgejo's HTTP listener runs on port 3000', which also appear in dump-schedule.md lines 22-24; both notes cite the same Forgejo backup-and-restore URL.\",\n        \"fix_hint\": \"Keep one canonical copy and cross-link via related_docs instead of restating the same steps/port in both notes.\"\n      }\n    ]\n  },\n  \"totals\": { \"S1\": 2, \"S2\": 1, \"S3\": 1, \"S4\": 4 },\n  \"verdict\": \"issues\"\n}\n```",
+      "time": {
+        "start": 1792614219175,
+        "end": 1792614224070
+      }
+    }
+  }
+]

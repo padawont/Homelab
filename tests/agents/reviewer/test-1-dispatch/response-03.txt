@@ -1,0 +1,58 @@
+===== PROMPT =====
+
+Folder: 02_Knowledge
+Target: ./02_Knowledge/technologies/services/forgejo/backup-retention.md
+Siblings: ./02_Knowledge/technologies/services/forgejo/backup-pruning.md
+
+Run your full five-type review of the target and return the JSON report as your final message.
+
+===== RESPONSE =====
+
+```json
+{
+  "file": "./02_Knowledge/technologies/services/forgejo/backup-retention.md",
+  "folder": "02_Knowledge",
+  "types": {
+    "source": [
+      {
+        "severity": "S1",
+        "issue": "The cited source URL is dead (404). The Forgejo docs page moved; the note's only evidence no longer resolves.",
+        "evidence": "GET https://forgejo.org/docs/latest/admin/backup-and-restore/ returns 404. The live page is https://forgejo.org/docs/latest/admin/setup/backup/ (linked in the current Forgejo Administrator Guide sidebar as 'Backups and Backup Restoration').",
+        "fix_hint": "Update sources[0].url and the Sources / Further Reading link to https://forgejo.org/docs/latest/admin/setup/backup/ (both places use the stale path)."
+      },
+      {
+        "severity": "S2",
+        "issue": "The cited source does not say what the note claims. The backup-and-restore page covers what to back up (DB, repos, storage, queues, indexers, config) and how to restore; it contains no retention policy, dump counts, or pruning guidance.",
+        "evidence": "The full content of https://forgejo.org/docs/latest/admin/setup/backup/ has no mention of retention, keep-counts, or prune jobs, yet the note's Details assert 'Keep 7 daily dumps and 4 weekly dumps' and 'Retention is not controlled by app.ini' with this page as the sole source.",
+        "fix_hint": "Either cite a source that actually documents retention/pruning (e.g. the prune job's own config/implementation doc), or drop the source attribution from claims the page does not support."
+      }
+    ],
+    "accuracy": [
+      {
+        "severity": "S2",
+        "issue": "The concrete homelab policy 'Keep 7 daily dumps and 4 weekly dumps' is an unsourced, homelab-specific claim. It cannot be verified from the cited docs, and no Forgejo implementation note exists in the repo to confirm it.",
+        "evidence": "The cited Forgejo page is silent on counts. `glob 05_Implementations/**/forgejo/**` returns no files, and a repo-wide grep for 'retention|daily dumps|weekly|prune' finds no config or implementation doc stating a 7-daily/4-weekly policy. Only the sibling draft (backup-pruning.md) mentions the prune job, and it describes mtime-based deletion, not a daily/weekly scheme.",
+        "fix_hint": "Point to the actual backup/prune job definition (CronJob, script, or implementation note) that encodes the 7/4 policy, or mark the count as the intended target rather than an observed setting. Unresolvable without that evidence."
+      }
+    ],
+    "scope": [],
+    "structure": [],
+    "overlap": [
+      {
+        "severity": "S4",
+        "issue": "Duplicates the sibling draft backup-pruning.md. Both are atomic notes about pruning/retention of the same Forgejo dumps, share the same (dead) source, and the target's Details restate the prune job that the sibling owns — 'older ones are removed by the prune job' and 'the prune step is its own job'.",
+        "evidence": "backup-retention.md lines 25-26 vs backup-pruning.md lines 18-23: both describe the prune job removing aged dumps from the NAS, with the same source URL. The target does not link the sibling (related_docs only points at operations.md).",
+        "fix_hint": "Merge into one note (or split cleanly: retention policy vs prune mechanism) and cross-link via related_docs instead of repeating the prune job's role."
+      },
+      {
+        "severity": "S4",
+        "issue": "Potential contradiction with the sibling: the target implies a daily/weekly rotation scheme ('7 daily dumps and 4 weekly dumps'), while backup-pruning.md states the prune 'deletes by mtime, not by filename'. A pure mtime-age prune cannot express separate daily and weekly retention buckets.",
+        "evidence": "backup-retention.md line 25 (7 daily + 4 weekly) vs backup-pruning.md line 23 (deletes by mtime, not by filename).",
+        "fix_hint": "Reconcile the two notes: either the prune logic keeps weekly buckets (not mtime-only), or the retention description should match what the mtime prune actually achieves. Cite the job definition."
+      }
+    ]
+  },
+  "totals": { "S1": 1, "S2": 2, "S3": 0, "S4": 2 },
+  "verdict": "needs_recheck"
+}
+```

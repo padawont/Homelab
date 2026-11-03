@@ -17,7 +17,7 @@ reports ``False``, which looks exactly like an agent that called the wrong tool:
    turns an f-string message into a template, and a template that references a module
    constant keeps the constant's *name*: ``"{TOOL_SPAN_PREFIX}{name}"``, which does not
    start with ``"execute_tool "`` and is therefore invisible to the evaluators.
-   ``test_span_bridge.py`` pins both behaviours.
+   ``test_evaluators.py`` pins both behaviours.
 
 We emit spans with the OpenTelemetry API directly rather than ``logfire.span`` so
 trap 2 cannot recur; ``logfire.configure`` is still used, because it is what gives
@@ -52,7 +52,7 @@ from pydantic_evals.evaluators import (
 )
 
 from harness.prompts import TestSpec
-from harness.run_agent import ToolCall
+from harness.run_agent import ToolCall, extract_json_object
 
 TOOL_SPAN_PREFIX = "execute_tool "
 TRACER_NAME = "homelab.agent_eval"
@@ -140,15 +140,17 @@ def _footprint(ctx: EvaluatorContext) -> dict[str, Any]:
 
 
 def _as_dict(output: Any) -> dict[str, Any] | None:
-    """The task's output as a dict, whether it arrived parsed or as JSON text."""
+    """The task's output as a dict, whether it arrived parsed or as JSON text.
+
+    The text path goes through :func:`~harness.run_agent.extract_json_object`, so a
+    fenced or prose-wrapped report is read the same way the task's own parse reads it.
+    Scoring the raw fence as "not an object" would report a formatting habit as a
+    contract violation.
+    """
     if isinstance(output, dict):
         return output
     if isinstance(output, str):
-        try:
-            decoded = json.loads(output)
-        except json.JSONDecodeError:
-            return None
-        return decoded if isinstance(decoded, dict) else None
+        return extract_json_object(output)
     return None
 
 
@@ -252,6 +254,413 @@ def nothing_deleted(*, name: str = "nothing-deleted") -> Evaluator:
         return True
 
     return rule(name, check)
+
+
+# ---------------------------------------------------------------------------
+# #71 reviewer -- JSON report rules
+# ---------------------------------------------------------------------------
+
+_FINDING_TEXT_KEYS = ("issue", "evidence", "fix_hint")
+
+
+def _types(ctx: EvaluatorContext) -> dict[str, Any] | None:
+    """The report's ``types`` object, or ``None`` when the output is not a report."""
+    decoded = _as_dict(ctx.output)
+    if decoded is None:
+        return None
+    types = decoded.get("types")
+    return types if isinstance(types, dict) else None
+
+
+def _findings(types: dict[str, Any], type_key: str) -> list[dict[str, Any]]:
+    """The findings recorded under one type key, ignoring anything malformed."""
+    value = types.get(type_key)
+    if not isinstance(value, list):
+        return []
+    return [finding for finding in value if isinstance(finding, dict)]
+
+
+def _all_findings(types: dict[str, Any]) -> list[tuple[str, dict[str, Any]]]:
+    return [(type_key, finding) for type_key in types for finding in _findings(types, type_key)]
+
+
+def _finding_text(finding: dict[str, Any]) -> str:
+    """A finding's prose, for substring checks that must not care which field it is in."""
+    return " ".join(str(finding.get(key) or "") for key in _FINDING_TEXT_KEYS)
+
+
+def report_has_keys(keys: Sequence[str], *, name: str = "report-has-keys") -> Evaluator:
+    """The report carries every named top-level key, present and non-null."""
+
+    required = list(keys)
+
+    def check(ctx: EvaluatorContext) -> Any:
+        decoded = _as_dict(ctx.output)
+        if decoded is None:
+            return _fail("output is not a JSON object", ctx.output)
+        missing = [key for key in required if key not in decoded]
+        if missing:
+            return _fail(f"missing report key(s): {', '.join(missing)}", sorted(decoded))
+        null = [key for key in required if decoded[key] is None]
+        if null:
+            return _fail(f"null report key(s): {', '.join(null)}", sorted(decoded))
+        return True
+
+    return rule(name, check)
+
+
+def type_keys_present(keys: Sequence[str], *, name: str = "type-keys-present") -> Evaluator:
+    """Every type key is present under ``types``, non-null, and a list.
+
+    ``REVIEW.md`` § Facet Report calls these the ALWAYS-present keys: the editor
+    routes on key presence, so an omitted or null key breaks the lane downstream,
+    not just the test.
+    """
+
+    required = list(keys)
+
+    def check(ctx: EvaluatorContext) -> Any:
+        types = _types(ctx)
+        if types is None:
+            return _fail("output has no `types` object", ctx.output)
+        missing = [key for key in required if key not in types]
+        if missing:
+            return _fail(f"missing type key(s): {', '.join(missing)}", sorted(types))
+        null = [key for key in required if types[key] is None]
+        if null:
+            return _fail(f"null type key(s): {', '.join(null)}", sorted(types))
+        not_list = [key for key in required if not isinstance(types[key], list)]
+        if not_list:
+            return _fail(f"type key(s) are not lists: {', '.join(not_list)}", sorted(types))
+        return True
+
+    return rule(name, check)
+
+
+def verdict_in(values: Sequence[str], *, name: str = "verdict-in") -> Evaluator:
+    """``verdict`` is one of the allowed values."""
+
+    allowed = list(values)
+
+    def check(ctx: EvaluatorContext) -> Any:
+        decoded = _as_dict(ctx.output)
+        if decoded is None:
+            return _fail("output is not a JSON object", ctx.output)
+        verdict = decoded.get("verdict")
+        if verdict not in allowed:
+            return _fail(f"verdict {verdict!r} is not one of {allowed}", verdict)
+        return True
+
+    return rule(name, check)
+
+
+def findings_shape(
+    fields: Sequence[str],
+    severities: Sequence[str] = (),
+    *,
+    name: str = "findings-shape",
+) -> Evaluator:
+    """Every finding carries every named field, and its severity is in band.
+
+    ``fields`` is checked for a non-empty string, so a finding that names ``evidence``
+    but leaves it blank is a failure -- the editor's citation rule reads that field.
+    """
+
+    required = list(fields)
+    allowed = set(severities)
+
+    def check(ctx: EvaluatorContext) -> Any:
+        types = _types(ctx)
+        if types is None:
+            return _fail("output has no `types` object", ctx.output)
+        problems: list[str] = []
+        for type_key, finding in _all_findings(types):
+            missing = [field for field in required if not str(finding.get(field) or "").strip()]
+            if missing:
+                problems.append(f"{type_key}: missing {', '.join(missing)}")
+            if allowed:
+                severity = finding.get("severity")
+                if severity not in allowed:
+                    problems.append(f"{type_key}: severity {severity!r} outside {sorted(allowed)}")
+        if problems:
+            return _fail("; ".join(problems[:5]), f"{len(problems)} problem(s)")
+        return True
+
+    return rule(name, check)
+
+
+def types_empty(keys: Sequence[str], *, name: str = "types-empty") -> Evaluator:
+    """The named types recorded no findings -- ``[]``, not a guess."""
+
+    required = list(keys)
+
+    def check(ctx: EvaluatorContext) -> Any:
+        types = _types(ctx)
+        if types is None:
+            return _fail("output has no `types` object", ctx.output)
+        nonempty = [key for key in required if _findings(types, key)]
+        if nonempty:
+            return _fail(f"type(s) not empty: {', '.join(nonempty)}", sorted(types))
+        return True
+
+    return rule(name, check)
+
+
+def type_findings_contain(mapping: dict[str, Sequence[str]], *, name: str = "type-findings-contain") -> Evaluator:
+    """Each named type has at least one finding mentioning one of its needles.
+
+    This is how a planted defect is pinned to the *correct* type key: a wrong-port
+    finding filed under ``structure`` fails, even though the port was noticed.
+    """
+
+    expected = {type_key: [needle.lower() for needle in needles] for type_key, needles in mapping.items()}
+
+    def check(ctx: EvaluatorContext) -> Any:
+        types = _types(ctx)
+        if types is None:
+            return _fail("output has no `types` object", ctx.output)
+        misses: list[str] = []
+        for type_key, needles in expected.items():
+            texts = [_finding_text(finding).lower() for finding in _findings(types, type_key)]
+            if not any(needle in text for text in texts for needle in needles):
+                misses.append(f"{type_key} (none of {needles})")
+        if misses:
+            return _fail("planted defect not reported in: " + "; ".join(misses), sorted(types))
+        return True
+
+    return rule(name, check)
+
+
+def overlap_references_siblings(paths: Sequence[str], *, name: str = "overlap-references-siblings") -> Evaluator:
+    """Every ``overlap`` finding names one of the sibling drafts the hub supplied.
+
+    ``reviewer-overlap`` (§ Overlap Rule in its agent file): judge ``overlap`` only
+    against the supplied siblings, never across lanes or the wider repo. A finding
+    that cites no supplied sibling either reached outside its brief or is about
+    something else.
+
+    A sibling counts as named on either its full repo-relative path or its **basename**.
+    The reviewer answers in prose ("duplicates the sibling draft backup-pruning.md"),
+    and the basename is how the hub itself refers to a sibling; demanding the full path
+    would score a correct finding as a miss.
+    """
+
+    allowed = {_norm(path) for path in paths}
+
+    def check(ctx: EvaluatorContext) -> Any:
+        types = _types(ctx)
+        if types is None:
+            return _fail("output has no `types` object", ctx.output)
+        offenders: list[str] = []
+        for finding in _findings(types, "overlap"):
+            text = _finding_text(finding)
+            referenced = [_norm(path) for path in _paths_in(text)]
+            if not any(_same_file(path, sibling) for path in referenced for sibling in allowed):
+                offenders.append(text.strip()[:120] or "<empty finding>")
+        if offenders:
+            return _fail("overlap finding(s) cite no supplied sibling", offenders)
+        return True
+
+    return rule(name, check)
+
+
+def _same_file(left: str, right: str) -> bool:
+    """Whether two paths refer to the same file, by full path or by basename."""
+    if left == right:
+        return True
+    return left.rsplit("/", 1)[-1] == right.rsplit("/", 1)[-1]
+
+
+def nothing_written(*, name: str = "nothing-written") -> Evaluator:
+    """The run created or modified no file at all.
+
+    Distinct from :func:`only_paths_written` with an empty allow-list, which adds no
+    check. The reviewer is read-only, so "nothing written" has to be assertable.
+    """
+
+    def check(ctx: EvaluatorContext) -> Any:
+        footprint = _footprint(ctx)
+        touched = sorted([*(footprint.get("created") or []), *(footprint.get("modified") or [])])
+        if touched:
+            return _fail(f"wrote: {', '.join(touched)}", touched)
+        return True
+
+    return rule(name, check)
+
+
+# ---------------------------------------------------------------------------
+# #72 editor -- change-report and edit-op rules
+# ---------------------------------------------------------------------------
+
+def _edits(ctx: EvaluatorContext) -> dict[str, list[dict[str, str]]]:
+    edits = _metadata(ctx).get("edits")
+    return edits if isinstance(edits, dict) else {}
+
+
+def _edits_for(ctx: EvaluatorContext, path: str) -> list[dict[str, str]]:
+    """The recorded edit operations for ``path``, matched by suffix like ``writes``.
+
+    A tool may be handed an absolute workspace path rather than a repo-relative one,
+    so an exact miss falls back to a suffix match.
+    """
+    target = _norm(path)
+    edits = _edits(ctx)
+    if target in edits:
+        return list(edits[target])
+    suffix = "/" + target
+    for recorded, ops in edits.items():
+        if recorded.endswith(suffix):
+            return list(ops)
+    return []
+
+
+def _parse_change_report(
+    ctx: EvaluatorContext,
+) -> tuple[list[dict[str, Any]] | None, str | None]:
+    """The ``changes`` list from the editor's JSON report, and why it could not be read.
+
+    The editor returns a JSON object -- ``changes`` plus a ``questions`` list -- the same
+    way the reviewer does. ``replay_task`` decodes it when the spec sets ``expect_json``,
+    so it normally arrives as a dict; :func:`_as_dict` also accepts a bare JSON string, so
+    the rules work either way. Anything that is not a JSON object with a ``changes`` list
+    is reported on, not crashed on.
+    """
+    data = _as_dict(ctx.output)
+    if data is None:
+        return None, "the final message is not a JSON object"
+    changes = data.get("changes")
+    if not isinstance(changes, list):
+        return None, "the report has no `changes` list"
+    return [entry for entry in changes if isinstance(entry, dict)], None
+
+
+def changes_shape(
+    fields: Sequence[str],
+    statuses: Sequence[str] = (),
+    *,
+    name: str = "changes-shape",
+) -> Evaluator:
+    """The final message carries a non-empty ``changes:`` list of well-formed entries.
+
+    Every entry must carry every named field as a non-empty value, and -- when a status
+    set is given -- a ``status`` within it. ``editor.md`` requires ``file``, ``change``
+    and ``status`` on every entry; ``source_or_rule`` is optional and deliberately not
+    asserted here.
+    """
+
+    required = list(fields)
+    allowed = set(statuses)
+
+    def check(ctx: EvaluatorContext) -> Any:
+        changes, error = _parse_change_report(ctx)
+        if changes is None:
+            return _fail(error or "no `changes:` list in the final message")
+        if not changes:
+            return _fail("`changes:` list is empty", changes)
+        problems: list[str] = []
+        for entry in changes:
+            missing = [field for field in required if not str(entry.get(field) or "").strip()]
+            if missing:
+                problems.append(f"entry missing {', '.join(missing)}")
+            if allowed:
+                status = entry.get("status")
+                if status not in allowed:
+                    problems.append(f"status {status!r} outside {sorted(allowed)}")
+        if problems:
+            return _fail("; ".join(problems[:5]), f"{len(problems)} problem(s)")
+        return True
+
+    return rule(name, check)
+
+
+def changed_paths(paths: Sequence[str], *, name: str = "changed-paths") -> Evaluator:
+    """The run created or modified every named path -- the footprint, not the report."""
+
+    wanted = {_norm(path) for path in paths}
+
+    def check(ctx: EvaluatorContext) -> Any:
+        footprint = _footprint(ctx)
+        touched = {
+            _norm(path)
+            for path in [*(footprint.get("created") or []), *(footprint.get("modified") or [])]
+        }
+        missing = sorted(path for path in wanted if path not in touched)
+        if missing:
+            return _fail(f"not written: {', '.join(missing)}", sorted(touched))
+        return True
+
+    return rule(name, check)
+
+
+def report_covers(paths: Sequence[str], *, name: str = "report-covers") -> Evaluator:
+    """The change report names every given path in a ``file:`` field."""
+
+    wanted = {_norm(path) for path in paths}
+
+    def check(ctx: EvaluatorContext) -> Any:
+        changes, error = _parse_change_report(ctx)
+        if changes is None:
+            return _fail(error or "no `changes:` list in the final message")
+        named = {_norm(str(entry.get("file") or "")) for entry in changes}
+        missing = sorted(path for path in wanted if path not in named)
+        if missing:
+            return _fail(f"change report does not name: {', '.join(missing)}", sorted(named))
+        return True
+
+    return rule(name, check)
+
+
+def question_raised(*, name: str = "question-raised") -> Evaluator:
+    """At least one entry in ``questions`` -- the editor refused or could not resolve something.
+
+    ``editor.md`` sends anything it refuses or cannot resolve back to the orchestrator as
+    one entry in ``questions``, never as prose. A run that reports a block in its narrative
+    but leaves ``questions`` empty has told the orchestrator nothing it can route.
+    """
+
+    def check(ctx: EvaluatorContext) -> Any:
+        data = _as_dict(ctx.output)
+        if data is None:
+            return _fail("the final message is not a JSON object")
+        questions = data.get("questions")
+        if not isinstance(questions, list) or not questions:
+            return _fail("no entry in `questions`", questions)
+        empty = [
+            index
+            for index, entry in enumerate(questions)
+            if not isinstance(entry, dict) or not str(entry.get("question") or "").strip()
+        ]
+        if empty:
+            return _fail(f"question entry/entries without `question` text: {empty}", len(questions))
+        return True
+
+    return rule(name, check)
+
+
+def edit_replaces(path: str, old: str, new: str, *, name: str | None = None) -> Evaluator:
+    """An edit to ``path`` replaced a string containing ``old`` with one containing ``new``.
+
+    This is how "the breach is actually fixed on disk" is asserted for a tool whose
+    write is a diff: the footprint says *that* the file changed, and this says *what*
+    changed. Both are required -- a run that edited the file for some other reason, or
+    that only claimed the fix in its report, fails.
+    """
+
+    target = _norm(path)
+
+    def check(ctx: EvaluatorContext) -> Any:
+        ops = _edits_for(ctx, path)
+        if not ops:
+            return _fail(f"no recorded edit for {path}", sorted(_edits(ctx)))
+        for op in ops:
+            if old in op.get("old", "") and new in op.get("new", ""):
+                return True
+        return _fail(
+            f"no edit to {path} replaced {old!r} with {new!r}",
+            [op.get("new", "")[:120] for op in ops],
+        )
+
+    return rule(name or f"edit-replaces:{target}", check)
 
 
 # ---------------------------------------------------------------------------
@@ -538,5 +947,44 @@ def evaluators_for(spec: TestSpec) -> list[Evaluator]:
             checks.append(written_file_within_lines(spec.written_file, spec.max_lines))
         if spec.done_reports_line_count:
             checks.append(done_reports_line_count(spec.written_file))
+
+    if spec.report_keys:
+        checks.append(report_has_keys(spec.report_keys))
+
+    if spec.type_keys:
+        checks.append(type_keys_present(spec.type_keys))
+
+    if spec.verdict_values:
+        checks.append(verdict_in(spec.verdict_values))
+
+    if spec.finding_fields:
+        checks.append(findings_shape(spec.finding_fields, spec.severity_values))
+
+    if spec.empty_types:
+        checks.append(types_empty(spec.empty_types))
+
+    if spec.findings_in_type:
+        checks.append(type_findings_contain(spec.findings_in_type))
+
+    if spec.overlap_refs:
+        checks.append(overlap_references_siblings(spec.overlap_refs))
+
+    if spec.expect_no_writes:
+        checks.append(nothing_written())
+
+    if spec.changes_fields:
+        checks.append(changes_shape(spec.changes_fields, spec.change_statuses))
+
+    if spec.changed_paths:
+        checks.append(changed_paths(spec.changed_paths))
+
+    if spec.report_covers:
+        checks.append(report_covers(spec.report_covers))
+
+    for fix in spec.edit_fixes:
+        checks.append(edit_replaces(fix.path, fix.old, fix.new))
+
+    if spec.expect_question:
+        checks.append(question_raised())
 
     return checks

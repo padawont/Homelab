@@ -1,0 +1,84 @@
+===== PROMPT =====
+
+Folder: 02_Knowledge
+Target: ./02_Knowledge/technologies/services/forgejo/backup-restore.md
+Siblings: ./02_Knowledge/technologies/services/forgejo/dump-schedule.md
+
+Run your full five-type review of the target and return the JSON report as your final message. Judge `overlap` only against the sibling supplied.
+
+===== RESPONSE =====
+
+```json
+{
+  "file": "./02_Knowledge/technologies/services/forgejo/backup-restore.md",
+  "folder": "02_Knowledge",
+  "types": {
+    "source": [
+      {
+        "severity": "S1",
+        "issue": "First source is a non-resolving placeholder URL.",
+        "evidence": "sources[0].url is \"https://example.invalid/forgejo/restore\" and is repeated in the body at line 43 (\"Forgejo restore guide: https://example.invalid/forgejo/restore\"). The `.invalid` TLD is reserved by RFC 2606 and is guaranteed never to resolve, so the cited evidence does not exist.",
+        "fix_hint": "Remove the placeholder entry and the matching body line, or replace with a real, live restore reference (e.g. the Forgejo backup/restore page)."
+      },
+      {
+        "severity": "S1",
+        "issue": "Second source URL is dead (HTTP 404).",
+        "evidence": "sources[1].url \"https://forgejo.org/docs/latest/admin/backup-and-restore/\" returned HTTP 404 when fetched. The live Forgejo page is at https://forgejo.org/docs/latest/admin/setup/backup/ (\"Backups and Backup Restoration\").",
+        "fix_hint": "Update the source URL to the current canonical path https://forgejo.org/docs/latest/admin/setup/backup/ (verify it resolves) and re-title if needed."
+      }
+    ],
+    "accuracy": [
+      {
+        "severity": "S2",
+        "issue": "Port stated in prose contradicts the config block, and the block is wrong for this homelab.",
+        "evidence": "Line 31 says \"Forgejo's HTTP listener runs on port 3000\", but the ini block at lines 34-37 sets `HTTP_PORT = 3001`. The homelab runs Forgejo on 3000 (./02_Knowledge/technologies/services/forgejo/install-config.md service port 3000; overview.md; 04_ADRs/320-adopt-forgejo.md). A reader following the block would configure the wrong port.",
+        "fix_hint": "Correct the example to `HTTP_PORT = 3000` (or label it explicitly as a non-default illustration) so it matches the documented homelab port and the surrounding prose."
+      },
+      {
+        "severity": "S2",
+        "issue": "Claims a Forgejo \"restore command\" that does not exist.",
+        "evidence": "Line 26: \"The restore command has been stable since the fork.\" Forgejo does not ship a `restore` command; the official docs describe restore as a manual procedure (restore DB, restore data dir, restore app.ini, start), and the CLI reference lists only `dump`/`restore-repo`. The note itself describes a manual stop/copy/start sequence, so the \"restore command\" reference is misleading.",
+        "fix_hint": "Drop the \"restore command\" phrasing and state the restore is a manual procedure, or cite the specific CLI command if one is actually intended."
+      }
+    ],
+    "scope": [
+      {
+        "severity": "S3",
+        "issue": "Technology history / origin story included.",
+        "evidence": "The `## History` section (lines 23-26) covers Forgejo being forked from Gitea in 2022 and its tooling \"lineage\". Root AGENTS.md (General Conventions) states: \"Do not include technology history, origin stories, or sales/marketing points\" — include only homelab-relevant material.",
+        "fix_hint": "Delete the `## History` section; keep only the operational restore steps relevant to running Forgejo in the homelab."
+      }
+    ],
+    "structure": [
+      {
+        "severity": "S4",
+        "issue": "Tags violate the lowercase kebab-case rule.",
+        "evidence": "Line 6: `tags: [Forgejo, Restore_Procedure]`. Root AGENTS.md requires tags to match `^[a-z0-9]+(-[a-z0-9]+)*$`; `Forgejo` is capitalized and `Restore_Procedure` uses an underscore and capitals.",
+        "fix_hint": "Rewrite as e.g. `tags: [forgejo, restore-procedure]` (lowercase, hyphen-separated)."
+      },
+      {
+        "severity": "S4",
+        "issue": "Required frontmatter field `last_audit_date` is missing.",
+        "evidence": "Frontmatter (lines 1-14) lists title/status/author/date/tags/sources/related_docs but no `last_audit_date`, which 02_Knowledge/AGENTS.md lists as a required field and whose Conventions say to \"Set `last_audit_date` on every edit\".",
+        "fix_hint": "Add `last_audit_date: 2026-10-21` (or the actual audit date) to the frontmatter."
+      }
+    ],
+    "overlap": [
+      {
+        "severity": "S4",
+        "issue": "Duplicates the restore-steps claim from the sibling note instead of linking.",
+        "evidence": "Line 30: \"Stop the instance, restore the dump, then start it again.\" is verbatim (minus the trailing clause) from sibling ./02_Knowledge/technologies/services/forgejo/dump-schedule.md line 22: \"Stop the instance, restore the dump, then start it again -- the same steps a restore follows.\"",
+        "fix_hint": "Keep this claim in one note and cross-link via `related_docs` (the target already links the sibling) rather than repeating the steps."
+      },
+      {
+        "severity": "S4",
+        "issue": "Contradicts the sibling note on the HTTP port.",
+        "evidence": "Target config block (line 36) states `HTTP_PORT = 3001`, while sibling dump-schedule.md line 24 states \"Forgejo's HTTP listener runs on port 3000.\" The two notes give conflicting port values.",
+        "fix_hint": "Resolve to the single correct homelab port (3000) so the two notes agree, or explicitly flag any deliberate override with a source."
+      }
+    ]
+  },
+  "totals": { "S1": 2, "S2": 2, "S3": 1, "S4": 4 },
+  "verdict": "issues"
+}
+```

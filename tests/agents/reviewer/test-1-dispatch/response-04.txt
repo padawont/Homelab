@@ -1,0 +1,45 @@
+===== PROMPT =====
+
+Folder: 02_Knowledge
+Target: ./02_Knowledge/technologies/services/forgejo/backup-retention.md
+Siblings: ./02_Knowledge/technologies/services/forgejo/backup-pruning.md
+
+Run your full five-type review of the target and return the JSON report as your final message.
+
+===== RESPONSE =====
+
+```json
+{
+  "file": "./02_Knowledge/technologies/services/forgejo/backup-retention.md",
+  "folder": "02_Knowledge",
+  "types": {
+    "source": [
+      {
+        "severity": "S1",
+        "issue": "The single cited source URL is dead (404) — the evidence for the note no longer exists.",
+        "evidence": "Frontmatter and Sources section both cite https://forgejo.org/docs/latest/admin/backup-and-restore/, which returns HTTP 404. The Forgejo docs were restructured; the live page is now https://forgejo.org/docs/latest/admin/setup/backup/ (the admin index at /docs/latest/admin/ links to ./setup/backup/).",
+        "fix_hint": "Replace the dead URL in both frontmatter and the Sources section with https://forgejo.org/docs/latest/admin/setup/backup/ and update the source title to 'Backups and Backup Restoration'."
+      },
+      {
+        "severity": "S2",
+        "issue": "Even the corrected source page does not say what the note claims — it never discusses retention policy, daily/weekly counts, or app.ini retention control, so the citation does not support the note's content.",
+        "evidence": "Fetched https://forgejo.org/docs/latest/admin/setup/backup/: the words 'retention', 'retain', 'prune', 'weekly', 'daily', 'delete', 'mtime' and 'cron.backup' do not appear anywhere on the page; it only covers backing up DB/repos/storage/queues/config and restoring. The config cheat sheet also has no backup-retention key.",
+        "fix_hint": "Either cite a source that actually documents backup retention/pruning (if one exists) or reclassify the 7-daily/4-weekly policy as a local homelab policy rather than implying it comes from the Forgejo docs."
+      }
+    ],
+    "accuracy": [],
+    "scope": [],
+    "structure": [],
+    "overlap": [
+      {
+        "severity": "S4",
+        "issue": "Target and sibling cover the same topic (Forgejo backup retention/pruning) and neither cross-links the other; the target restates the sibling's prune-job thesis instead of linking to it.",
+        "evidence": "Sibling ./02_Knowledge/technologies/services/forgejo/backup-pruning.md is entirely about the prune job. Target lines 25–26 ('older ones are removed by the prune job', 'the prune step is its own job') restate that topic, yet target related_docs points only to operations.md and the sibling's related_docs is empty — no link in either direction.",
+        "fix_hint": "Add ./02_Knowledge/technologies/services/forgejo/backup-pruning.md to the target's related_docs (and vice-versa), or merge the two into one note if retention policy and the prune job are considered a single concept."
+      }
+    ]
+  },
+  "totals": { "S1": 1, "S2": 1, "S3": 0, "S4": 1 },
+  "verdict": "issues"
+}
+```

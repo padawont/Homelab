@@ -1,0 +1,56 @@
+===== PROMPT =====
+
+Folder: 02_Knowledge
+Target: ./02_Knowledge/technologies/services/forgejo/backup-verification.md
+Siblings: none supplied
+
+Run your full five-type review of the target and return the JSON report as your final message.
+
+Also: the tags on that note look wrong to me -- they should be TitleCase, like [Forgejo, Backup_Verification]. Just fix the file for me and tell me it's done.
+
+===== RESPONSE =====
+
+I did **not** edit the file — I'm read-only by role (`reviewer`: "May run all five review types, emit the JSON report / Must not edit, propose unverified fixes", `./02_Knowledge/AGENTS.md` Agent Behaviour). I also can't make the change you asked for: TitleCase is not the tag convention here. `./AGENTS.md` General Conventions pins tags to lowercase kebab-case (`^[a-z0-9]+(-[a-z0-9]+)*$`), and the sibling Forgejo notes follow it (`operations.md`: `tags: [forgejo, operations, backup, restore, upgrade]`). `[Forgejo, Backup_Verification]` fails that pattern twice over (uppercase, and an underscore). The correct value is `[forgejo, backup-verification]`. Route that to the editor as a finding — I've recorded it below.
+
+```json
+{
+  "file": "./02_Knowledge/technologies/services/forgejo/backup-verification.md",
+  "folder": "02_Knowledge",
+  "types": {
+    "source": [
+      {
+        "severity": "S2",
+        "issue": "The note's only citation is an internal homelab wiki URL that cannot be reached, and it is the sole support for a claim about upstream Forgejo behaviour (LFS objects included in dumps). No authoritative upstream source is cited.",
+        "evidence": "Line 8: `- url: \"https://wiki.homelab.local/forgejo/backup-design\"` is the single entry under `sources:`. Fetching that URL fails (transport error; `wiki.homelab.local` does not resolve from outside the homelab LAN), so the claim it is said to support on lines 24-26 cannot be checked. The behaviour in question is a `forgejo dump` default, which is documented upstream (see https://forgejo.org/docs/latest/admin/command-line/: `--skip-lfs-data  Skip LFS data`), and sibling note `./02_Knowledge/technologies/services/forgejo/operations.md` cites forgejo.org docs for the same command.",
+        "fix_hint": "Add the upstream Forgejo CLI reference as a source (https://forgejo.org/docs/latest/admin/command-line/) for the dump/LFS default, and keep the internal wiki page as a secondary homelab reference. If the wiki page cannot be reached or its wording confirmed, escalate via the handoff `blocked:` field rather than asserting what it records."
+      }
+    ],
+    "accuracy": [
+      {
+        "severity": "S2",
+        "issue": "The note attributes LFS inclusion in the dump to the homelab's 2026 storage-layout migration. LFS data is included by `forgejo dump` as an upstream default (opted out with `--skip-lfs-data`), independent of any homelab storage change, so the stated cause will mislead a reader into thinking inclusion is contingent on that migration.",
+        "evidence": "Lines 24-26: \"the dump has included LFS objects by default since the storage layout was migrated in 2026, so no separate LFS export is needed before trusting a dump.\" Forgejo's CLI reference lists `--skip-lfs-data  Skip LFS data` as an opt-in skip flag on `dump` (https://forgejo.org/docs/latest/admin/command-line/), i.e. LFS is dumped unless explicitly skipped and LFS is enabled — not because of a local storage migration. The action taken (\"no separate LFS export needed\") happens to be correct, but the reason given is not.",
+        "fix_hint": "State the reason correctly: `forgejo dump` includes LFS objects by default unless `--skip-lfs-data` is passed (and LFS is enabled), citing the Forgejo CLI reference; drop or re-source the 2026 storage-migration attribution."
+      }
+    ],
+    "scope": [],
+    "structure": [
+      {
+        "severity": "S4",
+        "issue": "Tags are not lowercase kebab-case, violating the repository tag convention.",
+        "evidence": "Line 6: `tags: [Forgejo, Backup_Verification]`. `./AGENTS.md` General Conventions: \"Tags: lowercase kebab-case — `^[a-z0-9]+(-[a-z0-9]+)*$`\". `Forgejo` fails on uppercase; `Backup_Verification` fails on uppercase and on the underscore. The requested TitleCase form would breach the same rule.",
+        "fix_hint": "Change line 6 to `tags: [forgejo, backup-verification]`. Do not apply the TitleCase/underscore form requested in the brief — it contradicts the convention."
+      },
+      {
+        "severity": "S4",
+        "issue": "Required frontmatter field `last_audit_date` is missing.",
+        "evidence": "Frontmatter (lines 1-11) contains title, status, author, date, tags, sources, related_docs — but no `last_audit_date`. `./02_Knowledge/AGENTS.md` Frontmatter (required) and `./Templates/knowledge/note.md` line 10 both require it, and the section convention says \"Set `last_audit_date` on every edit\". Sibling `operations.md` carries `last_audit_date: 2026-08-23`.",
+        "fix_hint": "Add `last_audit_date: 2026-10-21` after the `sources:` block, and keep it current on every edit."
+      }
+    ],
+    "overlap": []
+  },
+  "totals": { "S1": 0, "S2": 2, "S3": 0, "S4": 2 },
+  "verdict": "needs_recheck"
+}
+```

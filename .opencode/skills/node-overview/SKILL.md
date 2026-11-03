@@ -15,14 +15,25 @@ description: >
 Standard step-by-step overview of node-main. Run the read-only checks below in
 order over SSH, then report the results in chat.
 
+## Who runs this
+
+This skill runs in `runesmith`, which has a read-only shell allowlist and never
+runs `sudo`. On the node, use the `runic` kubeconfig form
+(`KUBECONFIG=/etc/rancher/k3s/k3s.yaml kubectl ...`); any `sudo`/`systemctl`/
+`journalctl`/`crictl` step is reported as not-run and handed to the human.
+`cluster-worker` may run only the `kubectl get`/`describe`/`logs` and
+`helm status`/`history` subset its whitelist permits, with the same restriction.
+`spec-writer` cannot run this skill; `runesmith` supplies the facts in the brief
+instead.
+
 ## Connection (via login-server skill)
 
 - Use the `login-server` skill for ALL SSH: it handles `SSHPASS`, `sshpass`,
-  the key-based fallback, and the `192.168.111.7` connection details. Do not
-  duplicate or hardcode connection info here.
+  and the `192.168.111.7` connection details. Do not duplicate or hardcode
+  connection info here.
 - Every check below runs as a remote command through `login-server`.
-- kubectl on the node: `sudo k3s kubectl` (root) or
-  `KUBECONFIG=/etc/rancher/k3s/k3s.yaml kubectl` (runic).
+- kubectl on the node: `KUBECONFIG=/etc/rancher/k3s/k3s.yaml kubectl` (runic —
+  the form agents use) or `sudo k3s kubectl` (root).
 
 ## Guardrails (read-only — non-negotiable)
 
@@ -43,6 +54,11 @@ order over SSH, then report the results in chat.
 
 Run each step in order; record results as you go. Batch related commands per
 SSH call.
+
+Commands below are written in the root form (`sudo k3s kubectl …`). An agent has
+no `sudo`: it substitutes `KUBECONFIG=/etc/rancher/k3s/k3s.yaml kubectl …` and
+reports any step that only works as root — `sudo`, `systemctl`, `journalctl`,
+`crictl` — as not-run for the human.
 
 Two scopes:
 - **Kubernetes-only** (default): Steps 2–6. Use when the user only wants

@@ -1,0 +1,47 @@
+===== PROMPT =====
+
+Folder: 02_Knowledge
+Target: ./02_Knowledge/technologies/services/forgejo/backup-retention.md
+Siblings: ./02_Knowledge/technologies/services/forgejo/backup-pruning.md
+
+Run your full five-type review of the target and return the JSON report as your final message.
+
+===== RESPONSE =====
+
+I have everything I need. Analysis summary:
+
+- **Source**: The cited URL `https://forgejo.org/docs/latest/admin/backup-and-restore/` returns HTTP 404. The Forgejo admin index lists the page as "Backups and Backup Restoration" at `/docs/latest/admin/setup/backup/`. The note's only source is dead.
+- **Accuracy**: Claims (retention not in `app.ini`; prune is a separate job; restore test still needed) are consistent with Forgejo docs and the homelab.
+- **Scope**: Correct folder, homelab-relevant, appropriate depth.
+- **Structure**: Frontmatter complete, tags kebab-case, ISO dates, `## Overview`/`## Details`/`## Sources` matches repo convention, `related_docs` link resolves, 31 lines.
+- **Overlap**: Restates the prune job's role, which is the sibling `backup-pruning.md`'s entire subject, without linking to it.
+
+```json
+{
+  "file": "./02_Knowledge/technologies/services/forgejo/backup-retention.md",
+  "folder": "02_Knowledge",
+  "types": {
+    "source": [
+      {
+        "severity": "S1",
+        "issue": "The note's only cited source is a dead URL (HTTP 404), so its evidence no longer exists.",
+        "evidence": "GET https://forgejo.org/docs/latest/admin/backup-and-restore/ returns 404. The Forgejo admin index lists the page as 'Backups and Backup Restoration' at /docs/latest/admin/setup/backup/ (verified live), not backup-and-restore.",
+        "fix_hint": "Replace the source URL with https://forgejo.org/docs/latest/admin/setup/backup/ and title it 'Backups and Backup Restoration'."
+      }
+    ],
+    "accuracy": [],
+    "scope": [],
+    "structure": [],
+    "overlap": [
+      {
+        "severity": "S4",
+        "issue": "The target restates the role of the prune job, which is the entire subject of the sibling draft backup-pruning.md, without linking to it.",
+        "evidence": "Target Details: 'older ones are removed by the prune job' and 'the prune step is its own job'; sibling ./02_Knowledge/technologies/services/forgejo/backup-pruning.md is dedicated to 'The prune job is the timer that deletes aged dumps from the NAS.' The target's related_docs points only to operations.md, not the sibling.",
+        "fix_hint": "Add ./02_Knowledge/technologies/services/forgejo/backup-pruning.md to related_docs and reduce the prune-job mentions to a one-line pointer."
+      }
+    ]
+  },
+  "totals": { "S1": 1, "S2": 0, "S3": 0, "S4": 1 },
+  "verdict": "issues"
+}
+```

@@ -1,0 +1,194 @@
+[
+  {
+    "type": "step_start",
+    "timestamp": 1792613976183,
+    "sessionID": "ses_e9fe17cb6ffeAnDwD7f7WITv9K",
+    "part": {
+      "id": "prt_1601e8877001V4VyAVFEU02rJg",
+      "sessionID": "ses_e9fe17cb6ffeAnDwD7f7WITv9K",
+      "messageID": "msg_1601e847e001rXrYmYBlb9x7ez",
+      "type": "step-start",
+      "snapshot": "f443e4ea664ae5404304e9ca2e2f3a6c8ad110c9"
+    }
+  },
+  {
+    "type": "tool_use",
+    "timestamp": 1792613976832,
+    "sessionID": "ses_e9fe17cb6ffeAnDwD7f7WITv9K",
+    "part": {
+      "partID": "prt_1601e8a42001ImLj0QvnPopWXn",
+      "sessionID": "ses_e9fe17cb6ffeAnDwD7f7WITv9K",
+      "messageID": "msg_1601e847e001rXrYmYBlb9x7ez",
+      "type": "tool",
+      "id": "call_6ab73660b287411aa88a0ad2",
+      "tool": "read",
+      "state": {
+        "status": "completed",
+        "input": {
+          "path": "/tmp/opencode/agent-eval/run-w7ij8vk7/02_Knowledge/AGENTS.md"
+        },
+        "output": "Read file /tmp/opencode/agent-eval/run-w7ij8vk7/02_Knowledge/AGENTS.md, lines 1-136\n1: # AGENTS.md — 02_Knowledge\n2: \n3: Structured reference notes on tech concepts, syntax guides, and foundational theory.\n4: \n5: ## Why have knowledge notes?\n6: \n7: - **Reference**: something to come back to when deploying or troubleshooting\n8: - **Learning**: writing things down solidifies understanding\n9: - **Research input**: Knowledge is the foundation that Research builds upon\n10: - **Onboarding**: a single place to understand how things work\n11: \n12: ## When to create\n13: \n14: After an idea is promoted, or whenever you learn something worth documenting.\n15: \n16: ## Status Lifecycle\n17: \n18: ```\n19: draft → accepted\n20:   L__> archived → (move to 06_Archive/knowledge/)\n21: ```\n22: \n23: - **draft**: Outline or incomplete\n24: - **accepted**: Reviewed and finalized\n25: - **archived**: Stale or superseded\n26: \n27: ## File system layout\n28: \n29: ```\n30: 02_Knowledge/\n31: └── technologies/\n32:     ├── tools/           # CLI tools, software utilities\n33:     ├── services/        # specific services (forgejo, homepage, etc.)\n34:     ├── kubernetes/      # k8s concepts, patterns, manifests\n35:     └── hardware/        # physical hardware, specs, diagrams\n36: ```\n37: \n38: All names in kebab-case. Each topic is a folder with atomic notes inside. Max 3 levels deep.\n39: \n40: ## Frontmatter (required)\n41: \n42: ```yaml\n43: ---\n44: title: \"\"\n45: status: draft        # draft | accepted | archived\n46: author: \"\"\n47: date: YYYY-MM-DD\n48: tags: []\n49: sources:\n50:   - url: \"\"\n51:     title: \"\"\n52: last_audit_date: YYYY-MM-DD\n53: related_docs: []\n54: ---\n55: ```\n56: \n57: Example:\n58: \n59: ```yaml\n60: ---\n61: title: \"Ingress controllers in Kubernetes\"\n62: status: draft\n63: author: \"padawont\"\n64: date: 2026-08-13\n65: tags: [kubernetes, networking, ingress]\n66: sources:\n67:   - url: \"https://kubernetes.io/docs/concepts/services-networking/ingress/\"\n68:     title: \"Kubernetes Ingress docs\"\n69: last_audit_date: 2026-08-13\n70: related_docs:\n71:   - \"./05_Implementations/node-main/traefik/overview.md\"\n72: ---\n73: ```\n74: \n75: See `./Templates/knowledge/note.md` for a copyable template.\n76: \n77: ## Structure\n78: \n79: ```\n80: # Title\n81: \n82: Overview — what is this concept? Why does it matter?\n83: \n84: ## Details\n85: \n86: Deep dive with examples.\n87: \n88: ## Sources / Further Reading\n89: ```\n90: \n91: Example — abstract:\n92: \n93: ```yaml\n94: # simplified, vendor-neutral\n95: apiVersion: networking.k8s.io/v1\n96: kind: Ingress\n97: metadata: { name: example-ingress }\n98: spec:\n99:   rules:\n100:     - host: example.com\n101:       http: { paths: [{ path: /, pathType: Prefix }] }\n102: ```\n103: \n104: Example — real config from node-main:\n105: \n106: ```yaml\n107: # actual running config, may drift from this doc\n108: apiVersion: networking.k8s.io/v1\n109: kind: Ingress\n110: metadata: { name: forgejo-ingress, namespace: forgejo }\n111: spec:\n112:   ingressClassName: traefik\n113:   rules:\n114:     - host: git.homelab.local\n115:       http: { paths: [{ path: /, pathType: Prefix }] }\n116: ```\n117: \n118: ## Conventions\n119: \n120: - **Atomic notes**: one concept per file. When a file hits 150 lines (including frontmatter and blank lines), split it.\n121: - Both abstract examples and real configs are welcome — label each block as \"Example — abstract\" or \"Example — real config\"\n122: - Set `last_audit_date` on every edit; re-audit weekly\n123: - Use `related_docs` to cross-link to implementations and vice-versa\n124: \n125: ## Agent Behaviour\n126: \n127: | Role | May | Must not |\n128: |---|---|---|\n129: | `worker` | read, gather sources, create and edit the note | edit files outside its brief, add unsourced claims |\n130: | `reviewer` | run all five review types, emit the JSON report | edit, propose unverified fixes |\n131: | `editor` | revise the note and its JSON with a cited source or rule | change anything without a citation |\n132: | `spec-writer` | append a spec section referencing this note | rewrite or delete note content |\n133: | `cluster-worker` | not applicable to this folder | run operational plans here |\n134: \n135: Review types: `source`, `accuracy`, `scope`, `structure`, `overlap`.\n136: Escalation: anything unresolved goes to the hub in the handoff `blocked:` field — never a guess.",
+        "title": "read",
+        "metadata": {
+          "metadata": {
+            "truncated": false
+          },
+          "content": [
+            {
+              "type": "text",
+              "text": "Read file /tmp/opencode/agent-eval/run-w7ij8vk7/02_Knowledge/AGENTS.md, lines 1-136\n1: # AGENTS.md — 02_Knowledge\n2: \n3: Structured reference notes on tech concepts, syntax guides, and foundational theory.\n4: \n5: ## Why have knowledge notes?\n6: \n7: - **Reference**: something to come back to when deploying or troubleshooting\n8: - **Learning**: writing things down solidifies understanding\n9: - **Research input**: Knowledge is the foundation that Research builds upon\n10: - **Onboarding**: a single place to understand how things work\n11: \n12: ## When to create\n13: \n14: After an idea is promoted, or whenever you learn something worth documenting.\n15: \n16: ## Status Lifecycle\n17: \n18: ```\n19: draft → accepted\n20:   L__> archived → (move to 06_Archive/knowledge/)\n21: ```\n22: \n23: - **draft**: Outline or incomplete\n24: - **accepted**: Reviewed and finalized\n25: - **archived**: Stale or superseded\n26: \n27: ## File system layout\n28: \n29: ```\n30: 02_Knowledge/\n31: └── technologies/\n32:     ├── tools/           # CLI tools, software utilities\n33:     ├── services/        # specific services (forgejo, homepage, etc.)\n34:     ├── kubernetes/      # k8s concepts, patterns, manifests\n35:     └── hardware/        # physical hardware, specs, diagrams\n36: ```\n37: \n38: All names in kebab-case. Each topic is a folder with atomic notes inside. Max 3 levels deep.\n39: \n40: ## Frontmatter (required)\n41: \n42: ```yaml\n43: ---\n44: title: \"\"\n45: status: draft        # draft | accepted | archived\n46: author: \"\"\n47: date: YYYY-MM-DD\n48: tags: []\n49: sources:\n50:   - url: \"\"\n51:     title: \"\"\n52: last_audit_date: YYYY-MM-DD\n53: related_docs: []\n54: ---\n55: ```\n56: \n57: Example:\n58: \n59: ```yaml\n60: ---\n61: title: \"Ingress controllers in Kubernetes\"\n62: status: draft\n63: author: \"padawont\"\n64: date: 2026-08-13\n65: tags: [kubernetes, networking, ingress]\n66: sources:\n67:   - url: \"https://kubernetes.io/docs/concepts/services-networking/ingress/\"\n68:     title: \"Kubernetes Ingress docs\"\n69: last_audit_date: 2026-08-13\n70: related_docs:\n71:   - \"./05_Implementations/node-main/traefik/overview.md\"\n72: ---\n73: ```\n74: \n75: See `./Templates/knowledge/note.md` for a copyable template.\n76: \n77: ## Structure\n78: \n79: ```\n80: # Title\n81: \n82: Overview — what is this concept? Why does it matter?\n83: \n84: ## Details\n85: \n86: Deep dive with examples.\n87: \n88: ## Sources / Further Reading\n89: ```\n90: \n91: Example — abstract:\n92: \n93: ```yaml\n94: # simplified, vendor-neutral\n95: apiVersion: networking.k8s.io/v1\n96: kind: Ingress\n97: metadata: { name: example-ingress }\n98: spec:\n99:   rules:\n100:     - host: example.com\n101:       http: { paths: [{ path: /, pathType: Prefix }] }\n102: ```\n103: \n104: Example — real config from node-main:\n105: \n106: ```yaml\n107: # actual running config, may drift from this doc\n108: apiVersion: networking.k8s.io/v1\n109: kind: Ingress\n110: metadata: { name: forgejo-ingress, namespace: forgejo }\n111: spec:\n112:   ingressClassName: traefik\n113:   rules:\n114:     - host: git.homelab.local\n115:       http: { paths: [{ path: /, pathType: Prefix }] }\n116: ```\n117: \n118: ## Conventions\n119: \n120: - **Atomic notes**: one concept per file. When a file hits 150 lines (including frontmatter and blank lines), split it.\n121: - Both abstract examples and real configs are welcome — label each block as \"Example — abstract\" or \"Example — real config\"\n122: - Set `last_audit_date` on every edit; re-audit weekly\n123: - Use `related_docs` to cross-link to implementations and vice-versa\n124: \n125: ## Agent Behaviour\n126: \n127: | Role | May | Must not |\n128: |---|---|---|\n129: | `worker` | read, gather sources, create and edit the note | edit files outside its brief, add unsourced claims |\n130: | `reviewer` | run all five review types, emit the JSON report | edit, propose unverified fixes |\n131: | `editor` | revise the note and its JSON with a cited source or rule | change anything without a citation |\n132: | `spec-writer` | append a spec section referencing this note | rewrite or delete note content |\n133: | `cluster-worker` | not applicable to this folder | run operational plans here |\n134: \n135: Review types: `source`, `accuracy`, `scope`, `structure`, `overlap`.\n136: Escalation: anything unresolved goes to the hub in the handoff `blocked:` field — never a guess."
+            }
+          ],
+          "providerCall": {
+            "executed": false
+          },
+          "providerResult": {
+            "executed": false
+          },
+          "rawInput": "{\"path\":\"/tmp/opencode/agent-eval/run-w7ij8vk7/02_Knowledge/AGENTS.md\"}"
+        },
+        "time": {
+          "start": 1792613976642,
+          "end": 1792613976832
+        }
+      }
+    }
+  },
+  {
+    "type": "tool_use",
+    "timestamp": 1792613976834,
+    "sessionID": "ses_e9fe17cb6ffeAnDwD7f7WITv9K",
+    "part": {
+      "partID": "prt_1601e8974001Tkx1L3zQ5HE9Jk",
+      "sessionID": "ses_e9fe17cb6ffeAnDwD7f7WITv9K",
+      "messageID": "msg_1601e847e001rXrYmYBlb9x7ez",
+      "type": "tool",
+      "id": "call_110d84bb67944773b68b7cc1",
+      "tool": "read",
+      "state": {
+        "status": "completed",
+        "input": {
+          "path": "/tmp/opencode/agent-eval/run-w7ij8vk7/02_Knowledge/technologies/services/forgejo/dump-schedule.md"
+        },
+        "output": "Read file /tmp/opencode/agent-eval/run-w7ij8vk7/02_Knowledge/technologies/services/forgejo/dump-schedule.md, lines 1-28\n1: ---\n2: title: \"Forgejo dump schedule\"\n3: status: accepted\n4: author: \"padawont\"\n5: date: 2026-10-18\n6: tags: [forgejo, backup, schedule]\n7: sources:\n8:   - url: \"https://forgejo.org/docs/latest/admin/backup-and-restore/\"\n9:     title: \"Forgejo backup and restore\"\n10: last_audit_date: 2026-10-18\n11: related_docs: []\n12: ---\n13: \n14: # Forgejo dump schedule\n15: \n16: ## Overview\n17: \n18: The dump job runs nightly at 03:15 and writes a Forgejo dump to the NAS.\n19: \n20: ## Details\n21: \n22: - Stop the instance, restore the dump, then start it again -- the same steps a\n23:   restore follows.\n24: - Forgejo's HTTP listener runs on port 3000.\n25: \n26: ## Sources / Further Reading\n27: \n28: - Forgejo docs -- backup and restore: https://forgejo.org/docs/latest/admin/backup-and-restore/",
+        "title": "read",
+        "metadata": {
+          "metadata": {
+            "truncated": false
+          },
+          "content": [
+            {
+              "type": "text",
+              "text": "Read file /tmp/opencode/agent-eval/run-w7ij8vk7/02_Knowledge/technologies/services/forgejo/dump-schedule.md, lines 1-28\n1: ---\n2: title: \"Forgejo dump schedule\"\n3: status: accepted\n4: author: \"padawont\"\n5: date: 2026-10-18\n6: tags: [forgejo, backup, schedule]\n7: sources:\n8:   - url: \"https://forgejo.org/docs/latest/admin/backup-and-restore/\"\n9:     title: \"Forgejo backup and restore\"\n10: last_audit_date: 2026-10-18\n11: related_docs: []\n12: ---\n13: \n14: # Forgejo dump schedule\n15: \n16: ## Overview\n17: \n18: The dump job runs nightly at 03:15 and writes a Forgejo dump to the NAS.\n19: \n20: ## Details\n21: \n22: - Stop the instance, restore the dump, then start it again -- the same steps a\n23:   restore follows.\n24: - Forgejo's HTTP listener runs on port 3000.\n25: \n26: ## Sources / Further Reading\n27: \n28: - Forgejo docs -- backup and restore: https://forgejo.org/docs/latest/admin/backup-and-restore/"
+            }
+          ],
+          "providerCall": {
+            "executed": false
+          },
+          "providerResult": {
+            "executed": false
+          },
+          "rawInput": "{\"path\":\"/tmp/opencode/agent-eval/run-w7ij8vk7/02_Knowledge/technologies/services/forgejo/dump-schedule.md\"}"
+        },
+        "time": {
+          "start": 1792613976436,
+          "end": 1792613976834
+        }
+      }
+    }
+  },
+  {
+    "type": "tool_use",
+    "timestamp": 1792613976839,
+    "sessionID": "ses_e9fe17cb6ffeAnDwD7f7WITv9K",
+    "part": {
+      "partID": "prt_1601e88b6001dyO7fvZ5HaKc9D",
+      "sessionID": "ses_e9fe17cb6ffeAnDwD7f7WITv9K",
+      "messageID": "msg_1601e847e001rXrYmYBlb9x7ez",
+      "type": "tool",
+      "id": "call_78bd6a9b836d48828aa3fbd1",
+      "tool": "read",
+      "state": {
+        "status": "completed",
+        "input": {
+          "path": "/tmp/opencode/agent-eval/run-w7ij8vk7/02_Knowledge/technologies/services/forgejo/backup-restore.md"
+        },
+        "output": "Read file /tmp/opencode/agent-eval/run-w7ij8vk7/02_Knowledge/technologies/services/forgejo/backup-restore.md, lines 1-43\n1: ---\n2: title: \"Forgejo backup restore\"\n3: status: draft\n4: author: \"padawont\"\n5: date: 2026-10-21\n6: tags: [Forgejo, Restore_Procedure]\n7: sources:\n8:   - url: \"https://example.invalid/forgejo/restore\"\n9:     title: \"Forgejo restore guide\"\n10:   - url: \"https://forgejo.org/docs/latest/admin/backup-and-restore/\"\n11:     title: \"Forgejo backup and restore\"\n12: related_docs:\n13:   - \"./02_Knowledge/technologies/services/forgejo/dump-schedule.md\"\n14: ---\n15: \n16: # Forgejo backup restore\n17: \n18: ## Overview\n19: \n20: Restoring turns a dump back into a running Forgejo. The homelab keeps the\n21: procedure short so it can be followed under pressure.\n22: \n23: ## History\n24: \n25: Forgejo was forked from Gitea in 2022, and its backup tooling inherited that\n26: lineage. The restore command has been stable since the fork.\n27: \n28: ## Details\n29: \n30: - Stop the instance, restore the dump, then start it again.\n31: - Forgejo's HTTP listener runs on port 3000, so a restore must not change the\n32:   configured port.\n33: \n34: ```ini\n35: [server]\n36: HTTP_PORT = 3001\n37: ```\n38: \n39: - The dump is restored into the existing data directory.\n40: \n41: ## Sources / Further Reading\n42: \n43: - Forgejo restore guide: https://example.invalid/forgejo/restore",
+        "title": "read",
+        "metadata": {
+          "metadata": {
+            "truncated": false
+          },
+          "content": [
+            {
+              "type": "text",
+              "text": "Read file /tmp/opencode/agent-eval/run-w7ij8vk7/02_Knowledge/technologies/services/forgejo/backup-restore.md, lines 1-43\n1: ---\n2: title: \"Forgejo backup restore\"\n3: status: draft\n4: author: \"padawont\"\n5: date: 2026-10-21\n6: tags: [Forgejo, Restore_Procedure]\n7: sources:\n8:   - url: \"https://example.invalid/forgejo/restore\"\n9:     title: \"Forgejo restore guide\"\n10:   - url: \"https://forgejo.org/docs/latest/admin/backup-and-restore/\"\n11:     title: \"Forgejo backup and restore\"\n12: related_docs:\n13:   - \"./02_Knowledge/technologies/services/forgejo/dump-schedule.md\"\n14: ---\n15: \n16: # Forgejo backup restore\n17: \n18: ## Overview\n19: \n20: Restoring turns a dump back into a running Forgejo. The homelab keeps the\n21: procedure short so it can be followed under pressure.\n22: \n23: ## History\n24: \n25: Forgejo was forked from Gitea in 2022, and its backup tooling inherited that\n26: lineage. The restore command has been stable since the fork.\n27: \n28: ## Details\n29: \n30: - Stop the instance, restore the dump, then start it again.\n31: - Forgejo's HTTP listener runs on port 3000, so a restore must not change the\n32:   configured port.\n33: \n34: ```ini\n35: [server]\n36: HTTP_PORT = 3001\n37: ```\n38: \n39: - The dump is restored into the existing data directory.\n40: \n41: ## Sources / Further Reading\n42: \n43: - Forgejo restore guide: https://example.invalid/forgejo/restore"
+            }
+          ],
+          "providerCall": {
+            "executed": false
+          },
+          "providerResult": {
+            "executed": false
+          },
+          "rawInput": "{\"path\":\"/tmp/opencode/agent-eval/run-w7ij8vk7/02_Knowledge/technologies/services/forgejo/backup-restore.md\"}"
+        },
+        "time": {
+          "start": 1792613976246,
+          "end": 1792613976839
+        }
+      }
+    }
+  },
+  {
+    "type": "step_finish",
+    "timestamp": 1792613976844,
+    "sessionID": "ses_e9fe17cb6ffeAnDwD7f7WITv9K",
+    "part": {
+      "id": "prt_1601e8b0c0016fuwmcEbrTShW3",
+      "sessionID": "ses_e9fe17cb6ffeAnDwD7f7WITv9K",
+      "messageID": "msg_1601e847e001rXrYmYBlb9x7ez",
+      "type": "step-finish",
+      "reason": "tool-calls",
+      "snapshot": "f443e4ea664ae5404304e9ca2e2f3a6c8ad110c9",
+      "cost": 0.00121524,
+      "tokens": {
+        "input": 3208,
+        "output": 181,
+        "reasoning": 19,
+        "cache": {
+          "read": 2140,
+          "write": 0
+        }
+      }
+    }
+  },
+  {
+    "type": "step_start",
+    "timestamp": 1792613977829,
+    "sessionID": "ses_e9fe17cb6ffeAnDwD7f7WITv9K",
+    "part": {
+      "id": "prt_1601e8ee5001f5xLeKMOyteV5H",
+      "sessionID": "ses_e9fe17cb6ffeAnDwD7f7WITv9K",
+      "messageID": "msg_1601e8b14001VBPPDIVaegGAX9",
+      "type": "step-start",
+      "snapshot": "f443e4ea664ae5404304e9ca2e2f3a6c8ad110c9"
+    }
+  },
+  {
+    "type": "text",
+    "timestamp": 1792613996244,
+    "sessionID": "ses_e9fe17cb6ffeAnDwD7f7WITv9K",
+    "part": {
+      "id": "prt_1601ec3130016eKl0cEiDHydPe",
+      "sessionID": "ses_e9fe17cb6ffeAnDwD7f7WITv9K",
+      "messageID": "msg_1601e8b14001VBPPDIVaegGAX9",
+      "type": "text",
+      "text": "```json\n{\n  \"file\": \"./02_Knowledge/technologies/services/forgejo/backup-restore.md\",\n  \"folder\": \"02_Knowledge\",\n  \"types\": {\n    \"source\": [\n      {\n        \"severity\": \"S1\",\n        \"issue\": \"Cited source `https://example.invalid/forgejo/restore` is a reserved, non-resolvable domain (dead source). It is listed in frontmatter and repeated in Sources / Further Reading, so it cannot support any claim.\",\n        \"evidence\": \"Frontmatter line 8 `url: \\\"https://example.invalid/forgejo/restore\\\"`; line 43 `- Forgejo restore guide: https://example.invalid/forgejo/restore`.\",\n        \"fix_hint\": \"Replace with a live authoritative URL (e.g. the Forgejo backup-and-restore docs already cited) or remove the entry and the line-43 bullet.\"\n      }\n    ],\n    \"accuracy\": [\n      {\n        \"severity\": \"S2\",\n        \"issue\": \"The prose states the HTTP listener runs on port 3000, but the immediately following config snippet sets HTTP_PORT = 3001. A reader restoring from this note could configure the wrong port.\",\n        \"evidence\": \"Lines 31-37: \\\"Forgejo's HTTP listener runs on port 3000...\\\" followed by `[server]` / `HTTP_PORT = 3001`.\",\n        \"fix_hint\": \"Make the snippet match the stated port (HTTP_PORT = 3000) or explain why 3001 is used in this homelab; the sibling dump-schedule.md also records port 3000.\"\n      }\n    ],\n    \"scope\": [\n      {\n        \"severity\": \"S3\",\n        \"issue\": \"A `## History` section documents Forgejo's Gitea fork lineage — technology history/origin story, which the root conventions explicitly exclude (relevance over completeness). It does not help run a restore in a homelab.\",\n        \"evidence\": \"Lines 23-26: \\\"Forgejo was forked from Gitea in 2022... The restore command has been stable since the fork.\\\" against root AGENTS.md: \\\"Do not include technology history, origin stories, or sales/marketing points\\\".\",\n        \"fix_hint\": \"Remove the History section; if a lineage fact is needed, keep it to a single homelab-relevant sentence under Overview/Details.\"\n      }\n    ],\n    \"structure\": [\n      {\n        \"severity\": \"S4\",\n        \"issue\": \"Required frontmatter field `last_audit_date` is missing. 02_Knowledge/AGENTS.md lists it as a required field and instructs setting it on every edit.\",\n        \"evidence\": \"Frontmatter lines 1-14 contain title/status/author/date/tags/sources/related_docs but no `last_audit_date`.\",\n        \"fix_hint\": \"Add `last_audit_date: 2026-10-21` (or the current audit date) to the frontmatter.\"\n      },\n      {\n        \"severity\": \"S4\",\n        \"issue\": \"Tags violate the lowercase kebab-case rule `^[a-z0-9]+(-[a-z0-9]+)*$`.\",\n        \"evidence\": \"Line 6: `tags: [Forgejo, Restore_Procedure]` — `Forgejo` is capitalized and `Restore_Procedure` contains an underscore and capitals.\",\n        \"fix_hint\": \"Rewrite as `tags: [forgejo, restore]` (or `[forgejo, backup, restore]`), matching the sibling's lowercase style.\"\n      }\n    ],\n    \"overlap\": [\n      {\n        \"severity\": \"S4\",\n        \"issue\": \"Duplicates the sibling note's restore-step and port claims instead of linking to it. The target's related_docs already points at the sibling, yet repeats its content.\",\n        \"evidence\": \"Target lines 30-32 (\\\"Stop the instance, restore the dump, then start it again.\\\" / \\\"HTTP listener runs on port 3000\\\") duplicate dump-schedule.md lines 22-24 (\\\"Stop the instance, restore the dump, then start it again -- the same steps a restore follows.\\\" / \\\"Forgejo's HTTP listener runs on port 3000.\\\").\",\n        \"fix_hint\": \"State the restore procedure once and cross-reference the sibling for the dump/schedule and port fact, rather than restating them.\"\n      }\n    ]\n  },\n  \"totals\": { \"S1\": 1, \"S2\": 1, \"S3\": 1, \"S4\": 3 },\n  \"verdict\": \"issues\"\n}\n```",
+      "time": {
+        "start": 1792613991187,
+        "end": 1792613996244
+      }
+    }
+  }
+]

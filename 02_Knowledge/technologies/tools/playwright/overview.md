@@ -11,7 +11,7 @@ sources:
     title: "Playwright Pytest Plugin Reference"
   - url: "https://playwright.dev/python/docs/docker"
     title: "Playwright — Docker"
-last_audit_date: 2026-10-12
+last_audit_date: 2026-10-22
 related_docs:
   - "./05_Implementations/node-main/cv-sender/overview.md"
   - "./02_Knowledge/technologies/tools/playwright/selectors-and-waiting.md"
@@ -87,13 +87,41 @@ Playwright publishes official images with language-specific tags — for Python,
 `mcr.microsoft.com/playwright/python` repository
 ([Docker](https://playwright.dev/python/docs/docker)).
 
+The image ships the browsers and their system dependencies, but **not** the Playwright
+Python package itself — it must be installed separately. Running a script directly on
+the base image fails with `ModuleNotFoundError`. Either install the package in a derived
+image, or install it at run time:
+
+#### Example — abstract: derived image
+
+```dockerfile
+# derived image — package version must match the image tag
+FROM mcr.microsoft.com/playwright/python:<tag>
+RUN pip install playwright==<version matching the tag>
+```
+
+#### Example — abstract: docker run
+
 ```bash
-# docker run — no host installs required
+# docker run — base image plus a run-time install (scraping/crawling case)
 docker run --rm --init --ipc=host \
+  --user pwuser --security-opt seccomp=seccomp_profile.json \
   -v "$PWD":/work -w /work \
   mcr.microsoft.com/playwright/python:<tag> \
-  python scrape.py
+  sh -c "pip install playwright==<version matching the tag> && python scrape.py"
 ```
+
+Keep the installed package version aligned with the image tag: per the Docker page, a
+mismatch leaves Playwright unable to locate the browser executables.
+
+Be aware that the image runs as **root by default**, which disables the Chromium sandbox,
+so the example drops to the shipped `pwuser` and applies Playwright's seccomp profile. The
+published image ships that user, but `seccomp_profile.json` is **not** in a homelab
+checkout — take it from
+[microsoft/playwright — seccomp_profile.json](https://github.com/microsoft/playwright/blob/main/utils/docker/seccomp_profile.json).
+The Docker page also warns the image is intended for testing and development only and is
+**not recommended for visiting untrusted websites**
+([Docker](https://playwright.dev/python/docs/docker)).
 
 The two flags are recommended for a well-behaved browser container:
 

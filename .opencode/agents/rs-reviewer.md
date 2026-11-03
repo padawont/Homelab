@@ -1,26 +1,54 @@
 ---
-description: "Deterministic code review subagent: executes rs-review-methodology (7-step checklist), rs-review-severity (S1-S5 classification), rs-review-security (6-domain security), and rs-doc-auditor (documentation audit) to produce structured, severity-classified review reports at Flash temperature 0.0. Edit-disabled for audit isolation — never modifies code."
+description: 'Deterministic code review subagent: executes rs-review-methodology (7-step
+  checklist), rs-review-severity (S1-S5 classification), rs-review-security (6-domain
+  security), and rs-doc-auditor (documentation audit) to produce structured, severity-classified
+  review reports at Flash temperature 0.0. Edit-disabled for audit isolation — never
+  modifies code.'
 mode: subagent
 model: opencode/deepseek-v4.1-flash
-temperature: 0.0
-reasoningEffort: medium
-permission:
-  read: allow
-  edit: deny
-  glob: allow
-  grep: allow
-  webfetch: deny
-  bash:
-    "*": deny
-    "git diff": allow
-    "git log": allow
-    "git show": allow
-  task:
-    "*": deny
-  skill:
-    "*": deny
-    "rs-*": allow
-    "rs-consult": allow
+permissions:
+- action: read
+  resource: '*'
+  effect: allow
+- action: glob
+  resource: '*'
+  effect: allow
+- action: grep
+  resource: '*'
+  effect: allow
+- action: edit
+  resource: '*'
+  effect: deny
+- action: webfetch
+  resource: '*'
+  effect: deny
+- action: question
+  resource: '*'
+  effect: deny
+- action: skill
+  resource: '*'
+  effect: deny
+- action: skill
+  resource: rs-*
+  effect: allow
+- action: skill
+  resource: rs-consult
+  effect: allow
+- action: shell
+  resource: '*'
+  effect: deny
+- action: shell
+  resource: git diff
+  effect: allow
+- action: shell
+  resource: git log
+  effect: allow
+- action: shell
+  resource: git show
+  effect: allow
+- action: subagent
+  resource: '*'
+  effect: deny
 ---
 
 # rs-reviewer — Audit Layer Reviewer

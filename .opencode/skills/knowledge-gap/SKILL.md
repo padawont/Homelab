@@ -86,14 +86,13 @@ lack hosting detail.
 
 ### INSPECT
 
-- Launch the **inspection agent** — bind `reviewer` to the `scope` type. Its
-  frontmatter sets `edit: deny`, so read-only is permission-enforced; tell it
-  explicitly not to webfetch (its permission allows it, but inspection needs no
-  web access). One agent per candidate, or batch per topic folder, all in
-  parallel.
+- Launch the **inspection agent** — `reviewer-scope`. Its frontmatter sets
+  `edit: deny` and `webfetch: deny`, so read-only is permission-enforced and it
+  cannot reach the web; inspection needs neither. One agent per candidate, or
+  batch per topic folder, all in parallel.
 - Give each agent: the concept, the online URL it came from, the target
   category folder, and the findings table above.
-- **Mapping:** the reviewer's `scope` findings map onto G1–G7 (scope covers
+- **Mapping:** the facet's `scope` findings map onto G1–G7 (scope covers
   placement, depth, and homelab fit); the note's existence/size/staleness
   checks stay in the LOCATE step. Its JSON `evidence`/`fix_hint` become this
   skill's `evidence`/`fix` fields.
@@ -202,9 +201,8 @@ Filing is a GitHub write, not a note write — the audit never edits
 ## Guardrails
 
 - **Read-only on notes** — never create, edit, or delete a note.
-- **Inspection agent is read-only** — bind `reviewer` (`edit: deny`, bound to
-  the `scope` type, instructed not to webfetch); never use a writable general
-  agent for inspection.
+- **Inspection agent is read-only** — launch `reviewer-scope` (`edit: deny`,
+  `webfetch: deny`); never use a writable general agent for inspection.
 - **No fabrication** — report only what is on disk; every gap carries evidence.
 - **No guessing** — ambiguity → `needs-human`.
 - **Confirm before filing** — no issue without the user's parent epic; dedupe.

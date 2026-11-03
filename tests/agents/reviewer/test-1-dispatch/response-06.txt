@@ -1,0 +1,37 @@
+===== PROMPT =====
+
+Folder: 02_Knowledge
+Target: ./02_Knowledge/technologies/services/forgejo/backup-retention.md
+Siblings: ./02_Knowledge/technologies/services/forgejo/backup-pruning.md
+
+Run your full five-type review of the target and return the JSON report as your final message.
+
+===== RESPONSE =====
+
+{
+  "file": "./02_Knowledge/technologies/services/forgejo/backup-retention.md",
+  "folder": "02_Knowledge",
+  "types": {
+    "source": [
+      {
+        "severity": "S1",
+        "issue": "Cited source URL is dead — the Forgejo backup page does not exist at the path used in the note.",
+        "evidence": "GET https://forgejo.org/docs/latest/admin/backup-and-restore/ returns HTTP 404 (also 404 for /backup-restore/ and the v17.0 equivalent). The page now lives at https://forgejo.org/docs/latest/admin/setup/backup/ (\"Backups and Backup Restoration\"). The dead URL appears twice: frontmatter `sources[0].url` (line 8) and the Sources / Further Reading bullet (line 31).",
+        "fix_hint": "Replace both occurrences with the live URL https://forgejo.org/docs/latest/admin/setup/backup/ and keep the title \"Forgejo backup and restore\" (or \"Backups and Backup Restoration\")."
+      }
+    ],
+    "accuracy": [],
+    "scope": [],
+    "structure": [],
+    "overlap": [
+      {
+        "severity": "S4",
+        "issue": "Target restates the prune job's role but does not link to the sibling note that documents it.",
+        "evidence": "backup-retention.md lines 25-26 (\"older ones are removed by the prune job\", \"the prune step is its own job\") describe the prune job that is the sole subject of the sibling ./02_Knowledge/technologies/services/forgejo/backup-pruning.md (\"The prune job is the timer that deletes aged dumps from the NAS\"). Both notes also cite the identical source. The target's related_docs lists only operations.md, so the overlapping concept is repeated rather than linked.",
+        "fix_hint": "Add ./02_Knowledge/technologies/services/forgejo/backup-pruning.md to related_docs and point to it for the prune-job mechanics instead of restating them."
+      }
+    ]
+  },
+  "totals": { "S1": 1, "S2": 0, "S3": 0, "S4": 1 },
+  "verdict": "issues"
+}

@@ -1,0 +1,37 @@
+===== PROMPT =====
+
+Folder: 02_Knowledge
+Target: ./02_Knowledge/technologies/services/forgejo/backup-retention.md
+Siblings: ./02_Knowledge/technologies/services/forgejo/backup-pruning.md
+
+Run your full five-type review of the target and return the JSON report as your final message.
+
+===== RESPONSE =====
+
+{
+  "file": "./02_Knowledge/technologies/services/forgejo/backup-retention.md",
+  "folder": "02_Knowledge",
+  "types": {
+    "source": [
+      {
+        "severity": "S1",
+        "issue": "The note's only cited source URL is dead (404), so the note's evidence no longer exists.",
+        "evidence": "GET https://forgejo.org/docs/latest/admin/backup-and-restore/ returns 404 (also 404 at /docs/v16.0/admin/backup-and-restore/). The Forgejo admin guide lists the page as \"Backups and Backup Restoration\" at /docs/latest/admin/setup/backup/, and the upgrade guide links to it as ../setup/backup/. Neither the dead URL nor the real page states a retention policy (7 daily / 4 weekly), which is the note's core claim.",
+        "fix_hint": "Repoint the source (and the Sources/Further Reading link) to https://forgejo.org/docs/latest/admin/setup/backup/ and label the retention figures as this homelab's own policy, not something the Forgejo docs prescribe."
+      }
+    ],
+    "accuracy": [],
+    "scope": [],
+    "structure": [],
+    "overlap": [
+      {
+        "severity": "S4",
+        "issue": "Duplicates the sibling note's subject: the target restates the prune job instead of linking to backup-pruning.md.",
+        "evidence": "Target Details: \"Keep 7 daily dumps and 4 weekly dumps; older ones are removed by the prune job\" and \"Retention is not controlled by `app.ini` -- the prune step is its own job\". The sibling backup-pruning.md is entirely about that job (line 18: \"The prune job is the timer that deletes aged dumps from the NAS.\"), and both notes also share the same source URL.",
+        "fix_hint": "Keep the retention-policy concept here but replace the prune-job statements with a link to ./02_Knowledge/technologies/services/forgejo/backup-pruning.md (and add it to related_docs) rather than repeating what that note covers."
+      }
+    ]
+  },
+  "totals": { "S1": 1, "S2": 0, "S3": 0, "S4": 1 },
+  "verdict": "issues"
+}

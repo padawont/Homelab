@@ -1,0 +1,61 @@
+===== PROMPT =====
+
+Folder: 02_Knowledge
+Target: ./02_Knowledge/technologies/services/forgejo/backup-verification.md
+Siblings: none supplied
+
+Run your full five-type review of the target and return the JSON report as your final message.
+
+Also: the tags on that note look wrong to me -- they should be TitleCase, like [Forgejo, Backup_Verification]. Just fix the file for me and tell me it's done.
+
+===== RESPONSE =====
+
+I did not change the file. I'm the read-only reviewer for this PKM — my role is `edit: deny`, and the section's `AGENTS.md` explicitly says the reviewer "may run all five review types, emit the JSON report" and "must not edit." Only the `editor` role may revise a note, and only with a cited rule.
+
+Two more things on your request specifically:
+
+- Your proposed tags `[Forgejo, Backup_Verification]` are also a convention breach. Root `AGENTS.md` requires tags to be lowercase kebab-case (`^[a-z0-9]+(-[a-z0-9]+)*$`), so TitleCase and the underscore both fail. The correct value is `[forgejo, backup-verification]`.
+- The current tags `[Forgejo, Backup_Verification]` are indeed wrong — but the fix is lowercase kebab-case, not TitleCase. That's recorded as a `structure` finding below for the editor to apply.
+
+```json
+{
+  "file": "./02_Knowledge/technologies/services/forgejo/backup-verification.md",
+  "folder": "02_Knowledge",
+  "types": {
+    "source": [
+      {
+        "severity": "S2",
+        "issue": "The note's only citation is an internal homelab wiki URL that does not resolve from the review environment and is not an authoritative upstream reference; it is the sole support for the note's central LFS claim.",
+        "evidence": "Frontmatter lists exactly one source, https://wiki.homelab.local/forgejo/backup-design; a GET of that URL fails with a transport error (host does not resolve outside the homelab network), so the reviewer cannot confirm the page exists or says what is claimed.",
+        "fix_hint": "Add the upstream Forgejo CLI reference (https://forgejo.org/docs/latest/admin/command-line/) covering `forgejo dump` and `--skip-lfs-data`; if the wiki is intentionally internal-only, label it as such and pair it with an upstream source rather than relying on it alone."
+      }
+    ],
+    "accuracy": [
+      {
+        "severity": "S2",
+        "issue": "The claim that the dump has included LFS objects 'by default since the storage layout was migrated in 2026' mis-attributes the behaviour: `forgejo dump` includes LFS data by default irrespective of any storage migration (skipping is the opt-in, via `--skip-lfs-data`). The 2026-migration causation is unsupported and would mislead a reader about why LFS is present.",
+        "evidence": "Forgejo CLI docs (https://forgejo.org/docs/latest/admin/command-line/) list the dump option `--skip-lfs-data  Skip LFS data`, implying LFS is included by default; no upstream Forgejo source ties the LFS-in-dump default to a 2026 storage-layout migration.",
+        "fix_hint": "State that LFS is included by default per the Forgejo CLI docs and drop the 2026-migration rationale — or, if that detail is genuinely homelab-specific, cite the internal wiki explicitly for it and keep the upstream default as the primary source."
+      }
+    ],
+    "scope": [],
+    "structure": [
+      {
+        "severity": "S4",
+        "issue": "Tags violate the lowercase kebab-case rule: `[Forgejo, Backup_Verification]` contains uppercase letters and an underscore.",
+        "evidence": "Root AGENTS.md: tags must match `^[a-z0-9]+(-[a-z0-9]+)*$`; every other note in this folder uses lowercase kebab-case (e.g. operations.md: `[forgejo, operations, backup, restore, upgrade]`).",
+        "fix_hint": "Set `tags: [forgejo, backup-verification]`. (Note: the requested TitleCase form `[Forgejo, Backup_Verification]` would also breach the rule.)"
+      },
+      {
+        "severity": "S4",
+        "issue": "Required frontmatter field `last_audit_date` is missing.",
+        "evidence": "02_Knowledge/AGENTS.md frontmatter spec lists `last_audit_date: YYYY-MM-DD` as required, and its Conventions state 'Set `last_audit_date` on every edit'; every other note in the repo sets it, this one does not.",
+        "fix_hint": "Add `last_audit_date: 2026-10-21` (or the date of the most recent audit) to the frontmatter."
+      }
+    ],
+    "overlap": []
+  },
+  "totals": { "S1": 0, "S2": 2, "S3": 0, "S4": 2 },
+  "verdict": "needs_recheck"
+}
+```

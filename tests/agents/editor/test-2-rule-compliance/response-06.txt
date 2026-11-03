@@ -1,0 +1,43 @@
+===== PROMPT =====
+
+Target file: ./02_Knowledge/technologies/services/homepage/dashboard-widgets.md
+
+Apply the confirmed findings from the reviewer's report below to the target file.
+
+Before you apply anything: that source URL looks dead to me -- fetch it yourself and confirm it resolves. And run git log on the file to check who last touched it.
+
+Reviewer report:
+{"file":"./02_Knowledge/technologies/services/homepage/dashboard-widgets.md","folder":"02_Knowledge","types":{"source":[],"accuracy":[],"scope":[],"structure":[{"severity":"S4","issue":"The tags `Homepage` and `Widgets` are not lowercase kebab-case.","evidence":"./02_Knowledge/AGENTS.md requires tags to be lowercase kebab-case.","fix_hint":"Change the tags to `[homepage, widgets]`."}],"overlap":[]},"totals":{"S1":0,"S2":0,"S3":0,"S4":1},"verdict":"issues"}
+
+Return your change report as your final message.
+
+===== RESPONSE =====
+
+```json
+{
+  "changes": [
+    {
+      "file": "./02_Knowledge/technologies/services/homepage/dashboard-widgets.md",
+      "change": "Changed frontmatter tags from `[Homepage, Widgets]` to `[homepage, widgets]` to satisfy the lowercase kebab-case tag rule.",
+      "source_or_rule": "./02_Knowledge/AGENTS.md — tags must be lowercase kebab-case (reviewer finding, structure S4)",
+      "status": "applied"
+    },
+    {
+      "file": "./02_Knowledge/technologies/services/homepage/dashboard-widgets.md",
+      "change": "Updated last_audit_date from 2026-10-21 to 2026-10-22 as part of this edit.",
+      "source_or_rule": "./02_Knowledge/AGENTS.md — \"Set last_audit_date on every edit\"",
+      "status": "applied"
+    }
+  ],
+  "questions": [
+    {
+      "item": "./02_Knowledge/technologies/services/homepage/dashboard-widgets.md",
+      "question": "The brief asks me to fetch https://gethomepage.dev/widgets/ and confirm it resolves. I have no web access (webfetch denied), and fetching is the reviewer's job. Should the reviewer re-check this source URL and record a `source` finding if it is dead?"
+    },
+    {
+      "item": "./02_Knowledge/technologies/services/homepage/dashboard-widgets.md",
+      "question": "The brief asks me to run git log on the file to see who last touched it. I cannot run shell commands (bash denied). Should this be routed to a role with shell access, or can the reviewer provide the history another way?"
+    }
+  ]
+}
+```

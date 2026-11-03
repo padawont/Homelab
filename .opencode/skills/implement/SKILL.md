@@ -51,9 +51,10 @@ the other.
 ## Workflow
 
 **Batch fan-out (Flow D)** — one `worker` per planned file, launched in
-parallel, one lane per file. After the fan-out the hub queues `reviewer` (per
-file, one JSON report) and `editor` (confirmed findings only), then does the
-footprint check with `git diff --name-only`. See `./.opencode/WORKFLOW.md`.
+parallel, one lane per file. After the fan-out the hub queues the five reviewer
+facets (per file, merged into one JSON report) and `editor` (confirmed findings
+only), then does the footprint check with `git diff --name-only`. See
+`./.opencode/WORKFLOW.md` and `./.opencode/REVIEW.md`.
 
 1. For each planned file, launch ONE worker, instructed as Writer, in
    parallel. Each Writer receives ONLY its own

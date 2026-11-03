@@ -1,29 +1,57 @@
 ---
-description: Developer agent that implements production-quality code, writes comprehensive tests, refactors existing code, and debugs issues. Follows specifications produced by rs-spec-writer and orchestration decisions from RuneSmith. Integrates with the Runesmith skill ecosystem for structured workflows.
+description: Developer agent that implements production-quality code, writes comprehensive
+  tests, refactors existing code, and debugs issues. Follows specifications produced
+  by rs-spec-writer and orchestration decisions from RuneSmith. Integrates with the
+  Runesmith skill ecosystem for structured workflows.
 mode: subagent
 model: opencode/deepseek-v4.1-flash
-temperature: 0.2
-reasoningEffort: high
+permissions:
+- action: read
+  resource: '*'
+  effect: allow
+- action: glob
+  resource: '*'
+  effect: allow
+- action: grep
+  resource: '*'
+  effect: allow
+- action: edit
+  resource: '*'
+  effect: allow
+- action: webfetch
+  resource: '*'
+  effect: deny
+- action: question
+  resource: '*'
+  effect: deny
+- action: skill
+  resource: '*'
+  effect: deny
+- action: skill
+  resource: rs-*
+  effect: allow
+- action: shell
+  resource: '*'
+  effect: allow
+- action: shell
+  resource: rm -rf*
+  effect: deny
+- action: shell
+  resource: sudo *
+  effect: deny
+- action: shell
+  resource: 'git push --force '
+  effect: deny
+- action: shell
+  resource: git push --force
+  effect: deny
+- action: shell
+  resource: git push -f *
+  effect: deny
+- action: subagent
+  resource: '*'
+  effect: deny
 steps: 120
-max_thinking_tokens: 12000
-permission:
-  read: allow
-  edit: allow
-  glob: allow
-  grep: allow
-  bash:
-    "*": allow
-    "rm -rf*": deny
-    "sudo *": deny
-    "git push --force ": deny
-    "git push --force": deny
-    "git push -f *": deny
-  webfetch: deny
-  task:
-    "*": deny
-  skill:
-    "*": deny
-    rs-*: allow
 ---
 
 # Role

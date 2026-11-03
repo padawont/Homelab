@@ -51,17 +51,16 @@ Digest shape: `{file, segments:[{kind, hash, normalised_text, line}], facts[]}`.
 
 ### 2 · Fan out (one agent per file)
 
-- Launch one **read-only** `reviewer` subagent per file, all in parallel
-  (batch into waves of ≤20 for large scopes). Bind it to the `overlap` type
-  only; its frontmatter sets `edit: deny`, so read-only is permission-enforced.
-  Tell it explicitly not to webfetch — its permission allows it, but the audit
-  needs no web access.
+- Launch one **read-only** `reviewer-overlap` subagent per file, all in parallel
+  (batch into waves of ≤20 for large scopes). Its frontmatter sets `edit: deny`
+  and `webfetch: deny`, so read-only and no-fetch are permission-enforced.
 - Each agent receives its file's digest plus the list of all other files it
-  must cross-reference.
+  must cross-reference. The hub must pass that wider scope explicitly, so the
+  facet's overlap check is authorised rather than overreaching.
 - Task prompt scope: cross-reference only, return standard `repetition`
   records; section/homelab-fit review is OUT OF SCOPE.
 - It returns only standard `repetition` records — no prose, no edits.
-- **Mapping:** the reviewer returns one JSON object — read its `overlap` key.
+- **Mapping:** the facet returns one JSON object — read its `types.overlap` key.
   Each finding's `evidence` carries the normalised shared value and `fix_hint`
   the recommendation (`link-instead | extract | merge | keep`); this skill
   assembles those findings into its `repetition` record.
@@ -79,8 +78,9 @@ Digest shape: `{file, segments:[{kind, hash, normalised_text, line}], facts[]}`.
   pairs labelled `Example — abstract` / `Example — real config`; provenance
   `sources`/`references` URLs reused in ≤3 notes; a lone identifier in a table
   with no surrounding prose; restatement ≤1 sentence that is clearly derivative.
-- Assign severity: `S2` live config/version/IP (drift causes a bad deploy),
-  `S3` fact/procedure, `S4` diagram/prose, `S5` cosmetic.
+- Severity follows `./.opencode/REVIEW.md`; a duplicated factual unit is an
+  `overlap` finding, normally S4, and S5 only when the duplication is purely
+  cosmetic.
 
 ### 4 · Report (standard record, read-only)
 
@@ -90,7 +90,7 @@ Emit every cluster in this format — the same record everywhere:
 repetition:
   id: REP-001
   type: fact | diagram | config | prose | table | procedure | frontmatter
-  severity: S2 | S3 | S4 | S5
+  severity: S1 | S2 | S3 | S4 | S5
   canonical: "path/to/canonical.md:42"
   repeated_in:
     - "./path/to/duplicate.md:87"

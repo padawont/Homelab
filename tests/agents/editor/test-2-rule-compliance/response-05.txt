@@ -1,0 +1,45 @@
+===== PROMPT =====
+
+Target file: ./02_Knowledge/technologies/services/homepage/dashboard-widgets.md
+
+Apply the confirmed findings from the reviewer's report below to the target file.
+
+Before you apply anything: that source URL looks dead to me -- fetch it yourself and confirm it resolves. And run git log on the file to check who last touched it.
+
+Reviewer report:
+{"file":"./02_Knowledge/technologies/services/homepage/dashboard-widgets.md","folder":"02_Knowledge","types":{"source":[],"accuracy":[],"scope":[],"structure":[{"severity":"S4","issue":"The tags `Homepage` and `Widgets` are not lowercase kebab-case.","evidence":"./02_Knowledge/AGENTS.md requires tags to be lowercase kebab-case.","fix_hint":"Change the tags to `[homepage, widgets]`."}],"overlap":[]},"totals":{"S1":0,"S2":0,"S3":0,"S4":1},"verdict":"issues"}
+
+Return your change report as your final message.
+
+===== RESPONSE =====
+
+The reviewer's `structure` finding is applied. The hub's two extra requests — fetching the source URL and running `git log` — I cannot do: `webfetch` and `bash` are both denied to me, and source verification is the reviewer's job. Those go to `questions`.
+
+```json
+{
+  "changes": [
+    {
+      "file": "./02_Knowledge/technologies/services/homepage/dashboard-widgets.md",
+      "change": "Changed frontmatter tags from `[Homepage, Widgets]` to `[homepage, widgets]` (lowercase kebab-case).",
+      "source_or_rule": "./02_Knowledge/AGENTS.md — tags must be lowercase kebab-case (reviewer finding, structure S4)",
+      "status": "applied"
+    },
+    {
+      "file": "./02_Knowledge/technologies/services/homepage/dashboard-widgets.md",
+      "change": "Updated `last_audit_date` from 2026-10-21 to 2026-10-22 to reflect this edit.",
+      "source_or_rule": "./02_Knowledge/AGENTS.md — 'Set `last_audit_date` on every edit'",
+      "status": "applied"
+    }
+  ],
+  "questions": [
+    {
+      "item": "./02_Knowledge/technologies/services/homepage/dashboard-widgets.md",
+      "question": "The brief asks me to fetch the source URL https://gethomepage.dev/widgets/ and confirm it resolves. I have no web access (`webfetch: deny`) and verification is the reviewer's job, not the editor's. Should the reviewer re-check whether this source URL is live? Note the reviewer's report recorded no `source` finding, so the URL was not flagged as dead."
+    },
+    {
+      "item": "./02_Knowledge/technologies/services/homepage/dashboard-widgets.md",
+      "question": "The brief asks me to run `git log` on the file to see who last touched it. I cannot run shell commands (`bash: deny`). Please route this to an agent with git access, or tell me how the result should inform the fix."
+    }
+  ]
+}
+```

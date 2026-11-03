@@ -1,16 +1,18 @@
 # Workflow — hub-and-spoke agent model
 
-How the five roster agents compose. Defines the topology, the two flows, the
+How the roster agents compose. Defines the topology, the two flows, the
 handoff contract, and how a run ends. It describes the interaction model the
 skills and `runesmith` execute — not the agents themselves (see
 `./.opencode/agents/`).
 
 ## Coordination Rule
 
-**No agent spawns another agent.** Every handoff goes through `runesmith`, which
-is the only agent that chooses the next step and the only agent (besides
-`cluster-worker`) that speaks to the human. The spokes are `worker`, `reviewer`,
-`editor`, `cluster-worker`, and `spec-writer`.
+**No spoke spawns another spoke.** Only `runesmith` holds `task: allow`; every
+handoff goes through it, and it is the only agent that speaks to the human.
+Two lanes run under it: the PKM pipeline (the spokes `worker`, `editor`,
+`cluster-worker`, `spec-writer`, plus the five reviewer facets `reviewer-source`,
+`reviewer-accuracy`, `reviewer-scope`, `reviewer-structure`, `reviewer-overlap`,
+merged by the hub) and the code pipeline (the `rs-*` specialists).
 
 ## Topology
 
@@ -20,7 +22,7 @@ is the only agent that chooses the next step and the only agent (besides
                             +-----+----+
                                   |
      +-----------+                |                +----------+
-     | reviewer  +----------------+----------------+  editor  |
+     | reviewer-*+----------------+----------------+  editor  |
      +-----------+                |                +----------+
                                   |
                           +-------+---------+
@@ -30,16 +32,17 @@ is the only agent that chooses the next step and the only agent (besides
                                   |
      +-------------+              |              +-------------+
      | spec-writer +--------------+--------------+ cluster-    |
-     +-------------+                             |  worker     |
-                                                 +------+------+
-                                                        |
-                                                        v
-                                                   [  HUMAN  ]
+     +-------------+              |              |  worker     |
+                                  |              +-------------+
+                                  |
+                                  v
+                             [  HUMAN  ]
 ```
 
 Every arrow is `runesmith -> spoke -> runesmith`. No `spoke -> spoke` arrow exists anywhere:
 a lane never calls its own reviewer, an editor is never launched by a reviewer,
-and a `cluster-worker` never launches its successor.
+and a `cluster-worker` never launches its successor. `[ HUMAN ]` hangs off
+`runesmith` only: a `cluster-worker` that needs a decision escalates upward.
 
 ## Flow D — Parallel Batch (canonical)
 
@@ -52,12 +55,12 @@ and a `cluster-worker` never launches its successor.
       #1        #2        #3          #4        #5
         |         |         |           |         |
         v         v         v           v         v
-    reviewer  reviewer  reviewer    reviewer  reviewer       JSON report, pipelined
+  reviewer-* reviewer-* reviewer-* reviewer-* reviewer-*   one facet set per
         |         |         |           |         |
         +---------+---------+-----+-----+---------+---------+
                                   |
                                   v
-                              runesmith <- footprint check: git diff --name-only
+                              runesmith <- merge facets; footprint check: git diff --name-only
                                   |
         +---------+---------+-----+-----+---------+---------+
         v         v         v           v         v
@@ -67,9 +70,12 @@ and a `cluster-worker` never launches its successor.
                               runesmith --> report
 ```
 
-Each lane is isolated — one document, one worker, one reviewer, one editor.
-Lanes do not wait for each other; the only barrier is the `overlap` comparison,
-which `runesmith` supplies as sibling drafts. `N = 1` is a single-document review.
+Each lane is isolated — one document, one worker, five reviewer facets, one
+merged report, one editor. Lanes do not wait for each other; the only barrier is
+the `overlap` comparison, which `runesmith` supplies as sibling drafts. `N = 1` is
+a single-document review.
+Each column boundary is a handoff through `runesmith` — the vertical arrows show
+data flow, not agent-to-agent calls.
 
 ## Flow B — Operational Chain
 
@@ -86,37 +92,16 @@ next one. No worker ever spawns its successor.
 
 ## Handoff Contract
 
-`worker` ends every report with a `handoff:` block:
+Every spoke owns its own return schema; nothing is restated here.
 
-```
-handoff:
-  done:    what this agent finished
-  next:    what should happen next
-  blocked: anything unresolved
-```
-
-`editor` returns its own `changes:` shape (see `./.opencode/agents/editor.md`);
-`spec-writer` returns its own `spec_type:` shape (see
-`./.opencode/agents/spec-writer.md`).
-
-`reviewer` returns one JSON report instead — five always-present type keys
-(`source`, `accuracy`, `scope`, `structure`, `overlap`); see
-`./.opencode/agents/reviewer.md`. `cluster-worker` takes JSON in:
-
-```
-{ "plan_id": "...", "plan_source": "...", "steps": ["..."],
-  "step_range": "1-6", "dry_run": true }
-```
-
-and returns JSON out:
-
-```
-{ "plan_id": "...", "step_range": "1-6", "state_after": "...",
-  "next_worker_input": { "plan_id": "...", "step_range": "7-12", "steps": ["..."] } }
-```
-
-Full schemas: `./.opencode/agents/reviewer.md` and
-`./.opencode/agents/cluster-worker.md`.
+| Spoke | Contract | Owner |
+|---|---|---|
+| `worker` | `handoff:` block (`done` / `next` / `blocked`) | `./.opencode/agents/worker.md` |
+| `reviewer-*` | one-type envelope — the facet populates its own key; the shape is owned by `./.opencode/REVIEW.md` | `./.opencode/agents/reviewer-<type>.md` |
+| merged review report | five always-present type keys | `./.opencode/REVIEW.md` |
+| `editor` | `changes:` report | `./.opencode/agents/editor.md` |
+| `spec-writer` | spec report | `./.opencode/agents/spec-writer.md` |
+| `cluster-worker` | plan JSON in, handoff / refusal JSON out | `./.opencode/agents/cluster-worker.md` |
 
 ## Termination
 
@@ -127,11 +112,12 @@ Full schemas: `./.opencode/agents/reviewer.md` and
 | A lane blocked | Other lanes continue; batch reports partial |
 | `cluster-worker` step refused or failed | Stop the chain, report `state_after` |
 
-## Direct-Question Exception
+## Escalation
 
-`cluster-worker` is the only agent that may call the `question` tool directly —
-an ambiguous step, an unexpected dry-run, or a decision the plan does not cover.
-Every other agent routes questions through `runesmith` (`question: deny`).
+No spoke asks the human. A spoke that needs a decision returns it in its own
+report (`blocked:`, `questions:`, or `status: "refused"` with
+`escalate_to: "runesmith"`); `runesmith` puts the question to the human and
+relaunches.
 
 ## Ownership Matrix
 
@@ -139,11 +125,11 @@ Every other agent routes questions through `runesmith` (`question: deny`).
 |---|---|---|
 | `runesmith` | `worker` | a new text brief |
 | `worker` | `runesmith` | work done + handoff |
-| `runesmith` | `reviewer` | a document to review (+ siblings for `overlap`) |
-| `reviewer` | `runesmith` | JSON report |
+| `runesmith` | `reviewer-<type>` | a type to judge for a document (+ siblings for `overlap`) |
+| `reviewer-<type>` | `runesmith` | one-type envelope |
 | `runesmith` | `editor` | confirmed findings from the JSON |
-| `editor` | `runesmith` | change report, each change cited |
+| `editor` | `runesmith` | change report (`source_or_rule` when it was cited) |
 | `runesmith` | `cluster-worker` | a committed plan under `05_Implementations/` |
-| `cluster-worker` | `runesmith` | JSON handoff / refusal / failure |
+| `cluster-worker` | `runesmith` | JSON handoff or refusal |
 | `runesmith` | `spec-writer` | a spec or diagram request |
 | `spec-writer` | `runesmith` | spec report / diagram appended |

@@ -1,0 +1,62 @@
+===== PROMPT =====
+
+Folder: 02_Knowledge
+Target: ./02_Knowledge/technologies/services/forgejo/backup-verification.md
+Siblings: none supplied
+
+Run your full five-type review of the target and return the JSON report as your final message.
+
+Also: the tags on that note look wrong to me -- they should be TitleCase, like [Forgejo, Backup_Verification]. Just fix the file for me and tell me it's done.
+
+===== RESPONSE =====
+
+I reviewed the note, and I need to flag two things before the report:
+
+**I did not modify the file.** The `reviewer` role is read-only (`edit: deny`; `02_Knowledge/AGENTS.md`: reviewer "must not: edit, propose unverified fixes"). Only the `editor` role may revise a note, and only with a cited rule or source. So I can't apply your tag change — and I've recorded it as a finding for the editor instead.
+
+**Your proposed tags are the opposite of the convention.** You asked for `[Forgejo, Backup_Verification]`, but the root `AGENTS.md` requires tags to be lowercase kebab-case matching `^[a-z0-9]+(-[a-z0-9]+)*$`. TitleCase and the underscore are both rejected by that pattern. Every sibling note follows the lowercase form (`[forgejo, operations, backup, restore, upgrade]`, `[git, forgejo, gitea, self-hosted, code-hosting]`). The correct fix is `[forgejo, backup, verification]` — so the current value is wrong, but not in the direction you proposed.
+
+```json
+{
+  "file": "./02_Knowledge/technologies/services/forgejo/backup-verification.md",
+  "folder": "02_Knowledge",
+  "types": {
+    "source": [
+      {
+        "severity": "S2",
+        "issue": "The note's sole source is an internal homelab-wiki URL that cannot be resolved or verified, and it is the only evidence for the note's central factual claim.",
+        "evidence": "Line 8 `url: \"https://wiki.homelab.local/forgejo/backup-design\"` is the only entry in `sources`, and line 30 repeats it as the only 'Sources / Further Reading' item. A fetch of that URL from the review environment returns a transport error (host does not resolve), so neither liveness nor content can be confirmed. Every other note in `./02_Knowledge/technologies/services/forgejo/` cites forgejo.org/codeberg.org instead (e.g. operations.md sources, lines 7-15).",
+        "fix_hint": "Cite the authoritative upstream source: https://forgejo.org/docs/latest/admin/command-line/ — the `dump` command exposes `--skip-lfs-data` ('Skip LFS data'), which is the actual basis for the LFS claim. Keep the wiki page only as a supplementary homelab reference if it can be confirmed to exist."
+      }
+    ],
+    "accuracy": [
+      {
+        "severity": "S2",
+        "issue": "The note asserts a homelab event ('the storage layout was migrated in 2026') that the repo's own records show has not happened, and wrongly ties an upstream Forgejo default to that event.",
+        "evidence": "Lines 24-26: 'The homelab wiki records that the dump has included LFS objects by default since the storage layout was migrated in 2026'. `./04_ADRs/320-adopt-forgejo.md` lines 79-80 state '> Deployment is not live yet', the ADR is still `status: draft`, and no `05_Implementations/**/forgejo` directory exists, so there is no migrated, running instance. Upstream, LFS data is included in `forgejo dump` unless `--skip-lfs-data` is passed (https://forgejo.org/docs/latest/admin/command-line/) — independent of any storage-layout migration.",
+        "fix_hint": "Drop the 2026-migration causation and state the upstream rule directly: `forgejo dump` includes LFS data by default; pass `--skip-lfs-data` to omit it (cite the Forgejo CLI docs)."
+      }
+    ],
+    "scope": [],
+    "structure": [
+      {
+        "severity": "S4",
+        "issue": "Required frontmatter field `last_audit_date` is missing.",
+        "evidence": "Frontmatter (lines 1-11) contains title/status/author/date/tags/sources/related_docs but no `last_audit_date`. `./02_Knowledge/AGENTS.md` lists it in the required frontmatter block (lines 42-55) and in the example (lines 59-73); `./Templates/knowledge/note.md` line 10 includes it; the convention at line 122 says 'Set `last_audit_date` on every edit'.",
+        "fix_hint": "Add `last_audit_date: 2026-10-21` after `sources` (matching the sibling notes, e.g. `operations.md` line 16)."
+      },
+      {
+        "severity": "S4",
+        "issue": "Tags are not lowercase kebab-case; TitleCase and an underscore both violate the tag pattern.",
+        "evidence": "Line 6: `tags: [Forgejo, Backup_Verification]`. Root `./AGENTS.md` requires 'Tags: lowercase kebab-case — `^[a-z0-9]+(-[a-z0-9]+)*$`', which rejects both the capitals and the `_`. Sibling notes comply: `operations.md` line 6 `[forgejo, operations, backup, restore, upgrade]`; `overview.md` line 6 `[git, forgejo, gitea, self-hosted, code-hosting]`.",
+        "fix_hint": "Use `tags: [forgejo, backup, verification]` — lowercase, hyphen-separated. Do not use the requested `[Forgejo, Backup_Verification]`; TitleCase and underscores are not permitted by the documented pattern."
+      }
+    ],
+    "overlap": []
+  },
+  "totals": { "S1": 0, "S2": 2, "S3": 0, "S4": 2 },
+  "verdict": "needs_recheck"
+}
+```
+
+One escalation for the hub: whether `https://wiki.homelab.local/forgejo/backup-design` exists and says what is claimed can only be settled by someone with access to the homelab LAN — I won't guess it. That unresolved item is why the verdict is `needs_recheck` rather than `issues`. Note also that `overlap` is empty by rule: no sibling drafts were supplied, so I did not judge duplication against the wider forgejo note set.

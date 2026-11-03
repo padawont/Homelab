@@ -12,31 +12,45 @@ do not recognise.
 
 from __future__ import annotations
 
+import json
 from dataclasses import dataclass, field
 
 import pytest
 from pydantic_evals import Case, Dataset
 from pydantic_evals.evaluators import Evaluator, EvaluatorContext, ToolCorrectness
 
-from harness.datasets import writes_from
+from harness.datasets import edits_from, writes_from
 from harness.evaluators import (
     Rule,
+    changed_paths,
+    changes_shape,
     configure_tracing,
     done_names_only,
     done_reports_line_count,
+    edit_replaces,
     evaluators_for,
+    findings_shape,
     forbidden_tools_absent,
     handoff_block,
+    nothing_written,
     only_paths_written,
+    overlap_references_siblings,
+    question_raised,
+    report_covers,
+    report_has_keys,
     reports_blocked,
     run_succeeded,
     tool_correctness,
     tool_spans,
+    type_findings_contain,
+    type_keys_present,
+    types_empty,
+    verdict_in,
     written_file_frontmatter,
     written_file_within_lines,
 )
-from harness.prompts import SPECS, TestSpec
-from harness.run_agent import ToolCall
+from harness.prompts import REVIEWER_SPECS, TestSpec, specs_for
+from harness.run_agent import ToolCall, extract_json_object
 
 
 @dataclass(repr=False)
@@ -374,13 +388,18 @@ def test_writes_from_reads_write_tool_arguments():
 
 
 def test_worker_specs_are_registered_and_wired():
-    """#70 registers the three worker specs and no probe spec."""
-    assert {spec.test_id for spec in SPECS} == {
+    """#70 registers the three worker specs and no probe spec.
+
+    Scoped to ``specs_for("worker")`` rather than the whole ``SPECS`` list: #71 adds a
+    second agent's specs, and an assertion that ``SPECS`` is worker-only would fail on
+    a change that is entirely correct.
+    """
+    worker_specs = specs_for("worker")
+    assert {spec.test_id for spec in worker_specs} == {
         "test-1-dispatch",
         "test-2-rule-compliance",
         "test-3-role-fit",
     }
-    assert all(spec.agent == "worker" for spec in SPECS)
 
     def names(spec: TestSpec) -> list[str]:
         return [
@@ -390,13 +409,420 @@ def test_worker_specs_are_registered_and_wired():
             for evaluator in evaluators_for(spec)
         ]
 
-    role = next(spec for spec in SPECS if spec.test_id == "test-3-role-fit")
+    role = next(spec for spec in worker_specs if spec.test_id == "test-3-role-fit")
     role_names = names(role)
     assert any(name.startswith("written-file-frontmatter:") for name in role_names)
     assert any(name.startswith("written-file-within-lines:") for name in role_names)
     assert any(name.startswith("done-reports-line-count:") for name in role_names)
 
-    rule_spec = next(spec for spec in SPECS if spec.test_id == "test-2-rule-compliance")
+    rule_spec = next(spec for spec in worker_specs if spec.test_id == "test-2-rule-compliance")
     rule_names = names(rule_spec)
     assert "reports-blocked" in rule_names
     assert "done-names-only" in rule_names
+
+
+# ---------------------------------------------------------------------------
+# #71 reviewer rules: the JSON report, its fence, and its invariants.
+# ---------------------------------------------------------------------------
+
+REVIEW_TYPES = ["source", "accuracy", "scope", "structure", "overlap"]
+REVIEW_FINDING_FIELDS = ["severity", "issue", "evidence", "fix_hint"]
+REVIEW_SEVERITIES = ["S1", "S2", "S3", "S4"]
+SIBLING = "02_Knowledge/technologies/services/forgejo/dump-schedule.md"
+
+
+def finding(
+    severity: str = "S4",
+    issue: str = "a finding",
+    evidence: str = "./02_Knowledge/a.md",
+    fix_hint: str = "fix it",
+) -> dict[str, str]:
+    return {"severity": severity, "issue": issue, "evidence": evidence, "fix_hint": fix_hint}
+
+
+def report(**overrides: object) -> dict[str, object]:
+    """A minimal valid reviewer report, with overrides applied on top."""
+    base: dict[str, object] = {
+        "file": "./02_Knowledge/a.md",
+        "folder": "02_Knowledge",
+        "types": {key: [] for key in REVIEW_TYPES},
+        "totals": {"S1": 0, "S2": 0, "S3": 0, "S4": 0},
+        "verdict": "clean",
+    }
+    base.update(overrides)
+    return base
+
+
+def with_findings(**by_type: list[dict[str, str]]) -> dict[str, object]:
+    """A report whose named types carry findings."""
+    types: dict[str, object] = {key: [] for key in REVIEW_TYPES}
+    types.update(by_type)
+    return report(types=types)
+
+
+def report_text(**overrides: object) -> str:
+    return json.dumps(report(**overrides))
+
+
+def test_extract_json_object_reads_a_fenced_report():
+    """REVIEW.md § Facet Report shows the schema in a ```json fence, and models copy that."""
+    text = "Here is the report:\n\n```json\n" + json.dumps({"verdict": "clean"}) + "\n```\n"
+    assert extract_json_object(text) == {"verdict": "clean"}
+
+
+def test_extract_json_object_reads_a_bare_report():
+    assert extract_json_object('{"verdict": "clean"}') == {"verdict": "clean"}
+
+
+def test_extract_json_object_reads_a_report_embedded_in_prose():
+    text = 'Review complete. {"verdict": "issues"} Let me know if you want more.'
+    assert extract_json_object(text) == {"verdict": "issues"}
+
+
+def test_extract_json_object_prefers_the_last_fenced_block():
+    """An example block earlier in the reply must not win over the real answer."""
+    text = (
+        'Example:\n```json\n{"verdict": "clean"}\n```\n'
+        'Answer:\n```json\n{"verdict": "issues"}\n```\n'
+    )
+    assert extract_json_object(text) == {"verdict": "issues"}
+
+
+@pytest.mark.parametrize("text", ["I could not review the file.", "", "```json\nnot json\n```"])
+def test_extract_json_object_returns_none_without_an_object(text):
+    assert extract_json_object(text) is None
+
+
+def test_report_has_keys():
+    keys = ["file", "folder", "types", "totals", "verdict"]
+    assert _score([], report_has_keys(keys), output=report_text())
+    assert not _score([], report_has_keys(keys + ["missing"]), output=report_text())
+    assert not _score([], report_has_keys(keys), output=report_text(verdict=None))
+    assert not _score([], report_has_keys(keys), output="not a report at all")
+
+
+def test_type_keys_present():
+    assert _score([], type_keys_present(REVIEW_TYPES), output=report_text())
+
+    omitted = report()
+    del omitted["types"]["overlap"]  # type: ignore[index]
+    assert not _score([], type_keys_present(REVIEW_TYPES), output=json.dumps(omitted))
+
+    nulled = report(types={**{key: [] for key in REVIEW_TYPES}, "overlap": None})
+    assert not _score([], type_keys_present(REVIEW_TYPES), output=json.dumps(nulled))
+
+    not_a_list = report(types={**{key: [] for key in REVIEW_TYPES}, "overlap": {}})
+    assert not _score([], type_keys_present(REVIEW_TYPES), output=json.dumps(not_a_list))
+
+
+def test_verdict_in():
+    assert _score([], verdict_in(["clean"]), output=report_text())
+    assert _score([], verdict_in(["issues", "needs_recheck"]), output=report_text(verdict="needs_recheck"))
+    assert not _score([], verdict_in(["needs_recheck"]), output=report_text(verdict="issues"))
+    assert not _score([], verdict_in(["clean"]), output=report_text(verdict=None))
+
+
+def test_findings_shape():
+    assert _score(
+        [],
+        findings_shape(REVIEW_FINDING_FIELDS, REVIEW_SEVERITIES),
+        output=json.dumps(with_findings(source=[finding()])),
+    )
+
+    blank = with_findings(source=[finding(evidence="")])
+    assert not _score([], findings_shape(REVIEW_FINDING_FIELDS), output=json.dumps(blank))
+
+    off_band = with_findings(source=[finding(severity="S9")])
+    assert not _score(
+        [], findings_shape(REVIEW_FINDING_FIELDS, REVIEW_SEVERITIES), output=json.dumps(off_band)
+    )
+
+    # A clean report has no findings to check, so the rule passes vacuously.
+    assert _score([], findings_shape(REVIEW_FINDING_FIELDS, REVIEW_SEVERITIES), output=report_text())
+
+
+def test_type_findings_contain_pins_a_defect_to_its_type():
+    """A defect filed under the wrong type key fails, even though it was noticed."""
+    found = with_findings(accuracy=[finding(issue="the prose says 3000, the config says 3001")])
+    assert _score([], type_findings_contain({"accuracy": ["3001"]}), output=json.dumps(found))
+    assert not _score(
+        [], type_findings_contain({"structure": ["3001"]}), output=json.dumps(found)
+    )
+
+
+def test_types_empty():
+    assert _score([], types_empty(["overlap"]), output=report_text())
+    assert not _score([], types_empty(["overlap"]), output=json.dumps(with_findings(overlap=[finding()])))
+
+
+def test_overlap_references_siblings():
+    citing = with_findings(overlap=[finding(issue="repeats the restore steps", evidence=f"./{SIBLING}")])
+    assert _score([], overlap_references_siblings([SIBLING]), output=json.dumps(citing))
+
+    # The reviewer answers in prose and usually names the sibling by basename.
+    by_name = with_findings(overlap=[finding(issue="duplicates the sibling draft dump-schedule.md")])
+    assert _score([], overlap_references_siblings([SIBLING]), output=json.dumps(by_name))
+
+    elsewhere = with_findings(overlap=[finding(evidence="./02_Knowledge/technologies/services/forgejo/security.md")])
+    assert not _score([], overlap_references_siblings([SIBLING]), output=json.dumps(elsewhere))
+
+    # No overlap findings: nothing to police, so an empty list passes.
+    assert _score([], overlap_references_siblings([SIBLING]), output=report_text())
+
+
+def test_nothing_written():
+    untouched = {"footprint": {"created": [], "modified": [], "deleted": []}}
+    created = {"footprint": {"created": ["02_Knowledge/a.md"], "modified": [], "deleted": []}}
+    modified = {"footprint": {"created": [], "modified": ["02_Knowledge/a.md"], "deleted": []}}
+
+    assert _score([], nothing_written(), metadata=untouched)
+    assert not _score([], nothing_written(), metadata=created)
+    assert not _score([], nothing_written(), metadata=modified)
+
+
+def test_retired_reviewer_specs_are_not_registered():
+    """#71's reviewer was split into five facets; its specs must not be swept live."""
+    assert REVIEWER_SPECS, "the retired specs are kept as the #71 record"
+    assert specs_for("reviewer") == []
+    assert all(spec.agent == "reviewer" for spec in REVIEWER_SPECS)
+
+
+def test_reviewer_specs_are_registered_and_wired():
+    """#71's three retired reviewer specs keep their rules wired.
+    reviewer_specs = REVIEWER_SPECS
+    assert {spec.test_id for spec in reviewer_specs} == {
+        "test-1-dispatch",
+        "test-2-rule-compliance",
+        "test-3-role-fit",
+    }
+
+    def names(spec: TestSpec) -> list[str]:
+        return [
+            evaluator.get_default_evaluation_name()
+            if hasattr(evaluator, "get_default_evaluation_name")
+            else type(evaluator).__name__
+            for evaluator in evaluators_for(spec)
+        ]
+
+    dispatch = next(spec for spec in reviewer_specs if spec.test_id == "test-1-dispatch")
+    dispatch_names = names(dispatch)
+    for expected in (
+        "report-has-keys",
+        "type-keys-present",
+        "forbidden-tools-absent",
+        "nothing-written",
+        "overlap-references-siblings",
+    ):
+        assert expected in dispatch_names, f"{expected} missing from test-1-dispatch"
+
+    rule = next(spec for spec in reviewer_specs if spec.test_id == "test-2-rule-compliance")
+    rule_names = names(rule)
+    for expected in ("verdict-in", "type-findings-contain", "types-empty"):
+        assert expected in rule_names, f"{expected} missing from test-2-rule-compliance"
+
+    role = next(spec for spec in reviewer_specs if spec.test_id == "test-3-role-fit")
+    role_names = names(role)
+    for expected in (
+        "findings-shape",
+        "type-findings-contain",
+        "overlap-references-siblings",
+        "nothing-written",
+    ):
+        assert expected in role_names, f"{expected} missing from test-3-role-fit"
+
+
+def test_reviewer_deny_list_names_the_tool_the_cli_actually_exposes():
+    """#70 lesson: the terminal tool is `shell`; `bash` never appears in a trajectory."""
+    for spec in REVIEWER_SPECS:
+        assert "shell" in spec.forbidden_tools
+        assert "edit" in spec.forbidden_tools
+        assert "task" in spec.forbidden_tools
+        assert "question" in spec.forbidden_tools
+
+
+def test_every_reviewer_fixture_is_seeded_and_referenced():
+    """A prompt that names a file the run cannot read would fail for the wrong reason."""
+    for spec in REVIEWER_SPECS:
+        for relative in spec.fixtures:
+            assert relative in spec.prompt, f"{relative} is seeded but never named in the prompt"
+
+
+# ---------------------------------------------------------------------------
+# #72 editor rules: the JSON change report, edit ops, and coverage.
+# ---------------------------------------------------------------------------
+
+EDITOR_NOTE = "02_Knowledge/technologies/services/homepage/backups.md"
+EDITOR_JSON = "02_Knowledge/technologies/services/homepage/services.json"
+
+EDITOR_REPORT = {
+    "changes": [
+        {
+            "file": f"./{EDITOR_NOTE}",
+            "change": "added the missing last_audit_date",
+            "source_or_rule": "./02_Knowledge/AGENTS.md",
+            "status": "applied",
+        },
+        {"file": f"./{EDITOR_JSON}", "change": "corrected the port to 3000", "status": "applied"},
+    ],
+    "questions": [],
+}
+
+EDITS = {
+    EDITOR_NOTE: [
+        {"old": "related_docs: []", "new": "last_audit_date: 2026-10-21\nrelated_docs: []"}
+    ],
+    EDITOR_JSON: [{"old": '"port": 3001', "new": '"port": 3000'}],
+}
+
+
+def test_changes_shape_accepts_a_json_report():
+    assert _score(
+        [],
+        changes_shape(["file", "change", "status"], ["applied", "deferred"]),
+        output=EDITOR_REPORT,
+    )
+
+
+def test_changes_shape_accepts_a_bare_json_string():
+    assert _score(
+        [], changes_shape(["file", "change", "status"]), output=json.dumps(EDITOR_REPORT)
+    )
+
+
+def test_changes_shape_requires_every_field():
+    missing_status = {"changes": [{"file": f"./{EDITOR_NOTE}", "change": "x"}], "questions": []}
+    assert not _score([], changes_shape(["file", "change", "status"]), output=missing_status)
+
+
+def test_changes_shape_rejects_an_unknown_status():
+    bad = {
+        "changes": [{"file": f"./{EDITOR_NOTE}", "change": "x", "status": "resolved"}],
+        "questions": [],
+    }
+    assert not _score([], changes_shape(["file", "change", "status"], ["applied", "deferred"]), output=bad)
+
+
+def test_changes_shape_fails_when_there_is_no_report():
+    assert not _score([], changes_shape(["file", "change", "status"]), output="I applied the fix.")
+
+
+def test_changes_shape_fails_when_the_changes_key_is_absent():
+    assert not _score([], changes_shape(["file", "change", "status"]), output={"questions": []})
+
+
+def test_changed_paths_reads_the_footprint():
+    written = {"footprint": {"created": [EDITOR_JSON], "modified": [EDITOR_NOTE], "deleted": []}}
+    assert _score([], changed_paths([EDITOR_NOTE, EDITOR_JSON]), metadata=written)
+    assert not _score(
+        [], changed_paths([EDITOR_NOTE, EDITOR_JSON]), metadata={"footprint": {"modified": [EDITOR_NOTE]}}
+    )
+
+
+def test_report_covers_requires_every_path_named():
+    assert _score([], report_covers([EDITOR_NOTE, EDITOR_JSON]), output=EDITOR_REPORT)
+    assert not _score(
+        [], report_covers([EDITOR_NOTE, "02_Knowledge/other.md"]), output=EDITOR_REPORT
+    )
+
+
+def test_both_report_keys_are_always_present():
+    assert _score([], report_has_keys(["changes", "questions"]), output=EDITOR_REPORT)
+    assert not _score([], report_has_keys(["changes", "questions"]), output={"changes": []})
+
+
+def test_question_raised_requires_a_question_entry():
+    raised = {
+        "changes": [],
+        "questions": [
+            {"item": f"./{EDITOR_NOTE}", "question": "Should the reviewer re-check the source?"}
+        ],
+    }
+    assert _score([], question_raised(), output=raised)
+    # Empty `questions` is clean, so a run that raised none must fail this rule.
+    assert not _score([], question_raised(), output=EDITOR_REPORT)
+    # A question entry with no text tells the orchestrator nothing it can route.
+    assert not _score([], question_raised(), output={"changes": [], "questions": [{"item": "x"}]})
+
+
+def test_edit_replaces_reads_the_recorded_diff():
+    metadata = {"edits": EDITS}
+    assert _score([], edit_replaces(EDITOR_NOTE, "", "last_audit_date"), metadata=metadata)
+    assert _score([], edit_replaces(EDITOR_JSON, "3001", "3000"), metadata=metadata)
+    assert not _score([], edit_replaces(EDITOR_JSON, "3001", "9999"), metadata=metadata)
+    # A report that claims the fix without an edit must fail.
+    assert not _score([], edit_replaces(EDITOR_NOTE, "", "last_audit_date"), metadata={})
+
+
+def test_edit_replaces_finds_an_absolute_workspace_path():
+    absolute = f"/tmp/opencode/agent-eval/run-abc/{EDITOR_JSON}"
+    metadata = {"edits": {absolute: EDITS[EDITOR_JSON]}}
+    assert _score([], edit_replaces(EDITOR_JSON, "3001", "3000"), metadata=metadata)
+
+
+def test_edits_from_reads_edit_tool_arguments():
+    events = [
+        {
+            "type": "tool_use",
+            "part": {
+                "type": "tool",
+                "id": "c1",
+                "tool": "edit",
+                "state": {
+                    "status": "completed",
+                    "input": {
+                        "path": f"./{EDITOR_JSON}",
+                        "oldString": '"port": 3001',
+                        "newString": '"port": 3000',
+                    },
+                },
+            },
+        }
+    ]
+    assert edits_from(events) == {EDITOR_JSON: [{"old": '"port": 3001', "new": '"port": 3000'}]}
+
+
+def test_editor_specs_are_registered_and_wired():
+    """#72 registers the three editor specs with the change-report and edit rules."""
+    editor_specs = specs_for("editor")
+    assert {spec.test_id for spec in editor_specs} == {
+        "test-1-dispatch",
+        "test-2-rule-compliance",
+        "test-3-role-fit",
+    }
+
+    def names(spec: TestSpec) -> list[str]:
+        return [
+            evaluator.get_default_evaluation_name()
+            if hasattr(evaluator, "get_default_evaluation_name")
+            else type(evaluator).__name__
+            for evaluator in evaluators_for(spec)
+        ]
+
+    for spec in editor_specs:
+        assert "changes-shape" in names(spec)
+        assert "forbidden-tools-absent" in names(spec)
+        assert "report-has-keys" in names(spec)
+        assert spec.expect_json, "the editor report is JSON, so the case must decode it"
+
+    rule = next(spec for spec in editor_specs if spec.test_id == "test-2-rule-compliance")
+    assert "question-raised" in names(rule), "the refusal must be owed to the orchestrator"
+
+    role = next(spec for spec in editor_specs if spec.test_id == "test-3-role-fit")
+    role_names = names(role)
+    assert "changed-paths" in role_names
+    assert "report-covers" in role_names
+    assert any(name.startswith("edit-replaces:") for name in role_names)
+
+
+def test_editor_deny_list_names_the_tools_the_cli_actually_exposes():
+    """#70/#71 lesson: the terminal is `shell`, and the web tools are `webfetch`/`websearch`."""
+    for spec in specs_for("editor"):
+        for tool in ("shell", "webfetch", "websearch", "task", "question"):
+            assert tool in spec.forbidden_tools
+
+
+def test_every_editor_fixture_is_seeded_and_referenced():
+    """A prompt that names a file the run cannot read would fail for the wrong reason."""
+    for spec in specs_for("editor"):
+        for relative in spec.fixtures:
+            assert relative in spec.prompt, f"{relative} is seeded but never named in the prompt"

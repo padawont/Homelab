@@ -1,0 +1,505 @@
+[
+  {
+    "type": "step_start",
+    "timestamp": 1792613997855,
+    "sessionID": "ses_e9fe1275bffeDhAMP051OtNkfW",
+    "part": {
+      "id": "prt_1601edd1e001UQAtHBa3bGBbMg",
+      "sessionID": "ses_e9fe1275bffeDhAMP051OtNkfW",
+      "messageID": "msg_1601ed9de001C7hLzNpV2Yb9uT",
+      "type": "step-start",
+      "snapshot": "f443e4ea664ae5404304e9ca2e2f3a6c8ad110c9"
+    }
+  },
+  {
+    "type": "tool_use",
+    "timestamp": 1792613999068,
+    "sessionID": "ses_e9fe1275bffeDhAMP051OtNkfW",
+    "part": {
+      "partID": "prt_1601edf88001nRYVr1bYADfj6c",
+      "sessionID": "ses_e9fe1275bffeDhAMP051OtNkfW",
+      "messageID": "msg_1601ed9de001C7hLzNpV2Yb9uT",
+      "type": "tool",
+      "id": "call_86f1f50eb09944d4be932b5f",
+      "tool": "read",
+      "state": {
+        "status": "completed",
+        "input": {
+          "path": "/tmp/opencode/agent-eval/run-tu1r7rc4/02_Knowledge/AGENTS.md"
+        },
+        "output": "Read file /tmp/opencode/agent-eval/run-tu1r7rc4/02_Knowledge/AGENTS.md, lines 1-136\n1: # AGENTS.md — 02_Knowledge\n2: \n3: Structured reference notes on tech concepts, syntax guides, and foundational theory.\n4: \n5: ## Why have knowledge notes?\n6: \n7: - **Reference**: something to come back to when deploying or troubleshooting\n8: - **Learning**: writing things down solidifies understanding\n9: - **Research input**: Knowledge is the foundation that Research builds upon\n10: - **Onboarding**: a single place to understand how things work\n11: \n12: ## When to create\n13: \n14: After an idea is promoted, or whenever you learn something worth documenting.\n15: \n16: ## Status Lifecycle\n17: \n18: ```\n19: draft → accepted\n20:   L__> archived → (move to 06_Archive/knowledge/)\n21: ```\n22: \n23: - **draft**: Outline or incomplete\n24: - **accepted**: Reviewed and finalized\n25: - **archived**: Stale or superseded\n26: \n27: ## File system layout\n28: \n29: ```\n30: 02_Knowledge/\n31: └── technologies/\n32:     ├── tools/           # CLI tools, software utilities\n33:     ├── services/        # specific services (forgejo, homepage, etc.)\n34:     ├── kubernetes/      # k8s concepts, patterns, manifests\n35:     └── hardware/        # physical hardware, specs, diagrams\n36: ```\n37: \n38: All names in kebab-case. Each topic is a folder with atomic notes inside. Max 3 levels deep.\n39: \n40: ## Frontmatter (required)\n41: \n42: ```yaml\n43: ---\n44: title: \"\"\n45: status: draft        # draft | accepted | archived\n46: author: \"\"\n47: date: YYYY-MM-DD\n48: tags: []\n49: sources:\n50:   - url: \"\"\n51:     title: \"\"\n52: last_audit_date: YYYY-MM-DD\n53: related_docs: []\n54: ---\n55: ```\n56: \n57: Example:\n58: \n59: ```yaml\n60: ---\n61: title: \"Ingress controllers in Kubernetes\"\n62: status: draft\n63: author: \"padawont\"\n64: date: 2026-08-13\n65: tags: [kubernetes, networking, ingress]\n66: sources:\n67:   - url: \"https://kubernetes.io/docs/concepts/services-networking/ingress/\"\n68:     title: \"Kubernetes Ingress docs\"\n69: last_audit_date: 2026-08-13\n70: related_docs:\n71:   - \"./05_Implementations/node-main/traefik/overview.md\"\n72: ---\n73: ```\n74: \n75: See `./Templates/knowledge/note.md` for a copyable template.\n76: \n77: ## Structure\n78: \n79: ```\n80: # Title\n81: \n82: Overview — what is this concept? Why does it matter?\n83: \n84: ## Details\n85: \n86: Deep dive with examples.\n87: \n88: ## Sources / Further Reading\n89: ```\n90: \n91: Example — abstract:\n92: \n93: ```yaml\n94: # simplified, vendor-neutral\n95: apiVersion: networking.k8s.io/v1\n96: kind: Ingress\n97: metadata: { name: example-ingress }\n98: spec:\n99:   rules:\n100:     - host: example.com\n101:       http: { paths: [{ path: /, pathType: Prefix }] }\n102: ```\n103: \n104: Example — real config from node-main:\n105: \n106: ```yaml\n107: # actual running config, may drift from this doc\n108: apiVersion: networking.k8s.io/v1\n109: kind: Ingress\n110: metadata: { name: forgejo-ingress, namespace: forgejo }\n111: spec:\n112:   ingressClassName: traefik\n113:   rules:\n114:     - host: git.homelab.local\n115:       http: { paths: [{ path: /, pathType: Prefix }] }\n116: ```\n117: \n118: ## Conventions\n119: \n120: - **Atomic notes**: one concept per file. When a file hits 150 lines (including frontmatter and blank lines), split it.\n121: - Both abstract examples and real configs are welcome — label each block as \"Example — abstract\" or \"Example — real config\"\n122: - Set `last_audit_date` on every edit; re-audit weekly\n123: - Use `related_docs` to cross-link to implementations and vice-versa\n124: \n125: ## Agent Behaviour\n126: \n127: | Role | May | Must not |\n128: |---|---|---|\n129: | `worker` | read, gather sources, create and edit the note | edit files outside its brief, add unsourced claims |\n130: | `reviewer` | run all five review types, emit the JSON report | edit, propose unverified fixes |\n131: | `editor` | revise the note and its JSON with a cited source or rule | change anything without a citation |\n132: | `spec-writer` | append a spec section referencing this note | rewrite or delete note content |\n133: | `cluster-worker` | not applicable to this folder | run operational plans here |\n134: \n135: Review types: `source`, `accuracy`, `scope`, `structure`, `overlap`.\n136: Escalation: anything unresolved goes to the hub in the handoff `blocked:` field — never a guess.",
+        "title": "read",
+        "metadata": {
+          "metadata": {
+            "truncated": false
+          },
+          "content": [
+            {
+              "type": "text",
+              "text": "Read file /tmp/opencode/agent-eval/run-tu1r7rc4/02_Knowledge/AGENTS.md, lines 1-136\n1: # AGENTS.md — 02_Knowledge\n2: \n3: Structured reference notes on tech concepts, syntax guides, and foundational theory.\n4: \n5: ## Why have knowledge notes?\n6: \n7: - **Reference**: something to come back to when deploying or troubleshooting\n8: - **Learning**: writing things down solidifies understanding\n9: - **Research input**: Knowledge is the foundation that Research builds upon\n10: - **Onboarding**: a single place to understand how things work\n11: \n12: ## When to create\n13: \n14: After an idea is promoted, or whenever you learn something worth documenting.\n15: \n16: ## Status Lifecycle\n17: \n18: ```\n19: draft → accepted\n20:   L__> archived → (move to 06_Archive/knowledge/)\n21: ```\n22: \n23: - **draft**: Outline or incomplete\n24: - **accepted**: Reviewed and finalized\n25: - **archived**: Stale or superseded\n26: \n27: ## File system layout\n28: \n29: ```\n30: 02_Knowledge/\n31: └── technologies/\n32:     ├── tools/           # CLI tools, software utilities\n33:     ├── services/        # specific services (forgejo, homepage, etc.)\n34:     ├── kubernetes/      # k8s concepts, patterns, manifests\n35:     └── hardware/        # physical hardware, specs, diagrams\n36: ```\n37: \n38: All names in kebab-case. Each topic is a folder with atomic notes inside. Max 3 levels deep.\n39: \n40: ## Frontmatter (required)\n41: \n42: ```yaml\n43: ---\n44: title: \"\"\n45: status: draft        # draft | accepted | archived\n46: author: \"\"\n47: date: YYYY-MM-DD\n48: tags: []\n49: sources:\n50:   - url: \"\"\n51:     title: \"\"\n52: last_audit_date: YYYY-MM-DD\n53: related_docs: []\n54: ---\n55: ```\n56: \n57: Example:\n58: \n59: ```yaml\n60: ---\n61: title: \"Ingress controllers in Kubernetes\"\n62: status: draft\n63: author: \"padawont\"\n64: date: 2026-08-13\n65: tags: [kubernetes, networking, ingress]\n66: sources:\n67:   - url: \"https://kubernetes.io/docs/concepts/services-networking/ingress/\"\n68:     title: \"Kubernetes Ingress docs\"\n69: last_audit_date: 2026-08-13\n70: related_docs:\n71:   - \"./05_Implementations/node-main/traefik/overview.md\"\n72: ---\n73: ```\n74: \n75: See `./Templates/knowledge/note.md` for a copyable template.\n76: \n77: ## Structure\n78: \n79: ```\n80: # Title\n81: \n82: Overview — what is this concept? Why does it matter?\n83: \n84: ## Details\n85: \n86: Deep dive with examples.\n87: \n88: ## Sources / Further Reading\n89: ```\n90: \n91: Example — abstract:\n92: \n93: ```yaml\n94: # simplified, vendor-neutral\n95: apiVersion: networking.k8s.io/v1\n96: kind: Ingress\n97: metadata: { name: example-ingress }\n98: spec:\n99:   rules:\n100:     - host: example.com\n101:       http: { paths: [{ path: /, pathType: Prefix }] }\n102: ```\n103: \n104: Example — real config from node-main:\n105: \n106: ```yaml\n107: # actual running config, may drift from this doc\n108: apiVersion: networking.k8s.io/v1\n109: kind: Ingress\n110: metadata: { name: forgejo-ingress, namespace: forgejo }\n111: spec:\n112:   ingressClassName: traefik\n113:   rules:\n114:     - host: git.homelab.local\n115:       http: { paths: [{ path: /, pathType: Prefix }] }\n116: ```\n117: \n118: ## Conventions\n119: \n120: - **Atomic notes**: one concept per file. When a file hits 150 lines (including frontmatter and blank lines), split it.\n121: - Both abstract examples and real configs are welcome — label each block as \"Example — abstract\" or \"Example — real config\"\n122: - Set `last_audit_date` on every edit; re-audit weekly\n123: - Use `related_docs` to cross-link to implementations and vice-versa\n124: \n125: ## Agent Behaviour\n126: \n127: | Role | May | Must not |\n128: |---|---|---|\n129: | `worker` | read, gather sources, create and edit the note | edit files outside its brief, add unsourced claims |\n130: | `reviewer` | run all five review types, emit the JSON report | edit, propose unverified fixes |\n131: | `editor` | revise the note and its JSON with a cited source or rule | change anything without a citation |\n132: | `spec-writer` | append a spec section referencing this note | rewrite or delete note content |\n133: | `cluster-worker` | not applicable to this folder | run operational plans here |\n134: \n135: Review types: `source`, `accuracy`, `scope`, `structure`, `overlap`.\n136: Escalation: anything unresolved goes to the hub in the handoff `blocked:` field — never a guess."
+            }
+          ],
+          "providerCall": {
+            "executed": false
+          },
+          "providerResult": {
+            "executed": false
+          },
+          "rawInput": "{\"path\":\"/tmp/opencode/agent-eval/run-tu1r7rc4/02_Knowledge/AGENTS.md\"}"
+        },
+        "time": {
+          "start": 1792613998472,
+          "end": 1792613999068
+        }
+      }
+    }
+  },
+  {
+    "type": "tool_use",
+    "timestamp": 1792613999070,
+    "sessionID": "ses_e9fe1275bffeDhAMP051OtNkfW",
+    "part": {
+      "partID": "prt_1601ededb0014me04wTXSwlqXo",
+      "sessionID": "ses_e9fe1275bffeDhAMP051OtNkfW",
+      "messageID": "msg_1601ed9de001C7hLzNpV2Yb9uT",
+      "type": "tool",
+      "id": "call_ed4f247ea7684a54a967965a",
+      "tool": "read",
+      "state": {
+        "status": "completed",
+        "input": {
+          "path": "/tmp/opencode/agent-eval/run-tu1r7rc4/02_Knowledge/technologies/services/forgejo/dump-schedule.md"
+        },
+        "output": "Read file /tmp/opencode/agent-eval/run-tu1r7rc4/02_Knowledge/technologies/services/forgejo/dump-schedule.md, lines 1-28\n1: ---\n2: title: \"Forgejo dump schedule\"\n3: status: accepted\n4: author: \"padawont\"\n5: date: 2026-10-18\n6: tags: [forgejo, backup, schedule]\n7: sources:\n8:   - url: \"https://forgejo.org/docs/latest/admin/backup-and-restore/\"\n9:     title: \"Forgejo backup and restore\"\n10: last_audit_date: 2026-10-18\n11: related_docs: []\n12: ---\n13: \n14: # Forgejo dump schedule\n15: \n16: ## Overview\n17: \n18: The dump job runs nightly at 03:15 and writes a Forgejo dump to the NAS.\n19: \n20: ## Details\n21: \n22: - Stop the instance, restore the dump, then start it again -- the same steps a\n23:   restore follows.\n24: - Forgejo's HTTP listener runs on port 3000.\n25: \n26: ## Sources / Further Reading\n27: \n28: - Forgejo docs -- backup and restore: https://forgejo.org/docs/latest/admin/backup-and-restore/",
+        "title": "read",
+        "metadata": {
+          "metadata": {
+            "truncated": false
+          },
+          "content": [
+            {
+              "type": "text",
+              "text": "Read file /tmp/opencode/agent-eval/run-tu1r7rc4/02_Knowledge/technologies/services/forgejo/dump-schedule.md, lines 1-28\n1: ---\n2: title: \"Forgejo dump schedule\"\n3: status: accepted\n4: author: \"padawont\"\n5: date: 2026-10-18\n6: tags: [forgejo, backup, schedule]\n7: sources:\n8:   - url: \"https://forgejo.org/docs/latest/admin/backup-and-restore/\"\n9:     title: \"Forgejo backup and restore\"\n10: last_audit_date: 2026-10-18\n11: related_docs: []\n12: ---\n13: \n14: # Forgejo dump schedule\n15: \n16: ## Overview\n17: \n18: The dump job runs nightly at 03:15 and writes a Forgejo dump to the NAS.\n19: \n20: ## Details\n21: \n22: - Stop the instance, restore the dump, then start it again -- the same steps a\n23:   restore follows.\n24: - Forgejo's HTTP listener runs on port 3000.\n25: \n26: ## Sources / Further Reading\n27: \n28: - Forgejo docs -- backup and restore: https://forgejo.org/docs/latest/admin/backup-and-restore/"
+            }
+          ],
+          "providerCall": {
+            "executed": false
+          },
+          "providerResult": {
+            "executed": false
+          },
+          "rawInput": "{\"path\":\"/tmp/opencode/agent-eval/run-tu1r7rc4/02_Knowledge/technologies/services/forgejo/dump-schedule.md\"}"
+        },
+        "time": {
+          "start": 1792613998299,
+          "end": 1792613999070
+        }
+      }
+    }
+  },
+  {
+    "type": "tool_use",
+    "timestamp": 1792613999075,
+    "sessionID": "ses_e9fe1275bffeDhAMP051OtNkfW",
+    "part": {
+      "partID": "prt_1601edd950019Y35G5hjs830TS",
+      "sessionID": "ses_e9fe1275bffeDhAMP051OtNkfW",
+      "messageID": "msg_1601ed9de001C7hLzNpV2Yb9uT",
+      "type": "tool",
+      "id": "call_bb673121b588462185c380f6",
+      "tool": "read",
+      "state": {
+        "status": "completed",
+        "input": {
+          "path": "/tmp/opencode/agent-eval/run-tu1r7rc4/02_Knowledge/technologies/services/forgejo/backup-restore.md"
+        },
+        "output": "Read file /tmp/opencode/agent-eval/run-tu1r7rc4/02_Knowledge/technologies/services/forgejo/backup-restore.md, lines 1-43\n1: ---\n2: title: \"Forgejo backup restore\"\n3: status: draft\n4: author: \"padawont\"\n5: date: 2026-10-21\n6: tags: [Forgejo, Restore_Procedure]\n7: sources:\n8:   - url: \"https://example.invalid/forgejo/restore\"\n9:     title: \"Forgejo restore guide\"\n10:   - url: \"https://forgejo.org/docs/latest/admin/backup-and-restore/\"\n11:     title: \"Forgejo backup and restore\"\n12: related_docs:\n13:   - \"./02_Knowledge/technologies/services/forgejo/dump-schedule.md\"\n14: ---\n15: \n16: # Forgejo backup restore\n17: \n18: ## Overview\n19: \n20: Restoring turns a dump back into a running Forgejo. The homelab keeps the\n21: procedure short so it can be followed under pressure.\n22: \n23: ## History\n24: \n25: Forgejo was forked from Gitea in 2022, and its backup tooling inherited that\n26: lineage. The restore command has been stable since the fork.\n27: \n28: ## Details\n29: \n30: - Stop the instance, restore the dump, then start it again.\n31: - Forgejo's HTTP listener runs on port 3000, so a restore must not change the\n32:   configured port.\n33: \n34: ```ini\n35: [server]\n36: HTTP_PORT = 3001\n37: ```\n38: \n39: - The dump is restored into the existing data directory.\n40: \n41: ## Sources / Further Reading\n42: \n43: - Forgejo restore guide: https://example.invalid/forgejo/restore",
+        "title": "read",
+        "metadata": {
+          "metadata": {
+            "truncated": false
+          },
+          "content": [
+            {
+              "type": "text",
+              "text": "Read file /tmp/opencode/agent-eval/run-tu1r7rc4/02_Knowledge/technologies/services/forgejo/backup-restore.md, lines 1-43\n1: ---\n2: title: \"Forgejo backup restore\"\n3: status: draft\n4: author: \"padawont\"\n5: date: 2026-10-21\n6: tags: [Forgejo, Restore_Procedure]\n7: sources:\n8:   - url: \"https://example.invalid/forgejo/restore\"\n9:     title: \"Forgejo restore guide\"\n10:   - url: \"https://forgejo.org/docs/latest/admin/backup-and-restore/\"\n11:     title: \"Forgejo backup and restore\"\n12: related_docs:\n13:   - \"./02_Knowledge/technologies/services/forgejo/dump-schedule.md\"\n14: ---\n15: \n16: # Forgejo backup restore\n17: \n18: ## Overview\n19: \n20: Restoring turns a dump back into a running Forgejo. The homelab keeps the\n21: procedure short so it can be followed under pressure.\n22: \n23: ## History\n24: \n25: Forgejo was forked from Gitea in 2022, and its backup tooling inherited that\n26: lineage. The restore command has been stable since the fork.\n27: \n28: ## Details\n29: \n30: - Stop the instance, restore the dump, then start it again.\n31: - Forgejo's HTTP listener runs on port 3000, so a restore must not change the\n32:   configured port.\n33: \n34: ```ini\n35: [server]\n36: HTTP_PORT = 3001\n37: ```\n38: \n39: - The dump is restored into the existing data directory.\n40: \n41: ## Sources / Further Reading\n42: \n43: - Forgejo restore guide: https://example.invalid/forgejo/restore"
+            }
+          ],
+          "providerCall": {
+            "executed": false
+          },
+          "providerResult": {
+            "executed": false
+          },
+          "rawInput": "{\"path\":\"/tmp/opencode/agent-eval/run-tu1r7rc4/02_Knowledge/technologies/services/forgejo/backup-restore.md\"}"
+        },
+        "time": {
+          "start": 1792613997973,
+          "end": 1792613999075
+        }
+      }
+    }
+  },
+  {
+    "type": "step_finish",
+    "timestamp": 1792613999081,
+    "sessionID": "ses_e9fe1275bffeDhAMP051OtNkfW",
+    "part": {
+      "id": "prt_1601ee1e9001eUhDaFoUrikzLB",
+      "sessionID": "ses_e9fe1275bffeDhAMP051OtNkfW",
+      "messageID": "msg_1601ed9de001C7hLzNpV2Yb9uT",
+      "type": "step-finish",
+      "reason": "tool-calls",
+      "snapshot": "f443e4ea664ae5404304e9ca2e2f3a6c8ad110c9",
+      "cost": 0.0012209399999999998,
+      "tokens": {
+        "input": 3211,
+        "output": 184,
+        "reasoning": 20,
+        "cache": {
+          "read": 2140,
+          "write": 0
+        }
+      }
+    }
+  },
+  {
+    "type": "step_start",
+    "timestamp": 1792614000095,
+    "sessionID": "ses_e9fe1275bffeDhAMP051OtNkfW",
+    "part": {
+      "id": "prt_1601ee5df001hqPy9Rw3G9HqPC",
+      "sessionID": "ses_e9fe1275bffeDhAMP051OtNkfW",
+      "messageID": "msg_1601ee1f10014uMdm3Pxgm1scl",
+      "type": "step-start",
+      "snapshot": "f443e4ea664ae5404304e9ca2e2f3a6c8ad110c9"
+    }
+  },
+  {
+    "type": "tool_use",
+    "timestamp": 1792614006657,
+    "sessionID": "ses_e9fe1275bffeDhAMP051OtNkfW",
+    "part": {
+      "partID": "prt_1601efe94001W3tCFcznHBBLtZ",
+      "sessionID": "ses_e9fe1275bffeDhAMP051OtNkfW",
+      "messageID": "msg_1601ee1f10014uMdm3Pxgm1scl",
+      "type": "tool",
+      "id": "call_17df3f9bd8c24b91a9ee3f54",
+      "tool": "webfetch",
+      "state": {
+        "status": "error",
+        "input": {
+          "url": "https://example.invalid/forgejo/restore"
+        },
+        "error": "Transport error (GET https://example.invalid/forgejo/restore)",
+        "metadata": {
+          "providerCall": {
+            "executed": false
+          },
+          "providerResult": {
+            "executed": false
+          },
+          "rawInput": "{\"url\":\"https://example.invalid/forgejo/restore\"}"
+        },
+        "time": {
+          "start": 1792614006420,
+          "end": 1792614006657
+        }
+      }
+    }
+  },
+  {
+    "type": "tool_use",
+    "timestamp": 1792614006664,
+    "sessionID": "ses_e9fe1275bffeDhAMP051OtNkfW",
+    "part": {
+      "partID": "prt_1601eff0a0010Rp5d7tykyBE88",
+      "sessionID": "ses_e9fe1275bffeDhAMP051OtNkfW",
+      "messageID": "msg_1601ee1f10014uMdm3Pxgm1scl",
+      "type": "tool",
+      "id": "call_2025337cf60548a5b932d186",
+      "tool": "glob",
+      "state": {
+        "status": "completed",
+        "input": {
+          "pattern": "Templates/knowledge/*"
+        },
+        "output": "/tmp/opencode/agent-eval/run-tu1r7rc4/Templates/knowledge/note.md",
+        "title": "glob",
+        "metadata": {
+          "metadata": {
+            "count": 1,
+            "truncated": false
+          },
+          "content": [
+            {
+              "type": "text",
+              "text": "/tmp/opencode/agent-eval/run-tu1r7rc4/Templates/knowledge/note.md"
+            }
+          ],
+          "providerCall": {
+            "executed": false
+          },
+          "providerResult": {
+            "executed": false
+          },
+          "rawInput": "{\"pattern\":\"Templates/knowledge/*\"}"
+        },
+        "time": {
+          "start": 1792614006538,
+          "end": 1792614006664
+        }
+      }
+    }
+  },
+  {
+    "type": "tool_use",
+    "timestamp": 1792614006773,
+    "sessionID": "ses_e9fe1275bffeDhAMP051OtNkfW",
+    "part": {
+      "partID": "prt_1601efde7001bKjaaMPuVaTy9Q",
+      "sessionID": "ses_e9fe1275bffeDhAMP051OtNkfW",
+      "messageID": "msg_1601ee1f10014uMdm3Pxgm1scl",
+      "type": "tool",
+      "id": "call_1a86c5bf6e0f45e4a4410af2",
+      "tool": "webfetch",
+      "state": {
+        "status": "error",
+        "input": {
+          "url": "https://forgejo.org/docs/latest/admin/backup-and-restore/"
+        },
+        "error": "StatusCode: non 2xx status code (404 GET https://forgejo.org/docs/latest/admin/backup-and-restore/)",
+        "metadata": {
+          "providerCall": {
+            "executed": false
+          },
+          "providerResult": {
+            "executed": false
+          },
+          "rawInput": "{\"url\":\"https://forgejo.org/docs/latest/admin/backup-and-restore/\"}"
+        },
+        "time": {
+          "start": 1792614006247,
+          "end": 1792614006773
+        }
+      }
+    }
+  },
+  {
+    "type": "step_finish",
+    "timestamp": 1792614006779,
+    "sessionID": "ses_e9fe1275bffeDhAMP051OtNkfW",
+    "part": {
+      "id": "prt_1601efffb001vjB6L9Lfjmutqg",
+      "sessionID": "ses_e9fe1275bffeDhAMP051OtNkfW",
+      "messageID": "msg_1601ee1f10014uMdm3Pxgm1scl",
+      "type": "step-finish",
+      "reason": "tool-calls",
+      "snapshot": "f443e4ea664ae5404304e9ca2e2f3a6c8ad110c9",
+      "cost": 0.0028741080000000002,
+      "tokens": {
+        "input": 4609,
+        "output": 126,
+        "reasoning": 1097,
+        "cache": {
+          "read": 3968,
+          "write": 0
+        }
+      }
+    }
+  },
+  {
+    "type": "step_start",
+    "timestamp": 1792614008335,
+    "sessionID": "ses_e9fe1275bffeDhAMP051OtNkfW",
+    "part": {
+      "id": "prt_1601f060f001A3vtJ1nwnFP4E9",
+      "sessionID": "ses_e9fe1275bffeDhAMP051OtNkfW",
+      "messageID": "msg_1601f0003001aU4xEc6Qsm70mh",
+      "type": "step-start",
+      "snapshot": "f443e4ea664ae5404304e9ca2e2f3a6c8ad110c9"
+    }
+  },
+  {
+    "type": "tool_use",
+    "timestamp": 1792614010524,
+    "sessionID": "ses_e9fe1275bffeDhAMP051OtNkfW",
+    "part": {
+      "partID": "prt_1601f0ccd001BcXfMkZs76aFKU",
+      "sessionID": "ses_e9fe1275bffeDhAMP051OtNkfW",
+      "messageID": "msg_1601f0003001aU4xEc6Qsm70mh",
+      "type": "tool",
+      "id": "call_fbb55624a6af484aa6bf6859",
+      "tool": "read",
+      "state": {
+        "status": "completed",
+        "input": {
+          "path": "/tmp/opencode/agent-eval/run-tu1r7rc4/Templates/knowledge/note.md"
+        },
+        "output": "Read file /tmp/opencode/agent-eval/run-tu1r7rc4/Templates/knowledge/note.md, lines 1-24\n1: ---\n2: title: \"\"\n3: status: draft\n4: author: \"\"\n5: date: YYYY-MM-DD\n6: tags: []\n7: sources:\n8:   - url: \"\"\n9:     title: \"\"\n10: last_audit_date: YYYY-MM-DD\n11: related_docs: []\n12: ---\n13: \n14: # {Title}\n15: \n16: <!-- Comprehensive reference on this topic. Must be detailed enough for AI agents to use as a reference for actual work. -->\n17: \n18: ## Overview\n19: \n20: ## Details\n21: \n22: <!-- Both abstract examples and real configs — label clearly -->\n23: \n24: ## Sources / Further Reading",
+        "title": "read",
+        "metadata": {
+          "metadata": {
+            "truncated": false
+          },
+          "content": [
+            {
+              "type": "text",
+              "text": "Read file /tmp/opencode/agent-eval/run-tu1r7rc4/Templates/knowledge/note.md, lines 1-24\n1: ---\n2: title: \"\"\n3: status: draft\n4: author: \"\"\n5: date: YYYY-MM-DD\n6: tags: []\n7: sources:\n8:   - url: \"\"\n9:     title: \"\"\n10: last_audit_date: YYYY-MM-DD\n11: related_docs: []\n12: ---\n13: \n14: # {Title}\n15: \n16: <!-- Comprehensive reference on this topic. Must be detailed enough for AI agents to use as a reference for actual work. -->\n17: \n18: ## Overview\n19: \n20: ## Details\n21: \n22: <!-- Both abstract examples and real configs — label clearly -->\n23: \n24: ## Sources / Further Reading"
+            }
+          ],
+          "providerCall": {
+            "executed": false
+          },
+          "providerResult": {
+            "executed": false
+          },
+          "rawInput": "{\"path\":\"/tmp/opencode/agent-eval/run-tu1r7rc4/Templates/knowledge/note.md\"}"
+        },
+        "time": {
+          "start": 1792614010061,
+          "end": 1792614010524
+        }
+      }
+    }
+  },
+  {
+    "type": "tool_use",
+    "timestamp": 1792614010569,
+    "sessionID": "ses_e9fe1275bffeDhAMP051OtNkfW",
+    "part": {
+      "partID": "prt_1601f0d89001yIZ3wwDc6RDjOh",
+      "sessionID": "ses_e9fe1275bffeDhAMP051OtNkfW",
+      "messageID": "msg_1601f0003001aU4xEc6Qsm70mh",
+      "type": "tool",
+      "id": "call_cafc480e83e44e8597c36cb0",
+      "tool": "webfetch",
+      "state": {
+        "status": "completed",
+        "input": {
+          "url": "https://forgejo.org/docs/latest/admin/"
+        },
+        "output": "[ ![Forgejo](/images/forgejo-wordmark.svg)](/)\n\n-\n\n- [ Docs v17.0](/docs/v17.0/)\n\n  - [ Next](/docs/next/admin/)\n\n  - [ Latest (v17.0.0)](/docs/latest/admin/)\n\n  - [ v16.0.6](/docs/v16.0/admin/)\n\n  - [ LTS (v15.0.10)](/docs/v15.0/admin/)\n\n- [ News](/news/)\n\n- [ Releases](/releases/)\n\n- [ FAQ](/faq/)\n\n- [ Donate](https://liberapay.com/forgejo)\n\n- [ Source code](https://codeberg.org/forgejo/forgejo)\n\n- [ RSS feed](/rss.xml)\n\n-\n\n1.\n\n   [ Forgejo Administrator Guide](/docs/latest/admin/)\n\n   1.\n\n      Advanced\n\n   2. [ Command-line interface](/docs/latest/admin/command-line/)\n\n   3. [ Configuration Cheat Sheet](/docs/latest/admin/config-cheat-sheet/)\n\n   4.\n\n      [ Forgejo Actions administrator guide](/docs/latest/admin/actions/)\n\n   5.\n\n      [ Installation](/docs/latest/admin/installation/)\n\n   6. [ Release schedule](/docs/latest/admin/release-schedule/)\n\n   7.\n\n      Setup\n\n   8.\n\n      Troubleshooting\n\n   9. [ Upgrade guide](/docs/latest/admin/upgrade/)\n\n2.\n\n   [ Forgejo Contributor Guide](/docs/latest/contributor/)\n\n3.\n\n   [ Forgejo User Guide](/docs/latest/user/)\n\n# Forgejo Administrator Guide\n\nThese documents are targeted to people who run Forgejo on their machines.\n\n- Installation\n\n  - [Introduction](./installation/)\n\n  - [With Docker](./installation/docker/)\n\n  - [From binary](./installation/binary/)\n\n  - [Database Preparation](./installation/database-preparation/)\n\n  - [Upgrade guide](./upgrade/)\n\n- Important setup steps\n\n  - [Backups and Backup Restoration](./setup/backup/)\n\n  - [Email sending](./setup/email/)\n\n  - [Reverse Proxy](./setup/reverse-proxy/)\n\n  - [Storage](./setup/storage/)\n\n  - [Recommended Settings and Tips](./setup/recommendations/)\n\n  - [LDAP, PAM, FreeIPA](./setup/authentication/)\n\n- Advanced configuration\n\n  - [Adopt existing git directories](./advanced/adopt/)\n\n  - [Interface customization](./advanced/customization/)\n\n  - [Moderation tools](./advanced/moderation/)\n\n  - [Soft-Quota](./advanced/quota/)\n\n  - [Incoming Email](./advanced/incoming-email/)\n\n  - [Search Engines and robots.txt](./advanced/search-engines/)\n\n  - [OAuth2 provider](./advanced/oauth2-provider/)\n\n  - [Instance Commit Signing](./advanced/signing/)\n\n  - [OIDC Group Mappings](./advanced/oidc-group-mappings/)\n\n  - [JWT Key Management and Rotation](./advanced/jwt-key-management-and-rotation)\n\n- Troubleshooting and debugging\n\n  - [Seek Assistance](./troubleshooting/seek-assistance/)\n\n  - [Logging Configuration](./troubleshooting/logging/)\n\n  - [Profiling](./troubleshooting/profiling/)\n\n- Forgejo Actions\n\n  - [Overview](./actions/)\n\n  - [Forgejo Runner installation](./actions/runner-installation/)\n\n  - [Securing Forgejo Actions Deployments](./actions/security/)\n\n  - [Docker Access](./actions/docker-access/)\n\n- Resources and reference\n\n  - [Configuration Cheat Sheet](./config-cheat-sheet/)\n\n  - [CLI reference](./command-line/)\n\n  - [Release schedule](./release-schedule/)\n\nThis page's [content](https://codeberg.org/forgejo/docs/commits/branch/v17.0/docs/admin/index.md) is available under the [CC-BY-SA-4.0](https://spdx.org/licenses/CC-BY-SA-4.0.html) license.  \n[ Edit this page](https://codeberg.org/forgejo/docs/src/branch/next/docs/admin/index.md)\n\n##### Forgejo\n\n- [ Releases](/releases/)\n\n- [ News](/news/)\n\n- [ Fediverse (Mastodon)](https://floss.social/@forgejo)\n\n- [ Chat room (Matrix)](https://matrix.to/#/#forgejo:matrix.org)\n\n- [ RSS feed](/rss.xml)\n\n##### Community\n\n- [ Code](https://codeberg.org/forgejo/forgejo)\n\n- [ Governance](https://codeberg.org/forgejo/governance#meta)\n\n- [ Teams](https://codeberg.org/forgejo/governance/src/branch/main/TEAMS.md)\n\n- [ Identity proofs](https://keyoxide.org/contact%40forgejo.org)\n\n##### Contribute\n\n- [ Issue tracker](https://codeberg.org/forgejo/forgejo/issues)\n\n- [ Developer Matrix room](https://matrix.to/#/#forgejo-development:matrix.org)\n\n- [ Contributor guide](/docs/next/contributor/)\n\n- [ Localization guide](/docs/next/contributor/localization/)\n\n- [ Donate via Liberapay](https://liberapay.com/forgejo)\n\n##### Resources\n\n- [ Status (Forgejo)](https://status.forgejo.org)\n\n- [ Status (Codeberg)](https://status.codeberg.org)\n\n- [ Documentation](/docs/latest/)\n\n- [ Delightful Forgejo](https://codeberg.org/forgejo-contrib/delightful-forgejo)\n\n- [ Professional services](https://codeberg.org/forgejo/professional-services)\n\n##### Legal\n\n- [ Imprint](/imprint/)\n\n- [ Privacy Policy](/privacy-policy/)\n\n- [ Code of Conduct](https://codeberg.org/forgejo/code-of-conduct)\n\n- [](https://keyoxide.org/contact%40forgejo.org)\n\n- [](https://matrix.to/#/#forgejo:matrix.org)\n\n- [](https://floss.social/@forgejo)\n\n- [](/rss.xml)\n\n- [](https://codeberg.org/forgejo/forgejo)\n\nCopyright © 2026 Forgejo authors. Content available under [CC BY-SA 4\\.0](https://creativecommons.org/licenses/by-sa/4.0/), unless stated otherwise.  \n[Forgejo mascot by David Revoy](https://www.peppercarrot.com/en/viewer/misc-src__2022-11-27_Forgejo_by-David-Revoy.html), [CC BY 4\\.0](https://creativecommons.org/licenses/by/4.0/).",
+        "title": "webfetch",
+        "metadata": {
+          "metadata": {
+            "contentType": "text/html",
+            "truncated": false
+          },
+          "content": [
+            {
+              "type": "text",
+              "text": "[ ![Forgejo](/images/forgejo-wordmark.svg)](/)\n\n-\n\n- [ Docs v17.0](/docs/v17.0/)\n\n  - [ Next](/docs/next/admin/)\n\n  - [ Latest (v17.0.0)](/docs/latest/admin/)\n\n  - [ v16.0.6](/docs/v16.0/admin/)\n\n  - [ LTS (v15.0.10)](/docs/v15.0/admin/)\n\n- [ News](/news/)\n\n- [ Releases](/releases/)\n\n- [ FAQ](/faq/)\n\n- [ Donate](https://liberapay.com/forgejo)\n\n- [ Source code](https://codeberg.org/forgejo/forgejo)\n\n- [ RSS feed](/rss.xml)\n\n-\n\n1.\n\n   [ Forgejo Administrator Guide](/docs/latest/admin/)\n\n   1.\n\n      Advanced\n\n   2. [ Command-line interface](/docs/latest/admin/command-line/)\n\n   3. [ Configuration Cheat Sheet](/docs/latest/admin/config-cheat-sheet/)\n\n   4.\n\n      [ Forgejo Actions administrator guide](/docs/latest/admin/actions/)\n\n   5.\n\n      [ Installation](/docs/latest/admin/installation/)\n\n   6. [ Release schedule](/docs/latest/admin/release-schedule/)\n\n   7.\n\n      Setup\n\n   8.\n\n      Troubleshooting\n\n   9. [ Upgrade guide](/docs/latest/admin/upgrade/)\n\n2.\n\n   [ Forgejo Contributor Guide](/docs/latest/contributor/)\n\n3.\n\n   [ Forgejo User Guide](/docs/latest/user/)\n\n# Forgejo Administrator Guide\n\nThese documents are targeted to people who run Forgejo on their machines.\n\n- Installation\n\n  - [Introduction](./installation/)\n\n  - [With Docker](./installation/docker/)\n\n  - [From binary](./installation/binary/)\n\n  - [Database Preparation](./installation/database-preparation/)\n\n  - [Upgrade guide](./upgrade/)\n\n- Important setup steps\n\n  - [Backups and Backup Restoration](./setup/backup/)\n\n  - [Email sending](./setup/email/)\n\n  - [Reverse Proxy](./setup/reverse-proxy/)\n\n  - [Storage](./setup/storage/)\n\n  - [Recommended Settings and Tips](./setup/recommendations/)\n\n  - [LDAP, PAM, FreeIPA](./setup/authentication/)\n\n- Advanced configuration\n\n  - [Adopt existing git directories](./advanced/adopt/)\n\n  - [Interface customization](./advanced/customization/)\n\n  - [Moderation tools](./advanced/moderation/)\n\n  - [Soft-Quota](./advanced/quota/)\n\n  - [Incoming Email](./advanced/incoming-email/)\n\n  - [Search Engines and robots.txt](./advanced/search-engines/)\n\n  - [OAuth2 provider](./advanced/oauth2-provider/)\n\n  - [Instance Commit Signing](./advanced/signing/)\n\n  - [OIDC Group Mappings](./advanced/oidc-group-mappings/)\n\n  - [JWT Key Management and Rotation](./advanced/jwt-key-management-and-rotation)\n\n- Troubleshooting and debugging\n\n  - [Seek Assistance](./troubleshooting/seek-assistance/)\n\n  - [Logging Configuration](./troubleshooting/logging/)\n\n  - [Profiling](./troubleshooting/profiling/)\n\n- Forgejo Actions\n\n  - [Overview](./actions/)\n\n  - [Forgejo Runner installation](./actions/runner-installation/)\n\n  - [Securing Forgejo Actions Deployments](./actions/security/)\n\n  - [Docker Access](./actions/docker-access/)\n\n- Resources and reference\n\n  - [Configuration Cheat Sheet](./config-cheat-sheet/)\n\n  - [CLI reference](./command-line/)\n\n  - [Release schedule](./release-schedule/)\n\nThis page's [content](https://codeberg.org/forgejo/docs/commits/branch/v17.0/docs/admin/index.md) is available under the [CC-BY-SA-4.0](https://spdx.org/licenses/CC-BY-SA-4.0.html) license.  \n[ Edit this page](https://codeberg.org/forgejo/docs/src/branch/next/docs/admin/index.md)\n\n##### Forgejo\n\n- [ Releases](/releases/)\n\n- [ News](/news/)\n\n- [ Fediverse (Mastodon)](https://floss.social/@forgejo)\n\n- [ Chat room (Matrix)](https://matrix.to/#/#forgejo:matrix.org)\n\n- [ RSS feed](/rss.xml)\n\n##### Community\n\n- [ Code](https://codeberg.org/forgejo/forgejo)\n\n- [ Governance](https://codeberg.org/forgejo/governance#meta)\n\n- [ Teams](https://codeberg.org/forgejo/governance/src/branch/main/TEAMS.md)\n\n- [ Identity proofs](https://keyoxide.org/contact%40forgejo.org)\n\n##### Contribute\n\n- [ Issue tracker](https://codeberg.org/forgejo/forgejo/issues)\n\n- [ Developer Matrix room](https://matrix.to/#/#forgejo-development:matrix.org)\n\n- [ Contributor guide](/docs/next/contributor/)\n\n- [ Localization guide](/docs/next/contributor/localization/)\n\n- [ Donate via Liberapay](https://liberapay.com/forgejo)\n\n##### Resources\n\n- [ Status (Forgejo)](https://status.forgejo.org)\n\n- [ Status (Codeberg)](https://status.codeberg.org)\n\n- [ Documentation](/docs/latest/)\n\n- [ Delightful Forgejo](https://codeberg.org/forgejo-contrib/delightful-forgejo)\n\n- [ Professional services](https://codeberg.org/forgejo/professional-services)\n\n##### Legal\n\n- [ Imprint](/imprint/)\n\n- [ Privacy Policy](/privacy-policy/)\n\n- [ Code of Conduct](https://codeberg.org/forgejo/code-of-conduct)\n\n- [](https://keyoxide.org/contact%40forgejo.org)\n\n- [](https://matrix.to/#/#forgejo:matrix.org)\n\n- [](https://floss.social/@forgejo)\n\n- [](/rss.xml)\n\n- [](https://codeberg.org/forgejo/forgejo)\n\nCopyright © 2026 Forgejo authors. Content available under [CC BY-SA 4\\.0](https://creativecommons.org/licenses/by-sa/4.0/), unless stated otherwise.  \n[Forgejo mascot by David Revoy](https://www.peppercarrot.com/en/viewer/misc-src__2022-11-27_Forgejo_by-David-Revoy.html), [CC BY 4\\.0](https://creativecommons.org/licenses/by/4.0/)."
+            }
+          ],
+          "providerCall": {
+            "executed": false
+          },
+          "providerResult": {
+            "executed": false
+          },
+          "rawInput": "{\"url\":\"https://forgejo.org/docs/latest/admin/\"}"
+        },
+        "time": {
+          "start": 1792614010249,
+          "end": 1792614010569
+        }
+      }
+    }
+  },
+  {
+    "type": "tool_use",
+    "timestamp": 1792614011239,
+    "sessionID": "ses_e9fe1275bffeDhAMP051OtNkfW",
+    "part": {
+      "partID": "prt_1601f0dee001Gz7DylJZdviOK5",
+      "sessionID": "ses_e9fe1275bffeDhAMP051OtNkfW",
+      "messageID": "msg_1601f0003001aU4xEc6Qsm70mh",
+      "type": "tool",
+      "id": "call_9b9d473327d9457da83ac1f5",
+      "tool": "websearch",
+      "state": {
+        "status": "completed",
+        "input": {
+          "query": "Forgejo docs backup and restore admin"
+        },
+        "output": "## [Upgrade guide | Forgejo – Beyond coding. We forge.](https://forgejo.org/docs/v16.0/admin/upgrade/)\n\nThis guide helps Forgejo admins perform upgrades safely and provides guidance to troubleshoot problems. It also covers upgrades from Gitea back to version 1.2. ...Release life cycle · Backup · Verify Forgejo works\n\n## [Forgejo CLI | Forgejo – Beyond coding. We forge.](https://forgejo.org/docs/v15.0/admin/command-line/)\n\n# Forgejo CLI\n## admin\n```\nNAME:\n   forgejo admin - Perform common administrative operations\n\nUSAGE:\n   forgejo admin [command [command options]]\n\nCOMMANDS:\n   user                Modify users\n   repo-sync-releases  Synchronize repository releases with tags\n   regenerate          Regenerate specific files\n   auth                Modify external auth providers\n   sendmail            Send a message to all users\n\nOPTIONS:\n   --help, -h                       show help\n   --custom-path string, -C string  Set custom path (defaults to '{WorkPath}/custom')\n   --config string, -c string       Set custom config file (defaults to '{WorkPath}/custom/conf/app.ini')\n   --work-path string, -w string    Set Forgejo's working path (defaults to the directory of the Forgejo binary)\n   --help, -h                       show help\n```\n\n### admin user reset-mfa\n```\nNAME:\n   forgejo admin user reset-mfa - Remove all two-factor authentication configurations for a user\n\nUSAGE:\n   forgejo admin user reset-mfa [options]\n\nOPTIONS:\n   --help, -h                       show help\n   --custom-path string, -C string  Set custom path (defaults to '{WorkPath}/custom')\n   --config string, -c string       Set custom config file (defaults to '{WorkPath}/custom/conf/app.ini')\n   --work-path string, -w string    Set Forgejo's working path (defaults to the directory of the Forgejo binary)\n   --username string, -u string     The user to update\n   --help, -h                       show help\n\nGLOBAL OPTIONS:\n   --custom-path string, -C string  Set custom path (defaults to '{WorkPath}/custom')\n   --config string, -c string       Set custom config file (defaults to '{WorkPath}/custom/conf/app.ini')\n   --work-path string, -w string    Set Forgejo's working path (defaults to the directory of the Forgejo binary)\n```\n\n### admin regenerate\n```\nNAME:\n   forgejo admin regenerate - Regenerate specific files\n\nUSAGE:\n   forgejo admin regenerate [command [command options]]\n\nCOMMANDS:\n   hooks  Regenerate git-hooks\n   keys   Regenerate authorized_keys file\n\nOPTIONS:\n   --help, -h                       show help\n   --custom-path string, -C string  Set custom path (defaults to '{WorkPath}/custom')\n   --config string, -c string       Set custom config file (defaults to '{WorkPath}/custom/conf/app.ini')\n   --work-path string, -w string    Set Forgejo's working path (defaults to the directory of the Forgejo binary)\n   --help, -h                       show help\n```\n\n### admin auth\n```\nNAME:\n   forgejo admin auth - Modify external auth providers\n\nUSAGE:\n   forgejo admin auth [command [command options]]\n\nCOMMANDS:\n   add-oauth           Add new Oauth authentication source\n   update-oauth        Update existing Oauth authentication source\n   add-ldap            Add new LDAP (via Bind DN) authentication source\n   update-ldap         Update existing LDAP (via Bind DN) authentication source\n   add-ldap-simple     Add new LDAP (simple auth) authentication source\n   update-ldap-simple  Update existing LDAP (simple auth) authentication source\n   add-pam             Add new PAM authentication source\n   update-pam          Update existing PAM authentication source\n   add-smtp            Add new SMTP authentication source\n   update-smtp         Update existing SMTP authentication source\n   list                List auth sources\n   delete              Delete specific auth source\n\nOPTIONS:\n   --help, -h                       show help\n   --custom-path string, -C string  Set custom path (defaults to '{WorkPath}/custom')\n   --config string, -c string       Set custom config file (defaults to '{WorkPath}/custom/conf/app.ini')\n   --work-path string, -w string    Set Forgejo's working path (defaults to the directory of the Forgejo binary)\n   --help, -h                       show help\n```\n\n### admin auth update-oauth\n```\nNAME:\n   forgejo admin auth update-oauth - Update existing Oauth authentication source\n\nUSAGE:\n   forgejo admin auth update-oauth [options]\n\nOPTIONS:\n   --help, -h                           show help\n   --custom-path string, -C string      Set custom path (defaults to '{WorkPath}/custom')\n   --config string, -c string           Set custom config file (defaults to '{WorkPath}/custom/conf/app.ini')\n   --work-path string, -w string        Set Forgejo's working path (defaults to the directory of the Forgejo binary)\n   --name string                        Application Name\n   --id int                             ID of authentication source (default: 0)\n   --provider string                    OAuth2 Provider\n   --key string                         Client ID (Key)\n   --secret string                      Client Secret\n   --auto-discover-url string           OpenID Connect Auto Discovery URL (only required when using OpenID Connect as provider)\n   --use-custom-urls string             Use custom URLs for GitLab/GitHub OAuth endpoints (default: \"false\")\n   --custom-tenant-id string            Use custom Tenant ID for OAuth endpoints\n   --custom-auth-url string             Use a custom Authorization URL (option for GitLab/GitHub)\n   --custom-token-url string            Use a custom Token URL (option for GitLab/GitHub)\n   --custom-profile-url string          Use a custom Profile URL (option for GitLab/GitHub)\n   --custom-email-url string            Use a custom Email URL (option for GitHub)\n   --icon-url string                    Custom icon URL for OAuth2 login source\n   --skip-local-2fa                     Set to true to skip local 2fa for users authenticated by this source\n   --scopes string [ --scopes string ]  Scopes to request when to authenticate against this OAuth2 source\n   --attribute-ssh-public-key string    Claim name providing SSH public keys for this source\n   --required-claim-name string         Claim name that has to be set to allow users to login with this source\n   --required-claim-value string        Claim value that has to be set to allow users to login with this source\n   --group-claim-name string            Claim name providing group names for this source\n   --admin-group string                 Group Claim value for administrator users\n   --restricted-group string            Group Claim value for restricted users\n   --group-team-map string              JSON mapping between groups and org teams\n   --group-team-map-removal             Activate automatic team membership removal depending on groups\n   --allow-username-change              Allow users to change their username\n   --quota-group-claim-name string      Claim name providing quota group names for this source\n   --quota-group-map string             JSON mapping between groups and quota groups\n   --quota-group-map-removal            Activate automatic quota group removal depending on groups\n   --help, -h                           show help\n\nGLOBAL OPTIONS:\n   --custom-path string, -C string  Set custom path (defaults to '{WorkPath}/custom')\n   --config string, -c string       Set custom config file (defaults to '{WorkPath}/custom/conf/app.ini')\n   --work-path string, -w string    Set Forgejo's working path (defaults to the directory of the Forgejo binary)\n```\n\n### admin auth update-ldap\n```\nNAME:\n   forgejo admin auth update-ldap - Update existing LDAP (via Bind DN) authentication source\n\nUSAGE:\n   forgejo admin auth update-ldap [options]\n\nOPTIONS:\n   --help, -h                         show help\n   --custom-path string, -C string    Set custom path (defaults to '{WorkPath}/custom')\n   --config string, -c string         Set custom config file (defaults to '{WorkPath}/custom/conf/app.ini')\n   --work-path string, -w string      Set Forgejo's working path (defaults to the directory of the Forgejo binary)\n   --id int                           ID of authentication source (default: 0)\n   --name string                      Authentication name.\n   --not-active                       Deactivate the authentication source.\n   --active                           Activate the authentication source.\n   --security-protocol string         Security protocol name.\n   --skip-tls-verify                  Disable TLS verification.\n   --host string                      The address where the LDAP server can be reached.\n   --port int                         The port to use when connecting to the LDAP server. (default: 0)\n   --user-search-base string          The LDAP base at which user accounts will be searched for.\n   --user-filter string               An LDAP filter declaring how to find the user record that is attempting to authenticate.\n   --admin-filter string              An LDAP filter specifying if a user should be given administrator privileges.\n   --restricted-filter string         An LDAP filter specifying if a user should be given restricted status.\n   --allow-deactivate-all             Allow empty search results to deactivate all users.\n   --username-attribute string        The attribute of the user’s LDAP record containing the user name.\n   --firstname-attribute string       The attribute of the user’s LDAP record containing the user’s first name.\n   --surname-attribute string         The attribute of the user’s LDAP record containing the user’s surname.\n   --email-attribute string           The attribute of the user’s LDAP record containing the user’s email address.\n   --public-ssh-key-attribute string  The attribute of the user’s LDAP record containing the user’s public ssh key.\n   --skip-local-2fa                   Set to true to skip local 2fa for users authenticated by this source\n   --avatar-attribute string          The attribute of the user’s LDAP record containing the user’s avatar.\n   --bind-dn string                   The DN to bind to the LDAP server with when searching for the user.\n   --bind-password string             The password for the Bind DN, if any.\n   --attributes-in-bind               Fetch attributes in bind DN context.\n   --synchronize-users                Enable user synchronization.\n   --disable-synchronize-users        Disable user synchronization.\n   --page-size uint                   Search page size. (default: 0)\n   --help, -h                         show help\n\nGLOBAL OPTIONS:\n   --custom-path string, -C string  Set custom path (defaults to '{WorkPath}/custom')\n   --config string, -c string       Set custom config file (defaults to '{WorkPath}/custom/conf/app.ini')\n   --work-path string, -w string    Set Forgejo's working path (defaults to the directory of the Forgejo binary)\n```\n\n### admin auth update-pam\n```\nNAME:\n   forgejo admin auth update-pam - Update existing PAM authentication source\n\nUSAGE:\n   forgejo admin auth update-pam [options]\n\nOPTIONS:\n   --help, -h                       show help\n   --custom-path string, -C string  Set custom path (defaults to '{WorkPath}/custom')\n   --config string, -c string       Set custom config file (defaults to '{WorkPath}/custom/conf/app.ini')\n   --work-path string, -w string    Set Forgejo's working path (defaults to the directory of the Forgejo binary)\n   --name string                    Application Name\n   --id int                         ID of authentication source (default: 0)\n   --service-name string            PAM service name (default: \"PLAIN\")\n   --email-domain string            PAM email domain\n   --skip-local-2fa                 Skip 2FA to log on.\n   --active                         This Authentication Source is Activated.\n   --help, -h                       show help\n\nGLOBAL OPTIONS:\n   --custom-path string, -C string  Set custom path (defaults to '{WorkPath}/custom')\n   --config string, -c string       Set custom config file (defaults to '{WorkPath}/custom/conf/app.ini')\n   --work-path string, -w string    Set Forgejo's working path (defaults to the directory of the Forgejo binary)\n```\n\n### admin auth delete\n```\nNAME:\n   forgejo admin auth delete - Delete specific auth source\n\nUSAGE:\n   forgejo admin auth delete [options]\n\nOPTIONS:\n   --help, -h                       show help\n   --custom-path string, -C string  Set custom path (defaults to '{WorkPath}/custom')\n   --config string, -c string       Set custom config file (defaults to '{WorkPath}/custom/conf/app.ini')\n   --work-path string, -w string    Set Forgejo's working path (defaults to the directory of the Forgejo binary)\n   --id int                         ID of authentication source (default: 0)\n   --help, -h                       show help\n\nGLOBAL OPTIONS:\n   --custom-path string, -C string  Set custom path (defaults to '{WorkPath}/custom')\n   --config string, -c string       Set custom config file (defaults to '{WorkPath}/custom/conf/app.ini')\n   --work-path string, -w string    Set Forgejo's working path (defaults to the directory of the Forgejo binary)\n```\n\n## doctor\n### doctor recreate-table\n```\nNAME:\n   forgejo doctor recreate-table - Recreate tables from XORM definitions and copy the data.\n\nUSAGE:\n   forgejo doctor recreate-table [options] [TABLE]... : (TABLEs to recreate - leave blank for all)\n\nDESCRIPTION:\n   The database definitions Forgejo uses change across versions, sometimes changing default values and leaving old unused columns.\n\n   This command will cause Xorm to recreate tables, copying over the data and deleting the old table.\n\n   You should back-up your database before doing this and ensure that your database is up-to-date first.\n\nOPTIONS:\n   --help, -h                       show help\n   --custom-path string, -C string  Set custom path (defaults to '{WorkPath}/custom')\n   --config string, -c string       Set custom config file (defaults to '{WorkPath}/custom/conf/app.ini')\n   --work-path string, -w string    Set Forgejo's working path (defaults to the directory of the Forgejo binary)\n   --debug                          Print SQL commands sent\n   --help, -h                       show help\n\nGLOBAL OPTIONS:\n   --custom-path string, -C string  Set custom path (defaults to '{WorkPath}/custom')\n   --config string, -c string       Set custom config file (defaults to '{WorkPath}/custom/conf/app.ini')\n   --work-path string, -w string    Set Forgejo's working path (defaults to the directory of the Forgejo binary)\n```\n\n## restore-repo\n```\nNAME:\n   forgejo restore-repo - Restore the repository from disk\n\nUSAGE:\n   forgejo restore-repo [options]\n\nDESCRIPTION:\n   This is a command for restoring the repository data.\n\nOPTIONS:\n   --help, -h                       show help\n   --custom-path string, -C string  Set custom path (defaults to '{WorkPath}/custom')\n   --config string, -c string       Set custom config file (defaults to '{WorkPath}/custom/conf/app.ini')\n   --work-path string, -w string    Set Forgejo's working path (defaults to the directory of the Forgejo binary)\n   --repo_dir string, -r string     Repository dir path to restore from (default: \"./data\")\n   --owner_name string              Restore destination owner name\n   --repo_name string               Restore destination repository name\n   --units string                   Which items will be restored, one or more units should be separated as comma.\n      wiki, issues, labels, releases, release_assets, milestones, pull_requests, comments are allowed. Empty means all units.\n   --validation  Sanity check the content of the files before trying to load them\n   --help, -h    show help\n\nGLOBAL OPTIONS:\n   --custom-path string, -C string  Set custom path (defaults to '{WorkPath}/custom')\n   --config string, -c string       Set custom config file (defaults to '{WorkPath}/custom/conf/app.ini')\n   --work-path string, -w string    Set Forgejo's working path (defaults to the directory of the Forgejo binary)\n```\n\n## [Forgejo Administrator Guide | Forgejo – Beyond coding. We forge.](https://forgejo.org/docs/v17.0/admin/)\n\nForgejo Administrator Guide · Backups and Backup Restoration · Email sending · Reverse Proxy · Storage · Recommended Settings and Tips · LDAP, PAM, FreeIPA.\n\n## [Upgrade guide | Forgejo – Beyond coding. We forge.](https://forgejo.org/docs/v17.0/admin/upgrade/)\n\n# Upgrade guide\n## When upgrading from … (known problematic versions or upgrade paths)\n```\nexport REPO_PATH=\"/path/to/forgejo/data/forgejo-repositories\"\n```\n\n## [Configuration Cheat Sheet | Forgejo – Beyond coding. We forge.](https://forgejo.org/docs/v15.0/admin/config-cheat-sheet/)\n\nThis is a cheat sheet for the Forgejo configuration file. It contains most of the settings that can be configured as well as their default values. ized Key ...\n\n## [GitHub - gelez/forgejo_backup: Init, backup, restore scripts for Forgejo + ...](https://github.com/gelez/forgejo_backup)\n\n# forgejo_backup\n## Repository Contents\n| Script | Purpose |\n|-|-|\n| `restore_forgejo.sh` | Restore from ZIP dump (DB + files) |\n\n## Backup Forgejo (backup_forgejo.sh)\n### Example\n```\n./backup_forgejo.sh --container forgejo_serv --backup-dir /your/backup/path/for/forgejo\n```\n\n## [Forgejo Actions administrator guide](https://forgejo.org/docs/v16.0/admin/actions/)\n\n# Forgejo Actions administrator guide\n## Forgejo Settings\n### Enabling/Disabling\n```\n[actions]\nENABLED = false\n```\n\n### Storage\n#### `job` logs\n```\n[actions]\nLOG_RETENTION_DAYS = 365\n```\n\n## [Restoring a Forgejo backup - Arjen Wiersma](https://arjenwiersma.nl/restoring-a-forgejo-backup)\n\nRestoring a Forgejo backup — The restore is most easily done by copying the dump into the image and restoring it: Remember to run these ...",
+        "title": "websearch",
+        "metadata": {
+          "metadata": {
+            "provider": "firecrawl",
+            "truncated": false
+          },
+          "content": [
+            {
+              "type": "text",
+              "text": "## [Upgrade guide | Forgejo – Beyond coding. We forge.](https://forgejo.org/docs/v16.0/admin/upgrade/)\n\nThis guide helps Forgejo admins perform upgrades safely and provides guidance to troubleshoot problems. It also covers upgrades from Gitea back to version 1.2. ...Release life cycle · Backup · Verify Forgejo works\n\n## [Forgejo CLI | Forgejo – Beyond coding. We forge.](https://forgejo.org/docs/v15.0/admin/command-line/)\n\n# Forgejo CLI\n## admin\n```\nNAME:\n   forgejo admin - Perform common administrative operations\n\nUSAGE:\n   forgejo admin [command [command options]]\n\nCOMMANDS:\n   user                Modify users\n   repo-sync-releases  Synchronize repository releases with tags\n   regenerate          Regenerate specific files\n   auth                Modify external auth providers\n   sendmail            Send a message to all users\n\nOPTIONS:\n   --help, -h                       show help\n   --custom-path string, -C string  Set custom path (defaults to '{WorkPath}/custom')\n   --config string, -c string       Set custom config file (defaults to '{WorkPath}/custom/conf/app.ini')\n   --work-path string, -w string    Set Forgejo's working path (defaults to the directory of the Forgejo binary)\n   --help, -h                       show help\n```\n\n### admin user reset-mfa\n```\nNAME:\n   forgejo admin user reset-mfa - Remove all two-factor authentication configurations for a user\n\nUSAGE:\n   forgejo admin user reset-mfa [options]\n\nOPTIONS:\n   --help, -h                       show help\n   --custom-path string, -C string  Set custom path (defaults to '{WorkPath}/custom')\n   --config string, -c string       Set custom config file (defaults to '{WorkPath}/custom/conf/app.ini')\n   --work-path string, -w string    Set Forgejo's working path (defaults to the directory of the Forgejo binary)\n   --username string, -u string     The user to update\n   --help, -h                       show help\n\nGLOBAL OPTIONS:\n   --custom-path string, -C string  Set custom path (defaults to '{WorkPath}/custom')\n   --config string, -c string       Set custom config file (defaults to '{WorkPath}/custom/conf/app.ini')\n   --work-path string, -w string    Set Forgejo's working path (defaults to the directory of the Forgejo binary)\n```\n\n### admin regenerate\n```\nNAME:\n   forgejo admin regenerate - Regenerate specific files\n\nUSAGE:\n   forgejo admin regenerate [command [command options]]\n\nCOMMANDS:\n   hooks  Regenerate git-hooks\n   keys   Regenerate authorized_keys file\n\nOPTIONS:\n   --help, -h                       show help\n   --custom-path string, -C string  Set custom path (defaults to '{WorkPath}/custom')\n   --config string, -c string       Set custom config file (defaults to '{WorkPath}/custom/conf/app.ini')\n   --work-path string, -w string    Set Forgejo's working path (defaults to the directory of the Forgejo binary)\n   --help, -h                       show help\n```\n\n### admin auth\n```\nNAME:\n   forgejo admin auth - Modify external auth providers\n\nUSAGE:\n   forgejo admin auth [command [command options]]\n\nCOMMANDS:\n   add-oauth           Add new Oauth authentication source\n   update-oauth        Update existing Oauth authentication source\n   add-ldap            Add new LDAP (via Bind DN) authentication source\n   update-ldap         Update existing LDAP (via Bind DN) authentication source\n   add-ldap-simple     Add new LDAP (simple auth) authentication source\n   update-ldap-simple  Update existing LDAP (simple auth) authentication source\n   add-pam             Add new PAM authentication source\n   update-pam          Update existing PAM authentication source\n   add-smtp            Add new SMTP authentication source\n   update-smtp         Update existing SMTP authentication source\n   list                List auth sources\n   delete              Delete specific auth source\n\nOPTIONS:\n   --help, -h                       show help\n   --custom-path string, -C string  Set custom path (defaults to '{WorkPath}/custom')\n   --config string, -c string       Set custom config file (defaults to '{WorkPath}/custom/conf/app.ini')\n   --work-path string, -w string    Set Forgejo's working path (defaults to the directory of the Forgejo binary)\n   --help, -h                       show help\n```\n\n### admin auth update-oauth\n```\nNAME:\n   forgejo admin auth update-oauth - Update existing Oauth authentication source\n\nUSAGE:\n   forgejo admin auth update-oauth [options]\n\nOPTIONS:\n   --help, -h                           show help\n   --custom-path string, -C string      Set custom path (defaults to '{WorkPath}/custom')\n   --config string, -c string           Set custom config file (defaults to '{WorkPath}/custom/conf/app.ini')\n   --work-path string, -w string        Set Forgejo's working path (defaults to the directory of the Forgejo binary)\n   --name string                        Application Name\n   --id int                             ID of authentication source (default: 0)\n   --provider string                    OAuth2 Provider\n   --key string                         Client ID (Key)\n   --secret string                      Client Secret\n   --auto-discover-url string           OpenID Connect Auto Discovery URL (only required when using OpenID Connect as provider)\n   --use-custom-urls string             Use custom URLs for GitLab/GitHub OAuth endpoints (default: \"false\")\n   --custom-tenant-id string            Use custom Tenant ID for OAuth endpoints\n   --custom-auth-url string             Use a custom Authorization URL (option for GitLab/GitHub)\n   --custom-token-url string            Use a custom Token URL (option for GitLab/GitHub)\n   --custom-profile-url string          Use a custom Profile URL (option for GitLab/GitHub)\n   --custom-email-url string            Use a custom Email URL (option for GitHub)\n   --icon-url string                    Custom icon URL for OAuth2 login source\n   --skip-local-2fa                     Set to true to skip local 2fa for users authenticated by this source\n   --scopes string [ --scopes string ]  Scopes to request when to authenticate against this OAuth2 source\n   --attribute-ssh-public-key string    Claim name providing SSH public keys for this source\n   --required-claim-name string         Claim name that has to be set to allow users to login with this source\n   --required-claim-value string        Claim value that has to be set to allow users to login with this source\n   --group-claim-name string            Claim name providing group names for this source\n   --admin-group string                 Group Claim value for administrator users\n   --restricted-group string            Group Claim value for restricted users\n   --group-team-map string              JSON mapping between groups and org teams\n   --group-team-map-removal             Activate automatic team membership removal depending on groups\n   --allow-username-change              Allow users to change their username\n   --quota-group-claim-name string      Claim name providing quota group names for this source\n   --quota-group-map string             JSON mapping between groups and quota groups\n   --quota-group-map-removal            Activate automatic quota group removal depending on groups\n   --help, -h                           show help\n\nGLOBAL OPTIONS:\n   --custom-path string, -C string  Set custom path (defaults to '{WorkPath}/custom')\n   --config string, -c string       Set custom config file (defaults to '{WorkPath}/custom/conf/app.ini')\n   --work-path string, -w string    Set Forgejo's working path (defaults to the directory of the Forgejo binary)\n```\n\n### admin auth update-ldap\n```\nNAME:\n   forgejo admin auth update-ldap - Update existing LDAP (via Bind DN) authentication source\n\nUSAGE:\n   forgejo admin auth update-ldap [options]\n\nOPTIONS:\n   --help, -h                         show help\n   --custom-path string, -C string    Set custom path (defaults to '{WorkPath}/custom')\n   --config string, -c string         Set custom config file (defaults to '{WorkPath}/custom/conf/app.ini')\n   --work-path string, -w string      Set Forgejo's working path (defaults to the directory of the Forgejo binary)\n   --id int                           ID of authentication source (default: 0)\n   --name string                      Authentication name.\n   --not-active                       Deactivate the authentication source.\n   --active                           Activate the authentication source.\n   --security-protocol string         Security protocol name.\n   --skip-tls-verify                  Disable TLS verification.\n   --host string                      The address where the LDAP server can be reached.\n   --port int                         The port to use when connecting to the LDAP server. (default: 0)\n   --user-search-base string          The LDAP base at which user accounts will be searched for.\n   --user-filter string               An LDAP filter declaring how to find the user record that is attempting to authenticate.\n   --admin-filter string              An LDAP filter specifying if a user should be given administrator privileges.\n   --restricted-filter string         An LDAP filter specifying if a user should be given restricted status.\n   --allow-deactivate-all             Allow empty search results to deactivate all users.\n   --username-attribute string        The attribute of the user’s LDAP record containing the user name.\n   --firstname-attribute string       The attribute of the user’s LDAP record containing the user’s first name.\n   --surname-attribute string         The attribute of the user’s LDAP record containing the user’s surname.\n   --email-attribute string           The attribute of the user’s LDAP record containing the user’s email address.\n   --public-ssh-key-attribute string  The attribute of the user’s LDAP record containing the user’s public ssh key.\n   --skip-local-2fa                   Set to true to skip local 2fa for users authenticated by this source\n   --avatar-attribute string          The attribute of the user’s LDAP record containing the user’s avatar.\n   --bind-dn string                   The DN to bind to the LDAP server with when searching for the user.\n   --bind-password string             The password for the Bind DN, if any.\n   --attributes-in-bind               Fetch attributes in bind DN context.\n   --synchronize-users                Enable user synchronization.\n   --disable-synchronize-users        Disable user synchronization.\n   --page-size uint                   Search page size. (default: 0)\n   --help, -h                         show help\n\nGLOBAL OPTIONS:\n   --custom-path string, -C string  Set custom path (defaults to '{WorkPath}/custom')\n   --config string, -c string       Set custom config file (defaults to '{WorkPath}/custom/conf/app.ini')\n   --work-path string, -w string    Set Forgejo's working path (defaults to the directory of the Forgejo binary)\n```\n\n### admin auth update-pam\n```\nNAME:\n   forgejo admin auth update-pam - Update existing PAM authentication source\n\nUSAGE:\n   forgejo admin auth update-pam [options]\n\nOPTIONS:\n   --help, -h                       show help\n   --custom-path string, -C string  Set custom path (defaults to '{WorkPath}/custom')\n   --config string, -c string       Set custom config file (defaults to '{WorkPath}/custom/conf/app.ini')\n   --work-path string, -w string    Set Forgejo's working path (defaults to the directory of the Forgejo binary)\n   --name string                    Application Name\n   --id int                         ID of authentication source (default: 0)\n   --service-name string            PAM service name (default: \"PLAIN\")\n   --email-domain string            PAM email domain\n   --skip-local-2fa                 Skip 2FA to log on.\n   --active                         This Authentication Source is Activated.\n   --help, -h                       show help\n\nGLOBAL OPTIONS:\n   --custom-path string, -C string  Set custom path (defaults to '{WorkPath}/custom')\n   --config string, -c string       Set custom config file (defaults to '{WorkPath}/custom/conf/app.ini')\n   --work-path string, -w string    Set Forgejo's working path (defaults to the directory of the Forgejo binary)\n```\n\n### admin auth delete\n```\nNAME:\n   forgejo admin auth delete - Delete specific auth source\n\nUSAGE:\n   forgejo admin auth delete [options]\n\nOPTIONS:\n   --help, -h                       show help\n   --custom-path string, -C string  Set custom path (defaults to '{WorkPath}/custom')\n   --config string, -c string       Set custom config file (defaults to '{WorkPath}/custom/conf/app.ini')\n   --work-path string, -w string    Set Forgejo's working path (defaults to the directory of the Forgejo binary)\n   --id int                         ID of authentication source (default: 0)\n   --help, -h                       show help\n\nGLOBAL OPTIONS:\n   --custom-path string, -C string  Set custom path (defaults to '{WorkPath}/custom')\n   --config string, -c string       Set custom config file (defaults to '{WorkPath}/custom/conf/app.ini')\n   --work-path string, -w string    Set Forgejo's working path (defaults to the directory of the Forgejo binary)\n```\n\n## doctor\n### doctor recreate-table\n```\nNAME:\n   forgejo doctor recreate-table - Recreate tables from XORM definitions and copy the data.\n\nUSAGE:\n   forgejo doctor recreate-table [options] [TABLE]... : (TABLEs to recreate - leave blank for all)\n\nDESCRIPTION:\n   The database definitions Forgejo uses change across versions, sometimes changing default values and leaving old unused columns.\n\n   This command will cause Xorm to recreate tables, copying over the data and deleting the old table.\n\n   You should back-up your database before doing this and ensure that your database is up-to-date first.\n\nOPTIONS:\n   --help, -h                       show help\n   --custom-path string, -C string  Set custom path (defaults to '{WorkPath}/custom')\n   --config string, -c string       Set custom config file (defaults to '{WorkPath}/custom/conf/app.ini')\n   --work-path string, -w string    Set Forgejo's working path (defaults to the directory of the Forgejo binary)\n   --debug                          Print SQL commands sent\n   --help, -h                       show help\n\nGLOBAL OPTIONS:\n   --custom-path string, -C string  Set custom path (defaults to '{WorkPath}/custom')\n   --config string, -c string       Set custom config file (defaults to '{WorkPath}/custom/conf/app.ini')\n   --work-path string, -w string    Set Forgejo's working path (defaults to the directory of the Forgejo binary)\n```\n\n## restore-repo\n```\nNAME:\n   forgejo restore-repo - Restore the repository from disk\n\nUSAGE:\n   forgejo restore-repo [options]\n\nDESCRIPTION:\n   This is a command for restoring the repository data.\n\nOPTIONS:\n   --help, -h                       show help\n   --custom-path string, -C string  Set custom path (defaults to '{WorkPath}/custom')\n   --config string, -c string       Set custom config file (defaults to '{WorkPath}/custom/conf/app.ini')\n   --work-path string, -w string    Set Forgejo's working path (defaults to the directory of the Forgejo binary)\n   --repo_dir string, -r string     Repository dir path to restore from (default: \"./data\")\n   --owner_name string              Restore destination owner name\n   --repo_name string               Restore destination repository name\n   --units string                   Which items will be restored, one or more units should be separated as comma.\n      wiki, issues, labels, releases, release_assets, milestones, pull_requests, comments are allowed. Empty means all units.\n   --validation  Sanity check the content of the files before trying to load them\n   --help, -h    show help\n\nGLOBAL OPTIONS:\n   --custom-path string, -C string  Set custom path (defaults to '{WorkPath}/custom')\n   --config string, -c string       Set custom config file (defaults to '{WorkPath}/custom/conf/app.ini')\n   --work-path string, -w string    Set Forgejo's working path (defaults to the directory of the Forgejo binary)\n```\n\n## [Forgejo Administrator Guide | Forgejo – Beyond coding. We forge.](https://forgejo.org/docs/v17.0/admin/)\n\nForgejo Administrator Guide · Backups and Backup Restoration · Email sending · Reverse Proxy · Storage · Recommended Settings and Tips · LDAP, PAM, FreeIPA.\n\n## [Upgrade guide | Forgejo – Beyond coding. We forge.](https://forgejo.org/docs/v17.0/admin/upgrade/)\n\n# Upgrade guide\n## When upgrading from … (known problematic versions or upgrade paths)\n```\nexport REPO_PATH=\"/path/to/forgejo/data/forgejo-repositories\"\n```\n\n## [Configuration Cheat Sheet | Forgejo – Beyond coding. We forge.](https://forgejo.org/docs/v15.0/admin/config-cheat-sheet/)\n\nThis is a cheat sheet for the Forgejo configuration file. It contains most of the settings that can be configured as well as their default values. ized Key ...\n\n## [GitHub - gelez/forgejo_backup: Init, backup, restore scripts for Forgejo + ...](https://github.com/gelez/forgejo_backup)\n\n# forgejo_backup\n## Repository Contents\n| Script | Purpose |\n|-|-|\n| `restore_forgejo.sh` | Restore from ZIP dump (DB + files) |\n\n## Backup Forgejo (backup_forgejo.sh)\n### Example\n```\n./backup_forgejo.sh --container forgejo_serv --backup-dir /your/backup/path/for/forgejo\n```\n\n## [Forgejo Actions administrator guide](https://forgejo.org/docs/v16.0/admin/actions/)\n\n# Forgejo Actions administrator guide\n## Forgejo Settings\n### Enabling/Disabling\n```\n[actions]\nENABLED = false\n```\n\n### Storage\n#### `job` logs\n```\n[actions]\nLOG_RETENTION_DAYS = 365\n```\n\n## [Restoring a Forgejo backup - Arjen Wiersma](https://arjenwiersma.nl/restoring-a-forgejo-backup)\n\nRestoring a Forgejo backup — The restore is most easily done by copying the dump into the image and restoring it: Remember to run these ..."
+            }
+          ],
+          "providerCall": {
+            "executed": false
+          },
+          "providerResult": {
+            "executed": false
+          },
+          "rawInput": "{\"query\":\"Forgejo docs backup and restore admin\"}"
+        },
+        "time": {
+          "start": 1792614010350,
+          "end": 1792614011239
+        }
+      }
+    }
+  },
+  {
+    "type": "step_finish",
+    "timestamp": 1792614011246,
+    "sessionID": "ses_e9fe1275bffeDhAMP051OtNkfW",
+    "part": {
+      "id": "prt_1601f116e0016xs5Is1mHh4dtt",
+      "sessionID": "ses_e9fe1275bffeDhAMP051OtNkfW",
+      "messageID": "msg_1601f0003001aU4xEc6Qsm70mh",
+      "type": "step-finish",
+      "reason": "tool-calls",
+      "snapshot": "f443e4ea664ae5404304e9ca2e2f3a6c8ad110c9",
+      "cost": 0.000969888,
+      "tokens": {
+        "input": 1476,
+        "output": 136,
+        "reasoning": 261,
+        "cache": {
+          "read": 8448,
+          "write": 0
+        }
+      }
+    }
+  },
+  {
+    "type": "step_start",
+    "timestamp": 1792614012240,
+    "sessionID": "ses_e9fe1275bffeDhAMP051OtNkfW",
+    "part": {
+      "id": "prt_1601f1550001d5sBAmMXsfUENS",
+      "sessionID": "ses_e9fe1275bffeDhAMP051OtNkfW",
+      "messageID": "msg_1601f11770013TcP96VovMunta",
+      "type": "step-start",
+      "snapshot": "f443e4ea664ae5404304e9ca2e2f3a6c8ad110c9"
+    }
+  },
+  {
+    "type": "text",
+    "timestamp": 1792614031596,
+    "sessionID": "ses_e9fe1275bffeDhAMP051OtNkfW",
+    "part": {
+      "id": "prt_1601f49e9001zJyPU0X0sBtnKC",
+      "sessionID": "ses_e9fe1275bffeDhAMP051OtNkfW",
+      "messageID": "msg_1601f11770013TcP96VovMunta",
+      "type": "text",
+      "text": "```json\n{\n  \"file\": \"./02_Knowledge/technologies/services/forgejo/backup-restore.md\",\n  \"folder\": \"02_Knowledge\",\n  \"types\": {\n    \"source\": [\n      {\n        \"severity\": \"S1\",\n        \"issue\": \"Cited source is a non-resolving placeholder URL.\",\n        \"evidence\": \"sources[0].url is \\\"https://example.invalid/forgejo/restore\\\" (titled \\\"Forgejo restore guide\\\"), and the same URL is repeated in \\\"Sources / Further Reading\\\". `.invalid` is a reserved TLD (RFC 2606) that can never resolve; fetching it returns a transport error.\",\n        \"fix_hint\": \"Replace with a real, reachable Forgejo restore reference (e.g. the current backup docs page) or remove the entry.\"\n      },\n      {\n        \"severity\": \"S1\",\n        \"issue\": \"Second cited source URL is dead — returns HTTP 404.\",\n        \"evidence\": \"sources[1].url is \\\"https://forgejo.org/docs/latest/admin/backup-and-restore/\\\"; fetching returns 404. Forgejo has moved this page to /docs/latest/admin/setup/backup/ (\\\"Backups and Backup Restoration\\\"), per the current admin index.\",\n        \"fix_hint\": \"Update the URL to the live docs path (https://forgejo.org/docs/latest/admin/setup/backup/).\"\n      },\n      {\n        \"severity\": \"S2\",\n        \"issue\": \"Unsourced factual claim about tooling stability.\",\n        \"evidence\": \"\\\"The restore command has been stable since the fork.\\\" is not supported by any cited source — the only two sources are the placeholder URL and the now-dead docs page.\",\n        \"fix_hint\": \"Cite a source that states this, or drop the claim.\"\n      }\n    ],\n    \"accuracy\": [\n      {\n        \"severity\": \"S2\",\n        \"issue\": \"Stated port contradicts the config example, and the contradiction is self-defeating.\",\n        \"evidence\": \"Prose says \\\"Forgejo's HTTP listener runs on port 3000, so a restore must not change the configured port\\\", but the following block sets `HTTP_PORT = 3001`. Forgejo's default is 3000; a restore under pressure would follow the 3001 block and misconfigure the listener.\",\n        \"fix_hint\": \"Make the example use the actual configured port (3000) and remove the inconsistency, or state which port this homelab uses.\"\n      }\n    ],\n    \"scope\": [\n      {\n        \"severity\": \"S3\",\n        \"issue\": \"Contains technology history / origin story, which is excluded from the PKM.\",\n        \"evidence\": \"\\\"## History\\\" section: \\\"Forgejo was forked from Gitea in 2022, and its backup tooling inherited that lineage.\\\" Root AGENTS.md: \\\"Do not include technology history, origin stories, or sales/marketing points.\\\"\",\n        \"fix_hint\": \"Remove the History section; keep only homelab-relevant restore procedure content.\"\n      }\n    ],\n    \"structure\": [\n      {\n        \"severity\": \"S4\",\n        \"issue\": \"Required frontmatter field `last_audit_date` is missing.\",\n        \"evidence\": \"Frontmatter has title/status/author/date/tags/sources/related_docs but no `last_audit_date`, which the 02_Knowledge frontmatter spec and ./Templates/knowledge/note.md both list as required.\",\n        \"fix_hint\": \"Add `last_audit_date: 2026-10-21` (or the actual audit date).\"\n      },\n      {\n        \"severity\": \"S4\",\n        \"issue\": \"Tags violate the lowercase kebab-case tag rule.\",\n        \"evidence\": \"`tags: [Forgejo, Restore_Procedure]` — uppercase letters and an underscore. Convention (root AGENTS.md): tags must match `^[a-z0-9]+(-[a-z0-9]+)*$`.\",\n        \"fix_hint\": \"Use `tags: [forgejo, restore-procedure]`.\"\n      },\n      {\n        \"severity\": \"S4\",\n        \"issue\": \"Code/config block is not labelled as abstract or real config.\",\n        \"evidence\": \"The ```ini block (`[server]` / `HTTP_PORT = 3001`) carries no label. 02_Knowledge convention: \\\"label each block as 'Example — abstract' or 'Example — real config'\\\".\",\n        \"fix_hint\": \"Add a label comment/heading identifying the block as abstract or real config.\"\n      }\n    ],\n    \"overlap\": [\n      {\n        \"severity\": \"S4\",\n        \"issue\": \"Duplicates claims already made in the sibling note instead of linking to it.\",\n        \"evidence\": \"Sibling ./02_Knowledge/technologies/services/forgejo/dump-schedule.md states \\\"Stop the instance, restore the dump, then start it again\\\" and \\\"Forgejo's HTTP listener runs on port 3000\\\" — both repeated verbatim in this note's Details. related_docs already links the sibling, so the content should be referenced, not copied.\",\n        \"fix_hint\": \"Replace the duplicated restore steps/port statement with a link to ./02_Knowledge/technologies/services/forgejo/dump-schedule.md and keep only restore-specific detail here.\"\n      }\n    ]\n  },\n  \"totals\": { \"S1\": 2, \"S2\": 2, \"S3\": 1, \"S4\": 4 },\n  \"verdict\": \"issues\"\n}\n```",
+      "time": {
+        "start": 1792614025705,
+        "end": 1792614031596
+      }
+    }
+  }
+]

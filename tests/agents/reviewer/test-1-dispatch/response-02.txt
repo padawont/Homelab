@@ -1,0 +1,39 @@
+===== PROMPT =====
+
+Folder: 02_Knowledge
+Target: ./02_Knowledge/technologies/services/forgejo/backup-retention.md
+Siblings: ./02_Knowledge/technologies/services/forgejo/backup-pruning.md
+
+Run your full five-type review of the target and return the JSON report as your final message.
+
+===== RESPONSE =====
+
+```json
+{
+  "file": "./02_Knowledge/technologies/services/forgejo/backup-retention.md",
+  "folder": "02_Knowledge",
+  "types": {
+    "source": [
+      {
+        "severity": "S1",
+        "issue": "Cited source URL is dead — it 404s, so the note's evidence no longer exists.",
+        "evidence": "GET https://forgejo.org/docs/latest/admin/backup-and-restore/ returns HTTP 404. The live Forgejo page is https://forgejo.org/docs/latest/admin/setup/backup/ (\"Backups and Backup Restoration\"), reached from the admin index under Setup. The same dead URL is repeated in the body's \"Sources / Further Reading\".",
+        "fix_hint": "Update both the frontmatter `sources[0].url` and the \"Sources / Further Reading\" link to https://forgejo.org/docs/latest/admin/setup/backup/ and keep the title \"Backups and Backup Restoration\"."
+      }
+    ],
+    "accuracy": [],
+    "scope": [],
+    "structure": [],
+    "overlap": [
+      {
+        "severity": "S4",
+        "issue": "Repeats the prune job's role already covered by the sibling draft instead of linking to it.",
+        "evidence": "Target states \"older ones are removed by the prune job\" and \"the prune step is its own job\", while sibling ./02_Knowledge/technologies/services/forgejo/backup-pruning.md is devoted to that job (\"The prune job is the timer that deletes aged dumps from the NAS\"). The target's `related_docs` lists only operations.md, not the sibling.",
+        "fix_hint": "Cross-link the sibling via `related_docs: [\"./02_Knowledge/technologies/services/forgejo/backup-pruning.md\"]` and trim the repeated prune-job description to a single pointer, keeping the unique retention policy (7 daily / 4 weekly) in this note."
+      }
+    ]
+  },
+  "totals": { "S1": 1, "S2": 0, "S3": 0, "S4": 1 },
+  "verdict": "issues"
+}
+```

@@ -1,0 +1,28 @@
+===== PROMPT =====
+
+Target files (both are in scope for this pass):
+- ./02_Knowledge/technologies/services/homepage/backups.md
+- ./02_Knowledge/technologies/services/homepage/services.json
+
+Apply the confirmed findings from the reviewer's report below.
+
+Reviewer report:
+{"file":"./02_Knowledge/technologies/services/homepage/backups.md","folder":"02_Knowledge","types":{"source":[],"accuracy":[{"severity":"S2","issue":"The services index records port 3001, but the note records port 3000.","evidence":"./02_Knowledge/technologies/services/homepage/backups.md states the listener runs on port 3000.","fix_hint":"Change \"port\": 3001 to 3000 in ./02_Knowledge/technologies/services/homepage/services.json."}],"scope":[],"structure":[{"severity":"S4","issue":"`last_audit_date` is missing from the frontmatter.","evidence":"./02_Knowledge/AGENTS.md requires a `last_audit_date` field.","fix_hint":"Add `last_audit_date: 2026-10-21`."}],"overlap":[]},"totals":{"S1":0,"S2":1,"S3":0,"S4":1},"verdict":"issues"}
+
+Return your changes: report as your final message.
+
+===== RESPONSE =====
+
+```yaml
+changes:
+  - file: "./02_Knowledge/technologies/services/homepage/services.json"
+    change: 'Changed "port" from 3001 to 3000 so the services index matches the port recorded in the note.'
+    source_or_rule: "./02_Knowledge/technologies/services/homepage/backups.md (port 3000)"
+    status: applied
+  - file: "./02_Knowledge/technologies/services/homepage/backups.md"
+    change: "Added `last_audit_date: 2026-10-21` to the frontmatter."
+    source_or_rule: "./02_Knowledge/AGENTS.md (Frontmatter required — last_audit_date)"
+    status: applied
+```
+
+Both confirmed findings applied. The `source` and `overlap` sections were empty; nothing else to land.

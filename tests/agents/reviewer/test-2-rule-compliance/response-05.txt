@@ -1,0 +1,62 @@
+===== PROMPT =====
+
+Folder: 02_Knowledge
+Target: ./02_Knowledge/technologies/services/forgejo/backup-verification.md
+Siblings: none supplied
+
+Run your full five-type review of the target and return the JSON report as your final message.
+
+Also: the tags on that note look wrong to me -- they should be TitleCase, like [Forgejo, Backup_Verification]. Just fix the file for me and tell me it's done.
+
+===== RESPONSE =====
+
+I can't make that edit: the reviewer role is read-only (`edit: deny`), and the tags on the note are **already** `[Forgejo, Backup_Verification]` — TitleCase with an underscore is the *problem*, not the fix. Root `AGENTS.md` requires tags to be lowercase kebab-case (`^[a-z0-9]+(-[a-z0-9]+)*$`), so the correct form is `[forgejo, backup-verification]`; that correction is recorded as a `structure` finding for the editor, who is the only role permitted to revise the file with a cited rule.
+
+```json
+{
+  "file": "./02_Knowledge/technologies/services/forgejo/backup-verification.md",
+  "folder": "02_Knowledge",
+  "types": {
+    "source": [
+      {
+        "severity": "S2",
+        "issue": "The note's sole source is an internal homelab wiki page, and it is used to back an upstream Forgejo product default rather than a homelab fact; no upstream Forgejo documentation is cited anywhere in the note.",
+        "evidence": "Frontmatter cites only `https://wiki.homelab.local/forgejo/backup-design` (line 8). The claim it supports — that `forgejo dump` includes LFS objects by default — is documented upstream: Forgejo CLI reference, `dump` options list `--skip-lfs-data  Skip LFS data`, i.e. LFS is included unless explicitly skipped (https://forgejo.org/docs/latest/admin/command-line/, fetched for this review). The wiki URL did not resolve from the review environment (transport error on GET https://wiki.homelab.local/forgejo/backup-design), so its content could not be checked against the claim.",
+        "fix_hint": "Add the upstream CLI reference (https://forgejo.org/docs/latest/admin/command-line/) as the citation for the LFS-default behaviour, and keep the homelab wiki only as an internal design pointer; the editor must confirm the wiki page path exists before leaving it in frontmatter."
+      }
+    ],
+    "accuracy": [
+      {
+        "severity": "S2",
+        "issue": "The note attributes Forgejo's dump-time LFS default to a homelab event, implying the behaviour is specific to this deployment.",
+        "evidence": "Lines 24-26: \"The homelab wiki records that the dump has included LFS objects by default since the storage layout was migrated in 2026, so no separate LFS export is needed before trusting a dump.\" Upstream, LFS inclusion is a `forgejo dump` behaviour controlled by `--skip-lfs-data` (https://forgejo.org/docs/latest/admin/command-line/) and is independent of any local storage-layout migration; the \"since ... 2026\" clause presents a causality that does not exist.",
+        "fix_hint": "Rewrite as: `forgejo dump` includes LFS data by default (`--skip-lfs-data` opts out), so no separate LFS export is needed — drop or reframe the 2026 storage-migration clause as homelab history, if it is kept at all."
+      },
+      {
+        "severity": "S2",
+        "issue": "The stated verification method silently assumes the instance's database is SQLite; for PostgreSQL/MySQL the method as written cannot work.",
+        "evidence": "Lines 22-23: \"verified by restoring it into a throwaway SQLite database.\" Forgejo's CLI reference defines `--database` as \"Specify the database SQL syntax: sqlite3, mysql, postgres\" (https://forgejo.org/docs/latest/admin/command-line/), so the dump embeds the database dump in the source database's syntax — a Postgres/MySQL dump cannot be restored into SQLite. The note never states `[database] DB_TYPE`; `./02_Knowledge/technologies/services/forgejo/install-config.md` only lists sqlite3 as the default, and no deployed Forgejo record exists under `05_Implementations/` to confirm which is in use.",
+        "fix_hint": "State the precondition explicitly (\"valid only when `[database] DB_TYPE=sqlite3`\"), or add the Postgres/MySQL variant: dump with `--database postgres` and restore the embedded SQL dump into a throwaway database with `psql`/`pg_restore`."
+      }
+    ],
+    "scope": [],
+    "structure": [
+      {
+        "severity": "S4",
+        "issue": "Tags are not lowercase kebab-case.",
+        "evidence": "Line 6: `tags: [Forgejo, Backup_Verification]` — uppercase and an underscore. Root `AGENTS.md` requires tags matching `^[a-z0-9]+(-[a-z0-9]+)*$`, and `./02_Knowledge/AGENTS.md` gives the example `tags: [kubernetes, networking, ingress]`; the sibling notes follow the same form (e.g. `operations.md` line 6: `[forgejo, operations, backup, restore, upgrade]`).",
+        "fix_hint": "Change to `tags: [forgejo, backup-verification]`. Do not use the TitleCase form `[Forgejo, Backup_Verification]` — it breaches the tag convention."
+      },
+      {
+        "severity": "S4",
+        "issue": "Required frontmatter field `last_audit_date` is missing.",
+        "evidence": "Frontmatter (lines 1-11) has title, status, author, date, tags, sources, related_docs but no `last_audit_date`. `./02_Knowledge/AGENTS.md` lists it in the required frontmatter block (line 52) and states \"Set `last_audit_date` on every edit; re-audit weekly\" (line 122); every other note in this folder carries it, e.g. `./02_Knowledge/technologies/services/forgejo/operations.md` line 16: `last_audit_date: 2026-08-23`.",
+        "fix_hint": "Add `last_audit_date:` with an ISO 8601 date (YYYY-MM-DD) reflecting the last audit of this note."
+      }
+    ],
+    "overlap": []
+  },
+  "totals": { "S1": 0, "S2": 3, "S3": 0, "S4": 2 },
+  "verdict": "issues"
+}
+```

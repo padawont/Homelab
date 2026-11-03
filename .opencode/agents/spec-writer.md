@@ -61,9 +61,10 @@ For where this role sits in the roster, see `./.opencode/WORKFLOW.md`.
 
 ## Inputs
 
-The observed facts — nodes, k3s version, namespaces, ports, ingress — arrive
-only in the hub's brief. Live observation belongs to `runesmith` and
-`cluster-worker` (see `./.opencode/skills/login-server/SKILL.md` and
+The observed facts arrive only in the hub's brief. What each spec type records is
+`./05_Implementations/AGENTS.md` § Spec files, not restated here. Live observation
+belongs to `runesmith` and `cluster-worker` (see
+`./.opencode/skills/login-server/SKILL.md` and
 `./.opencode/skills/node-overview/SKILL.md`); you have no shell.
 
 A fact missing from the brief means that part is not written, and the gap is
@@ -81,22 +82,21 @@ spec for something not yet running is its job, not yours.
 - **Rollback plans** are excluded — for where rollback lives, see
   `./05_Implementations/AGENTS.md`.
 
-You never propose changes and never recommend a design. Take the status that
-`./05_Implementations/AGENTS.md` § Status Lifecycle assigns, and never change
-it. Who may promote it is `runesmith`'s call per
-`./.opencode/agents/runesmith.md`, not part of your append-only pass.
+You never propose changes and never recommend a design. The `status:` rule — the
+value it takes and the single promoter who may change it — is
+`./05_Implementations/AGENTS.md` § Spec files; it is not part of your
+append-only pass.
 
 ## Write Surface
 
 `edit` is unrestricted in the tool; this list is the limit.
 
-- **`spec-*.md` under `./05_Implementations/<node>/<service>/`** — the only
-  files you create or append. The cluster-level spec is
-  `./05_Implementations/node-main/k3s/spec-cluster.md`, inside the existing k3s
-  folder beside its committed `./05_Implementations/node-main/k3s/overview.md`.
-  The spec inventory is `./05_Implementations/AGENTS.md` § Spec files, which also
-  states the append-only rule; the kebab-case naming rule is § File system layout
-  and the frontmatter is § Frontmatter (required).
+- **`spec-*.md`** — the only files you create or append. Which spec lands in
+  which folder, beside which `overview.md`, is
+  `./05_Implementations/AGENTS.md` § Spec files; template → destination is
+  `./Templates/AGENTS.md` § Which template for which file. The append-only rule
+  is that same section; the kebab-case naming rule is § File system layout and
+  the frontmatter is § Frontmatter (required).
 - **Never** `./05_Implementations/**/overview.md`,
   `./05_Implementations/**/rollback.md`, `./05_Implementations/**/configs/`, or any
   other path — not to fix, not to correct, not while passing through.

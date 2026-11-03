@@ -71,7 +71,7 @@ and a `cluster-worker` never launches its successor. `[ HUMAN ]` hangs off
       #1        #2        #3          #4        #5
         |         |         |           |         |
         v         v         v           v         v
-  reviewer-* reviewer-* reviewer-* reviewer-* reviewer-*   one facet set per
+  reviewer-* reviewer-* reviewer-* reviewer-* reviewer-*     one facet set per lane
         |         |         |           |         |
         +---------+---------+-----------+---------+
                             |
@@ -118,7 +118,7 @@ Every spoke owns its own return schema; nothing is restated here.
 | Spoke | Contract | Owner |
 |---|---|---|
 | `worker` | `handoff:` block (`done` / `next` / `blocked`) | `./.opencode/agents/worker.md` |
-| `reviewer-*` | `./.opencode/agents/reviewer-*.md` | `./.opencode/agents/reviewer-{source,accuracy,scope,structure,overlap}.md` |
+| `reviewer-*` | `./.opencode/agents/reviewer-*.md` (the one key each populates); envelope shape per `./.opencode/REVIEW.md` § Facet Report | `./.opencode/agents/reviewer-*.md` for the facet rules; `./.opencode/REVIEW.md` § Facet Report for the shape |
 | merged review report | `./.opencode/REVIEW.md` § Merged Report | `./.opencode/REVIEW.md` |
 | `editor` | `changes:` report | `./.opencode/agents/editor.md` |
 | `spec-writer` | spec report | `./.opencode/agents/spec-writer.md` |
@@ -131,7 +131,7 @@ Every spoke owns its own return schema; nothing is restated here.
 | 10 rounds reached | Stop, report what's still open |
 | 7 consecutive clean rounds | Ask the human: keep / stop all / just this file |
 | A lane blocked | Other lanes continue; batch reports partial |
-| `cluster-worker` step refused | Stop the chain, report the refusal payload — `state_after` present but empty: `applied`, `skipped_already_applied` and `not_run` are empty lists and `observed` says nothing executed |
+| `cluster-worker` step refused | Stop the chain; report the refusal payload — shape owned by `./.opencode/agents/cluster-worker.md` § Refusal |
 | `cluster-worker` step failed | Stop the chain, report `state_after` |
 
 ## Escalation

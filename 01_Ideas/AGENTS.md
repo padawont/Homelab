@@ -80,6 +80,6 @@ No strict structure — freeform markdown. The template provides a starting poin
 ## Conventions
 
 - No formal review needed for `draft → accepted`
-- No stale timeout for `draft` or `accepted` — ideas live indefinitely in this section; once `archived`, an idea moves to `./06_Archive/ideas/` and follows `./06_Archive/AGENTS.md` § Conventions (purged 31 days after archiving)
+- No stale timeout for `draft` or `accepted` — ideas live indefinitely in this section; once `archived`, an idea moves to `./06_Archive/ideas/` and follows `./06_Archive/AGENTS.md` § Conventions
 - When `accepted`, the idea is ready — optionally create a Knowledge note
 - Use `idea-notes.md` for loose thoughts that don't warrant their own file

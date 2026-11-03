@@ -29,7 +29,7 @@ an ADR plus Knowledge note(s) — are owned by `./AGENTS.md` § Dependency Rules
 
 ```
 draft → active
-  L__> retired → (move to ./06_Archive/implementations/)
+  L__> retired → (move to ./06_Archive/implementations/node-main/<service>/)
 ```
 
 - **draft**: Setting up, not yet live
@@ -67,6 +67,11 @@ They live inside the service folder beside `overview.md`, are copied from
 `./Templates/specs/`, and take `status` from the lifecycle above. Append-only
 starts once the file exists: on first fill the template's own placeholder diagram
 is replaced.
+
+The `status:` line is promoted by `runesmith` alone
+(`./.opencode/agents/runesmith.md` § Negative Constraints); the body below it
+remains `spec-writer`'s append-only replacement block and is never edited
+(`./.opencode/agents/spec-writer.md` § Scope Boundary).
 
 ## Frontmatter (required)
 
@@ -159,4 +164,6 @@ Copy from `./Templates/implementations/rollback.md`. Required for every implemen
 - Every folder ships `overview.md` + `rollback.md` (+ `configs/` where applicable)
 - Specs (`spec-*.md`) sit beside `overview.md` and are append-only
 - Rollback procedure lives in `rollback.md`, documented before deploy
-- `active` → `retired` transition: move entire service folder to `./06_Archive/implementations/`
+- `active` → `retired` transition: move entire service folder to
+  `./06_Archive/implementations/node-main/<service>/`, preserving the node level
+  (`./06_Archive/AGENTS.md` § Conventions)

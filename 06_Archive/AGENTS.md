@@ -25,25 +25,15 @@ Example:
 │       └── idea-upgrade-ingress.md
 ├── knowledge/
 ├── research/
-│   └── ingress-comparison/
-│       ├── overview.md
-│       ├── alternatives.md
-│       ├── alternative-traefik.md
-│       ├── alternative-nginx.md
-│       └── alternative-haproxy.md
 ├── adrs/
-├── implementations/
-│   └── node-main/
-│       └── old-service/
-│           ├── overview.md
-│           ├── rollback.md
-│           ├── spec-service-stack.md
-│           └── configs/
+└── implementations/
 ```
 
-Naming follows `./AGENTS.md` § General Conventions; each subfolder mirrors the
-source section's internal structure — see `./03_Research/AGENTS.md` § Conventions and
-`./05_Implementations/AGENTS.md` § Conventions.
+Inside `research/`, a topic folder keeps the shape owned by `./03_Research/AGENTS.md`
+§ File system layout; inside `implementations/`, a service folder keeps the shape owned
+by `./05_Implementations/AGENTS.md` § File system layout. Naming follows
+`./AGENTS.md` § General Conventions, and each source section's archival transition is
+stated in its own § Conventions.
 
 ## Frontmatter (required)
 

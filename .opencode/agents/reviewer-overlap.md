@@ -7,9 +7,8 @@ tags: []
 sources: []
 last_audit_date: 2026-11-03
 related_docs: []
-description: 'Homelab PKM reviewer (overlap): judges only duplication and contradiction
-  against the sibling drafts or wider cross-reference set the hub supplies — link
-  instead of repeat. Read-only, one type, never edits.'
+description: 'Homelab PKM reviewer (overlap): its criterion and band are owned by
+  ./.opencode/REVIEW.md § The Five Facets. Read-only, one type, never edits.'
 mode: subagent
 model: deepseek/deepseek-flash
 permissions:
@@ -68,14 +67,15 @@ row owns its criterion and its band range (S4–S5).
 
 ## Severity Bands
 
-The band scheme is `./.opencode/REVIEW.md` § Severity Bands; the two definitions
-below are this facet's own.
+The band text is owned by `./.opencode/REVIEW.md` § Severity Bands and is not
+restated here. This facet only narrows the range to duplication (S4–S5):
 
-- **S4** — a repeated factual unit — fact, prose claim, table, config block,
-  diagram, procedure, or frontmatter — that duplicates or contradicts another
-  note or ADR and should link to the canonical copy.
-- **S5** — a purely cosmetic duplication: repeated wording or formatting that
-  carries no fact, config or procedure; linking is optional and never blocks.
+- **S4** — the repeated unit is factual — fact, prose claim, table, config block,
+  diagram, procedure, or frontmatter — and duplicates or contradicts another
+  note or ADR whose copy should stay canonical.
+- **S5** — the duplication is purely cosmetic: repeated wording or formatting
+  that carries no fact, config or procedure; linking is optional and never
+  blocks.
 
 Name both sides in `evidence`: the repeated unit and the `./repo/path` that
 already carries it.
@@ -95,8 +95,10 @@ compute the merged verdict, per `./.opencode/REVIEW.md` § Verdict Precedence.
 
 Return exactly the facet envelope of `./.opencode/REVIEW.md` § Facet Report as
 your final message, with only `overlap` populated. That section owns the finding
-fields, the key-presence rule (including never-null values), the 5-finding cap and
-the `fix_hint` constraint the dry-audit consumer reads verbatim. `totals` counts
+fields, the key-presence rule (including never-null values) and the 5-finding cap.
+For the `fix_hint` its dry-audit consumer reads verbatim, use one of
+`link-instead | extract | merge | keep`, per
+`./.opencode/skills/dry-audit/SKILL.md` § 2 · Fan out. `totals` counts
 your `overlap` findings only. Verdict follows `./.opencode/REVIEW.md` § Verdict
 Precedence; this facet can emit no S1 or S2 finding.
 

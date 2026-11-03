@@ -224,10 +224,9 @@ own; the run ends with the Output Contract JSON below.
 
 ## Question Routing Contract
 
-Specialists never ask the human — the rule is owned by
-`./.opencode/WORKFLOW.md` § Escalation. To route a question, load
-`rs-human-responds` and follow its workflow. This agent adds only the lane
-split:
+Question routing is owned by `./.opencode/WORKFLOW.md` § Escalation. To route
+a question, load `rs-human-responds` and follow its workflow. This agent adds
+only the lane split:
 
 - **rs-* lane** — the specialist returns a `needs_input` payload;
   `rs-human-responds` is this contract and applies to no other agent.
@@ -254,7 +253,8 @@ Return exactly this JSON object as your final message:
   "findings": 0, "final_gate": "approved", "failed": {} } }
 ```
 
-- Every key is always present — never omit one, never emit `null`.
+- The always-present / no-null key rule is owned by
+  `./.opencode/REVIEW.md` § Facet Report.
 - `status`: `completed` | `failed`; `final_gate`: `approved` | `rejected` |
   `not_reached`.
 - `failed` is `{}` on success. On failure it carries `stage`, `reason`
@@ -275,6 +275,5 @@ Return exactly this JSON object as your final message:
   (`./.opencode/agents/worker.md` § Inputs; `./05_Implementations/AGENTS.md`
   § Conventions; `./06_Archive/AGENTS.md` § Conventions). A permission-denied
   write means a specialist is missing, not that the permission is too tight.
-- Handoffs follow `./.opencode/WORKFLOW.md` § Coordination Rule; no intermediate
-  orchestrator sits between you and a specialist.
+- Handoffs follow `./.opencode/WORKFLOW.md` § Coordination Rule.
 - Question routing follows the Question Routing Contract above.

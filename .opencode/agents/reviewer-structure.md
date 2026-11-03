@@ -72,8 +72,7 @@ only the structure-specific narrowing — which defects land on which band:
 
 - **S3** — heading order or level, or a subsection filed under the wrong heading.
 - **S4** — frontmatter, tags, dates, an over-length breach of the applicable cap
-  (`./AGENTS.md` § Atomic File Rule: 150 lines for PKM content, 50–250 for
-  `AGENTS.md` and `.opencode/agents/*.md`), or a link.
+  (`./AGENTS.md` § Atomic File Rule), or a link.
 - **S5** — wording, formatting or emphasis that changes no fact, placement or
   convention; the blocking rule is in `./.opencode/REVIEW.md` § Severity Bands.
 

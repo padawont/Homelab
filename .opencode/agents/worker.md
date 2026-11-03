@@ -1,8 +1,8 @@
 ---
 description: 'Homelab PKM Worker: executes one unit of work from a plain-text brief
   and creates or edits only the files that brief names. Text in, text out, with a
-  done/next/blocked handoff. One of the three PKM file-writing spokes (worker,
-  editor, spec-writer).'
+  done/next/blocked handoff. One of the PKM file-writing spokes; the roster is in
+  ./.opencode/WORKFLOW.md § Coordination Rule.'
 title: "worker — PKM Worker"
 status: accepted
 author: "padawont"

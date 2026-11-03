@@ -21,7 +21,7 @@ Personal Knowledge Management system for my homelab.
 | `02_Knowledge/` | General tech concepts, syntax guides, theory | ./02_Knowledge/AGENTS.md |
 | `03_Research/` | Deep dives combining ideas + knowledge into an ADR plan | ./03_Research/AGENTS.md |
 | `04_ADRs/` | Architectural Decision Records with mermaid diagrams | ./04_ADRs/AGENTS.md |
-| `05_Implementations/` | Live running setups: `overview.md`, `rollback.md`, `configs/` | ./05_Implementations/AGENTS.md |
+| `05_Implementations/` | Live running setups — folder contents per `./05_Implementations/AGENTS.md` § Conventions | ./05_Implementations/AGENTS.md |
 | `06_Archive/` | Failed experiments, rejected proposals, retired services | ./06_Archive/AGENTS.md |
 | `Templates/` | Reusable document templates | ./Templates/AGENTS.md |
 
@@ -56,7 +56,7 @@ Each step refines the concept further. At any point, if rejected or abandoned, i
 | **Idea → Knowledge** | Raw concept | Structured reference note |
 | **Knowledge → Research** | Knowledge + Ideas + online docs | Plan for ADR, with alternatives |
 | **Research → ADR** | Research doc | Decision record with mermaid diagrams |
-| **ADR → Implementation** | ADR | Live service: `overview.md` + `rollback.md` (+ `configs/` where applicable) |
+| **ADR → Implementation** | ADR | Live implementation folder — see `./05_Implementations/AGENTS.md` § Conventions |
 | **Any → Archive** | Content of any stage | See `./06_Archive/AGENTS.md` § Conventions |
 
 ### Dependency Rules

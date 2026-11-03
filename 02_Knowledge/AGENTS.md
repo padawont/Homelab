@@ -146,5 +146,5 @@ spec:
 ## Agent Behaviour
 
 Role permissions, handoff contracts, and escalation are shared across sections — see the
-roster in `./.opencode/WORKFLOW.md`; the review facets and the report shape are owned by
-`./.opencode/REVIEW.md` § The Five Facets.
+roster in `./.opencode/WORKFLOW.md`; the review facets are owned by `./.opencode/REVIEW.md`
+§ The Five Facets, and the report shape by § Facet Report.

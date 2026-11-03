@@ -15,7 +15,7 @@ Architectural Decision Records. The final greenlight — committing to a path fo
 
 ## Why have ADRs?
 
-To document why decisions were made. ADRs answer "why did we do it this way?" months or years later. They include mermaid diagrams showing how the solution works and how it fits into the homelab. Alternatives are not discussed here — they were handled in Research.
+To document why decisions were made. ADRs answer "why did we do it this way?" months or years later. They include mermaid diagrams showing how the solution works and how it fits into the homelab. The alternatives that led here live in Research — see `./03_Research/AGENTS.md` § Structure of overview.md.
 
 ## When to create
 

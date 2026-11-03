@@ -73,8 +73,11 @@ fields are not derived from a section AGENTS.md:
   plus body placeholders such as `{Title}`, `{name}`, `{topic}`, `{type}`,
   `{Service Name}`, `{Cluster Name}` and `{Selected / Rejected — reason}`
 - Exception: `./Templates/research/alternatives.md` and
-  `./Templates/research/alternative.md` are body-only fragments with no frontmatter —
-  they are appended inside the `./03_Research/<topic>/` folder beside `overview.md`
+  `./Templates/research/alternative.md` are body-only snippets with no frontmatter — when
+  copied into the `./03_Research/<topic>/` folder beside `overview.md`, wrap each one with
+  the same frontmatter keys as `./Templates/research/overview.md` (`title`, `status`,
+  `author`, `date`, `tags`, `sources`, `references`, `last_audit_date`), as the live
+  research topics do
 - Use `<!-- comment -->` blocks as instructions — strip these when copying
 - Editing rules: `./AGENTS.md` § General Conventions
 - Archive handling: `./06_Archive/AGENTS.md` § Conventions

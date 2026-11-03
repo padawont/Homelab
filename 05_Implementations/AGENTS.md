@@ -1,15 +1,12 @@
 ---
 title: "AGENTS.md — 05_Implementations"
-status: active
+status: accepted
 author: "padawont"
 date: 2026-11-03
 tags: []
-technologies: []
+sources: []
+last_audit_date: 2026-11-03
 related_docs: []
-references:
-  online: []
-  repo: []
-node: ""
 ---
 
 # AGENTS.md — 05_Implementations
@@ -51,7 +48,7 @@ Example:
         └── ingress.yaml
 ```
 
-All names in kebab-case — see `./AGENTS.md` § General Conventions.
+Names follow the repo naming rule (`./AGENTS.md` § General Conventions).
 
 ## Spec files
 
@@ -71,7 +68,7 @@ is replaced.
 The `status:` line is promoted by `runesmith` alone
 (`./.opencode/agents/runesmith.md` § Negative Constraints); the body below it
 remains `spec-writer`'s append-only replacement block and is never edited
-(`./.opencode/agents/spec-writer.md` § Scope Boundary).
+(`./.opencode/agents/spec-writer.md` § Append-Only and Diagrams).
 
 ## Frontmatter (required)
 
@@ -163,3 +160,6 @@ Copy from `./Templates/implementations/rollback.md`. Required for every implemen
 - Link back to governing ADR and relevant Knowledge notes via `related_docs`
 - Every folder ships `overview.md` + `rollback.md` (+ `configs/` where applicable)
 - Document the rollback procedure before deploy
+- Retiring a service moves its folder to `./06_Archive/implementations/node-main/<service>/`
+  with `status: retired` and the archival block added on top — see
+  `./06_Archive/AGENTS.md` § Conventions

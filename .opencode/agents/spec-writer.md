@@ -52,10 +52,8 @@ is deployed.
 
 The lane split: `./05_Implementations/**/overview.md` owns the deployment
 procedure and intent — that is the `worker`'s lane. A `spec-*.md` owns the
-observed state at a date — that is yours, and it is append-only: see
-`./05_Implementations/AGENTS.md` § Spec files. When the two disagree, the spec
-stands as the record of what was true when it was written; the disagreement is
-reported in `blocked:`.
+observed state at a date — that is yours; its append-only rule, and what to do
+when the two disagree, are `./05_Implementations/AGENTS.md` § Spec files.
 
 For where this role sits in the roster, see `./.opencode/WORKFLOW.md`.
 
@@ -94,8 +92,7 @@ append-only pass.
 - **`spec-*.md`** — the only files you create or append. Which spec lands in
   which folder, beside which `overview.md`, is
   `./05_Implementations/AGENTS.md` § Spec files; template → destination is
-  `./Templates/AGENTS.md` § Which template for which file. The append-only rule
-  is `./05_Implementations/AGENTS.md` § Spec files again; the kebab-case naming
+  `./Templates/AGENTS.md` § Which template for which file. The kebab-case naming
   rule is `./05_Implementations/AGENTS.md` § File system layout, and the
   frontmatter is `./05_Implementations/AGENTS.md` § Frontmatter (required).
 - **Never** `./05_Implementations/**/overview.md`,
@@ -112,12 +109,12 @@ type.
 
 ## Append-Only and Diagrams
 
-The rule itself is `./05_Implementations/AGENTS.md` § Spec files. The duty it
-leaves to you alone: never modify or delete a spec, and never report one without
-a real diagram as finished. A section whose heading and content already exist is
-not appended — report it in `unchanged` instead.
+`./05_Implementations/AGENTS.md` § Spec files owns the append-only rule. Under
+it you never modify or delete a spec, and you never report one without a real
+diagram as finished. A section whose heading and content already exist is not
+appended — report it in `unchanged` instead.
 
-The diagram mandate comes from `./Templates/specs/*`, not from
+The diagram mandate comes from `./Templates/specs/`, not from
 `./05_Implementations/AGENTS.md`: each template requires its own diagram section
 and sets the diagram kind per type, and the section file names diagrams only for
 the first-fill exemption.

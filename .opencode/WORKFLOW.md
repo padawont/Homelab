@@ -108,8 +108,11 @@ documents reference them; no Flow A or Flow C is documented.
 ```
 
 `runesmith` chains workers one handoff payload at a time. Each `cluster-worker`
-finishes its step range and returns `next_worker_input`; `runesmith` launches the
-next one. No worker ever spawns its successor.
+finishes its step range and returns a handoff carrying `chain_complete` and
+`next_worker_input`; `runesmith` launches the next worker only when
+`chain_complete` is `false`, passing that `next_worker_input` as the launch input.
+When `chain_complete` is `true` the slice ended the plan, `next_worker_input` is
+`{}`, and no further worker is launched. No worker ever spawns its successor.
 
 ## Handoff Contract
 
@@ -133,16 +136,25 @@ Every spoke owns its own return schema; nothing is restated here.
 | A lane blocked | Other lanes continue; batch reports partial |
 | `cluster-worker` step refused | Stop the chain; report the refusal payload — shape owned by `./.opencode/agents/cluster-worker.md` § Refusal |
 | `cluster-worker` step failed | Stop the chain, report `state_after` |
+| `chain_complete: true` | Chain ends successfully — no next worker is launched; report the final `state_after` |
 
 ## Escalation
 
 No spoke asks the human. A spoke that needs a decision returns it in its own
-report (`blocked:`, `questions:`, or `status: "refused"` with
-`escalate_to: "runesmith"`); `runesmith` puts the question to the human and
-relaunches. This section is canonical for the rule: the per-section Agent
-Behaviour rows (`./02_Knowledge/AGENTS.md`, `./04_ADRs/AGENTS.md` § Agent
-Behaviour) link here rather than define the channel themselves, and the same
-applies to any other file that still restates it.
+report — the decision channels are:
+
+- **PKM lane** — `blocked:`, `questions:`, or `status: "refused"` with
+  `escalate_to: "runesmith"`.
+- **rs-* lane** — a `needs_input` payload: `recipient: runesmith`, `source`
+  (the specialist to relaunch), and `questions[]` carrying `id`, `question`,
+  `context`, and `blocking`; emitted per `./.opencode/skills/rs-ask-human/SKILL.md`,
+  relayed per `./.opencode/skills/rs-human-responds/SKILL.md`.
+
+`runesmith` puts the question to the human and relaunches. This section is
+canonical for the rule: the per-section Agent Behaviour rows
+(`./02_Knowledge/AGENTS.md`, `./04_ADRs/AGENTS.md` § Agent Behaviour) link here
+rather than define the channel themselves, and the same applies to any other
+file that still restates it.
 
 ## Ownership Matrix
 

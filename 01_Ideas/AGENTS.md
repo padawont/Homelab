@@ -81,5 +81,5 @@ No strict structure — freeform markdown. The template provides a starting poin
 
 - No formal review needed for `draft → accepted`
 - No stale timeout for `draft` or `accepted` — ideas live indefinitely in this section; once `archived`, an idea moves to `./06_Archive/ideas/` and follows `./06_Archive/AGENTS.md` § Conventions
-- When `accepted`, the idea is ready — optionally create a Knowledge note
+- When `accepted` (worth pursuing), what happens next is the pipeline step owned by `./AGENTS.md` § Content Pipeline
 - Use `idea-notes.md` for loose thoughts that don't warrant their own file

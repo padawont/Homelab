@@ -11,7 +11,7 @@ related_docs: []
 
 # AGENTS.md — 03_Research
 
-Deep dives that combine Ideas + Knowledge + online docs into a concrete plan for an ADR.
+Section purpose is owned by `./AGENTS.md` § Repository Structure (row `03_Research/`).
 
 ## Why have research?
 
@@ -34,7 +34,7 @@ draft → accepted → (proceed to 04_ADRs/)
 
 ## Inputs
 
-Knowledge + Ideas + online docs, per `./AGENTS.md` § Content Pipeline.
+`./AGENTS.md` § Content Pipeline — row **Knowledge → Research**.
 
 ## File system layout
 
@@ -53,9 +53,11 @@ Names follow the repo naming rule (`./AGENTS.md` § General Conventions).
 
 ## Frontmatter (required)
 
-Applies to `overview.md` only. The two fragments — `alternatives.md` and
-`alternative-{name}.md` — are body-only and carry no frontmatter, per
-`./Templates/AGENTS.md` § Conventions.
+Applies to every file in the topic folder — `overview.md`, `alternatives.md` and
+`alternative-{name}.md` all carry the same keys below. The `alternatives.md` and
+`alternative.md` templates are body-only snippets, per `./Templates/AGENTS.md`
+§ Conventions: when copying one, wrap its body in this frontmatter before saving it as
+`alternatives.md` or `alternative-{name}.md`.
 
 ```yaml
 ---
@@ -93,7 +95,9 @@ last_audit_date: 2026-08-13
 ---
 ```
 
-See `./Templates/research/overview.md` for a copyable template.
+See `./Templates/research/overview.md`, `./Templates/research/alternatives.md` and
+`./Templates/research/alternative.md` for copyable templates — the two fragment templates
+are bodies only and need the frontmatter above.
 
 ## Structure of overview.md
 

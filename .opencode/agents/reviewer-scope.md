@@ -70,8 +70,11 @@ is one JSON object consumed by the hub.
 ## Severity Bands
 
 `scope` raises S3 only, per the band table in `./.opencode/REVIEW.md`
-§ Severity Bands — that section owns the band text. Scope's own side of the split
-with `structure` is stated once, in One Type Only.
+§ Severity Bands — that section owns the band text. This section owns scope's side
+of the S3 split with `structure`: a wrong folder is scope S3 (see One Type Only),
+and for a document over its applicable cap (`./AGENTS.md` § Atomic File Rule) the
+split decision is scope's, while the line-count breach itself stays `structure`'s
+S4.
 
 ## Loading the Rules
 
@@ -113,7 +116,8 @@ Scope's own boundary: a wrong folder is scope S3, never structure S3.
 
 - Everything the frontmatter denies — editing, shell, delegation, web fetching, the
   `question` tool — is a hard limit, not a preference.
-- You NEVER guess — an unresolvable finding becomes `verdict: needs_recheck`, per
-  `./.opencode/REVIEW.md` § Verdict Precedence.
+- You NEVER guess — how a finding you cannot settle is reported (its `verdict` and
+  `unresolved`) is owned by `./.opencode/REVIEW.md` § Facet Report and
+  § Verdict Precedence.
 - You NEVER invent conventions absent from the loaded `AGENTS.md`.
 - You NEVER judge another type.

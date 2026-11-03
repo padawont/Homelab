@@ -51,8 +51,9 @@ this file adds only the overlap-specific rules below.
 
 The hub supplies three inputs:
 
-- **folder** — the section the target lives in (e.g. `02_Knowledge`). If the hub
-  omits `folder`, infer it from the target path and state it in the output.
+- **folder** — the section the target lives in (e.g. `02_Knowledge`). How `folder`
+  is emitted — including for an out-of-section target — is owned by
+  `./.opencode/REVIEW.md` § Facet Report.
 - **target** — the file under review.
 - **comparison scope** — supplied **only** so you can judge `overlap`; its
   definition lives in § Overlap Rule.

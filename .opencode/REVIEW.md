@@ -83,12 +83,14 @@ a fixed recommendation value consumers read verbatim; and `verdict` is one of
 per § Verdict Precedence — it may return `needs_recheck` to flag a finding it
 could not settle. The merged report's verdict is computed the same way, and
 `unresolved` is filled from those findings at merge — see
-`./.opencode/WORKFLOW.md` § Coordination Rule for who merges and when.
+`./.opencode/WORKFLOW.md` § Coordination Rule for who merges and § Flow D for the
+ordering.
 
 ## Merged Report
 
-`runesmith` merges the facets for one target into the same envelope — the shape
-`editor` consumes. The merge is mechanical:
+The facets are merged for one target into the same envelope — the shape `editor`
+consumes; who merges is defined in `./.opencode/WORKFLOW.md` § Coordination Rule.
+The merge is mechanical:
 
 1. Concatenate each facet's findings into its own `types` key.
 2. Recompute `totals` across the merged findings.
@@ -98,9 +100,10 @@ could not settle. The merged report's verdict is computed the same way, and
 ## Verdict Precedence
 
 Deterministic: the same input always produces the same verdict. Who computes the
-merged verdict, and when, is `./.opencode/WORKFLOW.md` § Coordination Rule — not
-restated here. Consumers — `editor`, `loop-validation`, any skill — read the
-verdict and never paraphrase or recompute it.
+merged verdict, and when, is defined in `./.opencode/WORKFLOW.md` § Coordination
+Rule for the actor and § Flow D for the ordering — not restated here. Consumers —
+`editor`, `loop-validation`, any skill — read the verdict and never paraphrase or
+recompute it.
 
 ```
 any needs_recheck          → needs_recheck  (logged in "unresolved")

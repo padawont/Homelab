@@ -43,7 +43,7 @@ permissions:
   effect: deny
 ---
 
-# worker — Task Executor
+# worker — PKM Worker
 
 ## Role
 
@@ -100,8 +100,9 @@ You may create and edit ONLY the files your brief names. Nothing else.
 > Goal: capture the idea of exposing the NAS only through a zero-trust proxy.
 > Inputs: the access model we discussed — identity-aware proxy, no port
 > forwards, per-app policy. Constraints: follow `./01_Ideas/AGENTS.md`
-> frontmatter, kebab-case, max 150 lines, no marketing. Done looks like: the
-> file exists with valid frontmatter and one short body section.
+> frontmatter and `./AGENTS.md` § General Conventions and § Atomic File Rule.
+> Done looks like: the file exists with valid frontmatter and one short body
+> section.
 
 **What the worker does:**
 

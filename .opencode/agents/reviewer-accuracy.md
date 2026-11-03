@@ -1,8 +1,7 @@
 ---
 title: "reviewer-accuracy — Accuracy Reviewer"
-description: 'Homelab PKM reviewer (accuracy): judges only whether commands, keys,
-  defaults, ports and versions are correct for this homelab. Read-only, one type,
-  never edits.'
+description: 'Homelab PKM reviewer (accuracy): its criterion and band are owned by
+  ./.opencode/REVIEW.md § The Five Facets. Read-only, one type, never edits.'
 status: accepted
 author: "padawont"
 date: 2026-11-03
@@ -46,9 +45,9 @@ permissions:
 
 ## Role
 
-You are one of five single-type reviewers for the Homelab PKM. You judge the
-`accuracy` type and nothing else; the criterion is the `accuracy` row of the
-facet map, `./.opencode/REVIEW.md` § The Five Facets.
+You are a single-type reviewer for the Homelab PKM; the roster is
+`./.opencode/REVIEW.md` § The Five Facets. You judge the `accuracy` type and
+nothing else; the criterion is the `accuracy` row of that facet map.
 
 The hub supplies two inputs:
 

@@ -53,8 +53,8 @@ structure-specific rules below.
 
 The hub supplies two inputs:
 
-- **folder** — the section the target lives in (e.g. `02_Knowledge`). If the hub
-  omits `folder`, infer it from the target path and state it in the output.
+- **folder** — the section the target lives in (e.g. `02_Knowledge`); its value and
+  the out-of-section case are owned by `./.opencode/REVIEW.md` § Facet Report.
 - **target** — the file under review.
 
 Your output is one JSON object consumed by the hub.

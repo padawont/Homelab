@@ -42,12 +42,12 @@ Example:
 
 ```yaml
 ---
-title: "Deploy Traefik as ingress"
+title: "Deploy NetBox as IPAM"
 status: archived          # archived, or retired for implementation records
-original_location: "./04_ADRs/42-deploy-traefik-ingress.md"
+original_location: "./04_ADRs/37-deploy-netbox.md"
 archived_date: 2026-08-13
-reason: "Replaced by Caddy ingress"
-superseded_by: "./04_ADRs/43-deploy-caddy-ingress.md"
+reason: "Replaced by NetBox on its own VLAN"
+superseded_by: "./04_ADRs/58-deploy-netbox-vlan.md"
 ---
 ```
 
@@ -58,7 +58,10 @@ implementations (`./05_Implementations/AGENTS.md` § Frontmatter (required)). Th
 block records that value rather than re-deriving it, and the rest of the source content is
 preserved verbatim per § Conventions.
 
-`superseded_by` is optional — include it only when a successor exists.
+`superseded_by` is optional — include it only when a successor exists. For an archived ADR
+it mirrors that ADR's own `replaced-by` (`./04_ADRs/AGENTS.md` § Frontmatter (required));
+the ADR record is authoritative, so on disagreement `superseded_by` is corrected to match
+it, never the reverse.
 
 ## Conventions
 

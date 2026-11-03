@@ -11,7 +11,7 @@ related_docs: []
 
 # AGENTS.md — 02_Knowledge
 
-Structured reference notes on tech concepts, syntax guides, and foundational theory.
+Section purpose is owned by `./AGENTS.md` § Repository Structure (row `02_Knowledge/`).
 
 ## Why have knowledge notes?
 

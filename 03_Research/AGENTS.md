@@ -110,7 +110,7 @@ What question am I answering? Which idea(s) sparked this?
 
 ## Alternatives
 
-See ./03_Research/<topic>/alternatives.md for a full index; each alternative has its own file (./03_Research/<topic>/alternative-traefik.md, ./03_Research/<topic>/alternative-nginx.md, etc.)
+See ./alternatives.md for a full index; each alternative has its own file (./alternative-traefik.md, ./alternative-nginx.md, etc.)
 
 ## Plan for ADR
 
@@ -154,9 +154,9 @@ Why this was or wasn't selected.
 
 | Technology | File | Verdict |
 |---|---|---|
-| Traefik | ./03_Research/<topic>/alternative-traefik.md | Selected |
-| NGINX | ./03_Research/<topic>/alternative-nginx.md | Rejected — complexity |
-| HAProxy | ./03_Research/<topic>/alternative-haproxy.md | Rejected — no k8s CRDs |
+| Traefik | ./alternative-traefik.md | Selected |
+| NGINX | ./alternative-nginx.md | Rejected — complexity |
+| HAProxy | ./alternative-haproxy.md | Rejected — no k8s CRDs |
 ```
 
 ## Conventions

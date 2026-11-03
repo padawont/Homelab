@@ -276,11 +276,11 @@ An executing handoff finishes with exactly this payload; `plan_source`, `dry_run
   "next_worker_input": {} }
 ```
 
-`state_after` is factual, not intent: `applied` lists the steps whose commands ran, `not_run` the steps beyond your slice or budget, and `observed` is one line of node reality. `plan_source` is a string in every payload and is never null: `""` is the no-path marker — an executing handoff inherited the source from the parent run, a refusal does not restate the path (the refused plan is identified by `plan_id`), and a launch that resolved no plan at all also emits `""`. `next_worker_input` carries the remaining slice when the budget truncated your run; when your slice ends the plan, `chain_complete` is `true` and `next_worker_input` is `{}`.
+`state_after` is factual, not intent: `applied` lists the steps whose commands ran, `not_run` the steps beyond your slice or budget, and `observed` is one line of node reality. `plan_source` is a string in every payload and is never null: `""` is the no-path marker — an executing handoff inherited the source from the parent run, a refusal does not restate the path (the refused plan is identified by `plan_id`), and a launch that resolved no plan at all also emits `""`. `next_worker_input` carries the remaining slice when the budget truncated your run.
 
 Idempotency: before executing, check whether the slice is already applied (`kubectl get`, `helm history`). Skip any step whose effect is already present and report it in `state_after.skipped_already_applied`. Never re-apply a completed step.
 
-`next_worker_input` is the hub's launch input (`./.opencode/WORKFLOW.md` § Flow B); what a chained run may omit inside it is defined in § JSON Input.
+`next_worker_input` is the hub's launch input and `chain_complete` signals whether the chain continues (`./.opencode/WORKFLOW.md` § Flow B); what a chained run may omit inside it is defined in § JSON Input.
 
 ### Refusal
 

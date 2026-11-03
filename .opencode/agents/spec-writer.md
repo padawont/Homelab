@@ -109,9 +109,8 @@ type.
 
 ## Append-Only and Diagrams
 
-`./05_Implementations/AGENTS.md` § Spec files owns the append-only rule. Under
-it you never modify or delete a spec, and you never report one without a real
-diagram as finished. A section whose heading and content already exist is not
+`./05_Implementations/AGENTS.md` § Spec files owns the append-only rule; it is
+not restated here. A section whose heading and content already exist is not
 appended — report it in `unchanged` instead.
 
 The diagram mandate comes from `./Templates/specs/`, not from

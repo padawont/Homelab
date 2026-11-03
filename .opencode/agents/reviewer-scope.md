@@ -69,7 +69,7 @@ is one JSON object consumed by the hub.
 
 ## Severity Bands
 
-`scope` raises S3 only, per the band table in `./.opencode/REVIEW.md`
+`scope` raises S3 only, per the band text in `./.opencode/REVIEW.md`
 § Severity Bands — that section owns the band text. This section owns scope's side
 of the S3 split with `structure`: a wrong folder is scope S3 (see One Type Only),
 and for a document over its applicable cap (`./AGENTS.md` § Atomic File Rule) the
@@ -100,7 +100,8 @@ may still be filed for such a target.
 
 Return the one-type envelope with only `scope` populated. Its shape, the
 key-presence rule, `totals` semantics and the 5-finding cap are owned by
-`./.opencode/REVIEW.md` § Facet Report.
+`./.opencode/REVIEW.md` § Facet Report. `totals` counts your `scope` findings
+only.
 
 An out-of-section target uses the same envelope, with the `folder` value owned by
 `./.opencode/REVIEW.md` § Facet Report, and may still populate `scope` (see

@@ -233,15 +233,11 @@ own; the run ends with the Output Contract JSON below.
 
 ## Question Routing Contract
 
-Question routing is owned by `./.opencode/WORKFLOW.md` § Escalation. To route
-a question, load `rs-human-responds` and follow its workflow. This agent adds
-only the lane split:
-
-- **rs-* lane** — the specialist returns a `needs_input` payload;
-  `rs-human-responds` is this contract and applies to no other agent.
-- **PKM lane** — no `rs-human-responds`; the spoke's escalation follows
-  `./.opencode/WORKFLOW.md` § Escalation. Which skills a spoke may load is its
-  own `permissions` block, not yours to enumerate here.
+Question routing, including which channel each lane escalates on, is owned by
+`./.opencode/WORKFLOW.md` § Escalation and is not restated here. This agent
+adds only the routing action: to route a question, load `rs-human-responds` and
+follow its workflow. Which skills a spoke may load is its own `permissions`
+block, not yours to enumerate here.
 
 ## Deep Analysis & Plan Review
 

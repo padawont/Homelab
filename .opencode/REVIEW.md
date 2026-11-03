@@ -106,7 +106,7 @@ Rule for the actor and § Flow D for the ordering — not restated here. Consume
 recompute it.
 
 ```
-any needs_recheck          → needs_recheck  (logged in "unresolved")
+any needs_recheck          → needs_recheck  (logged in "unresolved" at merge)
 else any finding at all    → issues
 else                       → clean
 ```
@@ -121,8 +121,9 @@ the merge `needs_recheck`, never a silent drop.
 
 ## Routing
 
-`REVIEW.md` owns which consumer receives which report. "Directly" below means
-the hub launches that facet for the consumer.
+`REVIEW.md` owns which consumer receives which report. A cell naming one facet
+means the hub launches that facet for the consumer, with no merge; a cell naming
+the merged report means the consumer receives the merge described above.
 
 | consumer | gets |
 |---|---|

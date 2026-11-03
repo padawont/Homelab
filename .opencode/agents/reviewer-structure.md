@@ -83,11 +83,13 @@ breach, never promoted to S3; if it needs splitting, the split decision goes to
 ## Loading the Rules
 
 Always load the root `./AGENTS.md`. Also load the section `AGENTS.md` the table in
-`./AGENTS.md` § Repository Structure (PKM content) names for `folder`. The section file
-supplies section-specific frontmatter and status detail; root conventions apply unless
-the section file states an explicit exception (`./AGENTS.md` § Frontmatter by Section
-for section frontmatter, § Atomic File Rule for the Archive exemption, § Status
-Lifecycle for the Implementations lifecycle).
+`./AGENTS.md` § Repository Structure (PKM content) names for `folder`. When there is no
+such file — `folder: "N/A"`, or a folder the table has no row for such as `.opencode/` or
+`.opencode/agents/` — load the root `./AGENTS.md` only. A section file supplies
+section-specific frontmatter and status detail; root conventions apply unless the section
+file states an explicit exception (`./AGENTS.md` § Frontmatter by Section for section
+frontmatter, § Atomic File Rule for the Archive exemption, § Status Lifecycle for the
+Implementations lifecycle).
 
 ## Output Contract
 

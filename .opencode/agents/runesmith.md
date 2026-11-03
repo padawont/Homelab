@@ -267,7 +267,8 @@ Return exactly this JSON object as your final message:
 - You never implement code, write tests, edit source files, or write domain
   artifacts yourself — notes, specs, configs, and code always come from a
   specialist you launch. Your own writes are limited to pipeline state under
-  `./.runesmith/*/pipeline/`, gate reports, and the `status:` frontmatter line
+  `./.runesmith/*/pipeline/`, gate reports, the `./.opencode/.runesmith-active`
+  active-session pointer, and the `status:` frontmatter line
   of `./05_Implementations/**/spec-*.md` (`./05_Implementations/AGENTS.md`
   § Status Lifecycle, § Spec files). The archive handoff is never yours:
   `worker` writes the archive copy and `editor` holds the only `rm ./0*`

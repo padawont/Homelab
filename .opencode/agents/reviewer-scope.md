@@ -78,7 +78,9 @@ is owned by § The Five Facets there: within-file heading order belongs to
 
 Always load the root `./AGENTS.md`. For a target under a section folder, also load
 that section's `AGENTS.md`, using the table in `./AGENTS.md` § Repository Structure
-(PKM content). The section file supplies that section's folder, depth and relevance
+(PKM content). An out-of-section target — including a folder with no row in that
+table — has no section file: it loads the root `./AGENTS.md` only (see Out of
+section). The section file supplies that section's folder, depth and relevance
 rules; frontmatter and status observations belong to structure and are out of scope
 here. Root conventions apply unless the section file states an explicit exception
 (`./AGENTS.md` § Frontmatter by Section; § Atomic File Rule for the Archive
@@ -87,7 +89,8 @@ exemption; § Status Lifecycle for the Implementations lifecycle).
 **Folder precedence.** The target path is authoritative for the output `folder`
 field and for the folder S3; a contradicting hub-supplied folder is reported.
 
-**Out of section.** If the target is not under a section folder, emit the `folder`
+**Out of section.** If the target is not under a section folder (or sits in a folder
+with no row in `./AGENTS.md` § Repository Structure), emit the `folder`
 value owned by `./.opencode/REVIEW.md` § Facet Report, skip section-rule loading,
 and judge only homelab-relevance and depth against the root `./AGENTS.md`. An S3
 may still be filed for such a target.

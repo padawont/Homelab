@@ -79,12 +79,17 @@ the path or URL you checked.
 
 ## Loading the Rules
 
-Always load the root `./AGENTS.md`. Load the section `AGENTS.md` for the supplied
-folder as well, using the table under `./AGENTS.md` § Repository Structure (PKM
-content). The section file supplies section-specific frontmatter and status detail;
-the root conventions apply unless the section file states an explicit exception —
-the Archive exemption in § Atomic File Rule, or a section's own status values per
-§ Status Lifecycle.
+Always load the root `./AGENTS.md`. If the supplied folder has a row in the table
+under `./AGENTS.md` § Repository Structure (PKM content), load that section
+`AGENTS.md` as well. Where there is no such row — `folder: "N/A"`, or a target
+outside the PKM folders such as `./.opencode/` or `./.opencode/agents/` — no
+section file exists, and those targets load the root `./AGENTS.md` only; never
+infer a section file that is not listed there.
+
+The section file, when one is loaded, supplies section-specific frontmatter and
+status detail; the root conventions apply unless the section file states an
+explicit exception — the Archive exemption in § Atomic File Rule, or a section's
+own status values per § Status Lifecycle.
 
 ## Output Contract
 

@@ -157,4 +157,4 @@ Why this was or wasn't selected.
 - Each research topic requires at least 3 `alternative-{name}.md` files
 - Must reference at least one Knowledge note or online source (`./AGENTS.md` § Dependency Rules)
 - Output must be detailed enough to write the ADR directly from the overview
-- If rejected, move (never copy) the entire topic folder to `./06_Archive/research/` — see `./AGENTS.md` § General Conventions
+- If rejected, archive the entire topic folder to `./06_Archive/research/` — see `./06_Archive/AGENTS.md` § Conventions

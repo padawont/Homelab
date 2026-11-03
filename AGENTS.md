@@ -83,7 +83,8 @@ values; see `./Templates/AGENTS.md` § Conventions.
   - **By section**: move subsections into separate files linked via `related_docs`
   - **By date**: split notes/changelogs into dated files
 - `Templates/` files follow their own conventions — see `./Templates/AGENTS.md`
-- Archive records are exempt from the line limit — see `./06_Archive/AGENTS.md` § Conventions
+- `06_Archive/` records are exempt from the line limit (archival rules, which do not
+  include a line limit, live in `./06_Archive/AGENTS.md` § Conventions)
 - `AGENTS.md` files and `./.opencode/agents/*.md` take the 50–250 line range instead of
   150, counted the same way
 - `./.opencode/WORKFLOW.md` and `./.opencode/REVIEW.md` are exempt from the line limit
@@ -102,7 +103,7 @@ Each section owns its status values and transitions — see the section's AGENTS
 | PR workflow | draft → tests pass → review → merge |
 | Merge strategy | Squash merge (default); merge commits or rebase merge by exception |
 | Code review | Code/tooling changes: at least 1 approving review, all threads resolved. PKM notes: their section's convention (e.g. `./01_Ideas/AGENTS.md`) |
-| Labels | `bug`, `enhancement`, `documentation`, `area: <topic>`, `knowledge`, `research`, `adr`, `implementation` |
+| Labels | `bug`, `enhancement`, `documentation`, `epic`, `idea`, `knowledge`, `research`, `adr`, `proposal`, `implementation` |
 | Tests | `devbox run test` (pytest) must pass before merge; no hosted CI is configured |
 
 ## General Conventions

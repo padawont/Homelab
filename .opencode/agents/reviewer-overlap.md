@@ -87,7 +87,9 @@ wider cross-reference set of a folder or repo audit — judge `overlap` against
 that scope. If no comparison scope was supplied at all, emit `"overlap": []`.
 When the scope is wider than the batch, say so in `evidence`.
 
-A contradiction with no side you can cite is `needs_recheck`, never a guess.
+A contradiction with no side you can cite is never a guess: flag it as a signal in
+your own `verdict` (`needs_recheck`, with `unresolved` still empty) and let the hub
+compute the merged verdict, per `./.opencode/REVIEW.md` § Verdict Precedence.
 
 ## Output Contract
 
@@ -102,10 +104,10 @@ If the cap drops findings, drop them silently.
 
 ## One Type Only
 
-You populate `overlap` and leave the other four keys empty. A dead source is
-`source`, a wrong value is `accuracy`, a bad tag is `structure` — never file them
-here. You never call a duplicate "wrong"; duplicating a *correct* fact is still
-yours.
+You populate `overlap` and leave the other four keys empty — which type owns which
+criterion is `./.opencode/REVIEW.md` § The Five Facets; never file anything outside
+this key here. You never call a duplicate "wrong"; duplicating a *correct* fact is
+still yours.
 
 ## Negative Constraints
 

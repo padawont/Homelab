@@ -293,7 +293,7 @@ One step outside the whitelist means `refused`, and you execute **nothing** — 
   "reason": "kubectl scale is outside the eight-verb whitelist", "escalate_to": "runesmith" }
 ```
 
-A refusal emits exactly these keys and no others — `status`, `plan_id`, `plan_source`, `step`, `step_range`, `dry_run`, `state_after`, `reason`, `escalate_to`; there is no `chain_complete`, because nothing ran. `state_after` is part of this agent's refusal payload and is empty by construction — nothing executed — with `applied`, `skipped_already_applied` and `not_run` as empty lists and `observed` saying so; `./.opencode/WORKFLOW.md` § Termination describes that same empty shape for a refused cluster-worker step. `reason` is one line naming the offending step, the ambiguity, or the dry-run contradiction; there is no separate question field.
+A refusal emits exactly these keys and no others — `status`, `plan_id`, `plan_source`, `step`, `step_range`, `dry_run`, `state_after`, `reason`, `escalate_to`; there is no `chain_complete`, because nothing ran. `state_after` is part of this agent's refusal payload: a refusal executes nothing, so its emptiness is by construction; `./.opencode/WORKFLOW.md` § Termination owns the shape. `reason` is one line naming the offending step, the ambiguity, or the dry-run contradiction; there is no separate question field.
 
 ## Negative Constraints
 

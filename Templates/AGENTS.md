@@ -41,33 +41,38 @@ Reusable document templates for the pipeline sections. `06_Archive/` has none �
 | The list of options considered | `./Templates/research/alternatives.md` | `03_Research/<topic>/alternatives.md` |
 | One option's write-up | `./Templates/research/alternative.md` | `03_Research/<topic>/alternative-<name>.md` |
 | A decision | `./Templates/adr/adr.md` | `04_ADRs/<NNNN>-<slug>.md` |
-| A deployable service | `./Templates/implementations/service.md` | `05_Implementations/<service>/overview.md` |
-| How to undo that deploy | `./Templates/implementations/rollback.md` | `05_Implementations/<service>/rollback.md` |
+| A deployable service | `./Templates/implementations/service.md` | `05_Implementations/<node>/<service>/overview.md` |
+| How to undo that deploy | `./Templates/implementations/rollback.md` | `05_Implementations/<node>/<service>/rollback.md` |
 | A GitHub sub-task | `./Templates/tasks/issue.md` | Issue body |
-| Observed cluster state | `./Templates/specs/cluster.md` | `05_Implementations/<service>/spec-cluster.md` |
-| Observed topology | `./Templates/specs/topology.md` | `05_Implementations/<service>/spec-topology.md` |
-| Observed service stack | `./Templates/specs/service-stack.md` | `05_Implementations/<service>/spec-service-stack.md` |
+| Observed cluster state | `./Templates/specs/cluster.md` | `05_Implementations/<node>/<service>/spec-cluster.md` |
+| Observed topology | `./Templates/specs/topology.md` | `05_Implementations/<node>/<service>/spec-topology.md` |
+| Observed service stack | `./Templates/specs/service-stack.md` | `05_Implementations/<node>/<service>/spec-service-stack.md` |
 
-`overview.md` and `rollback.md` describe intent and procedure; `spec-*.md` files describe
-observed state and are append-only once created — see `./05_Implementations/AGENTS.md`
-§ Spec files.
+Paths, and the division of labour between `overview.md`/`rollback.md` and `spec-*.md`:
+`./05_Implementations/AGENTS.md` § File system layout and § Spec files.
 
 ## Frontmatter by section
 
-Each template's frontmatter mirrors its destination section. The fields that differ:
+Each template bound to a pipeline section takes that section's frontmatter as specified in
+the section's own AGENTS.md § Frontmatter (required); this file does not restate the field
+lists:
 
-| Section | Template fields |
+| Section | Field spec |
 |---|---|
-| `01_Ideas/` | `title`, `status`, `author`, `date`, `tags`, `technologies`, `related_ideas` |
-| `02_Knowledge/` | `title`, `status`, `author`, `date`, `tags`, `sources` (`url`/`title`), `last_audit_date`, `related_docs` |
-| `03_Research/` | `title`, `status`, `author`, `date`, `tags`, `sources` (`knowledge`), `references` (`url`/`title`), `last_audit_date` |
-| `04_ADRs/` | `adr`, `title`, `author`, `status`, `topic`, `technology`, `date`, `date-proposed`, `replaces`, `replaced-by`, `history`, `sources`, `references`, `related_docs` |
-| `05_Implementations/` | `title`, `status`, `author`, `date`, `tags`, `technologies`, `related_docs`, `references.online`/`references.repo`, `node` |
-| `Templates/tasks/` | `title`, `issue_number`, `status`, `labels`, `created_at`, `epic` |
+| `01_Ideas/` | `./01_Ideas/AGENTS.md` |
+| `02_Knowledge/` | `./02_Knowledge/AGENTS.md` |
+| `03_Research/` | `./03_Research/AGENTS.md` |
+| `04_ADRs/` | `./04_ADRs/AGENTS.md` |
+| `05_Implementations/` | `./05_Implementations/AGENTS.md` |
 
-The authoritative field specs are in each section's AGENTS.md (`./01_Ideas/AGENTS.md`,
-`./02_Knowledge/AGENTS.md`, `./03_Research/AGENTS.md`, `./04_ADRs/AGENTS.md`,
-`./05_Implementations/AGENTS.md`); the templates track them.
+### Issue template frontmatter
+
+`./Templates/tasks/issue.md` belongs to no section — it fills a GitHub issue body, so its
+fields are not derived from a section AGENTS.md:
+
+| Template | Fields |
+|---|---|
+| `./Templates/tasks/issue.md` | `title`, `issue_number`, `status`, `labels`, `created_at`, `epic` |
 
 ## Conventions
 
@@ -79,7 +84,6 @@ The authoritative field specs are in each section's AGENTS.md (`./01_Ideas/AGENT
   `./Templates/research/alternative.md` are body-only fragments with no frontmatter —
   they are appended inside the `03_Research/<topic>/` folder beside `overview.md`
 - Use `<!-- comment -->` blocks as instructions — strip these when copying
-- Copy, don't edit — see `./AGENTS.md` § General Conventions
+- Editing rules: `./AGENTS.md` § General Conventions
+- Archive handling: `./06_Archive/AGENTS.md` § Conventions
 - Keep templates in sync with AGENTS.md conventions
-- Archive does not need a template — files are moved there, not copied, with archival
-  frontmatter added; see `./AGENTS.md` § General Conventions and `./06_Archive/AGENTS.md`

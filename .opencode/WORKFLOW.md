@@ -63,9 +63,9 @@ and a `cluster-worker` never launches its successor. `[ HUMAN ]` hangs off
 ## Flow D — Parallel Batch (canonical)
 
 ```
-                              runesmith
-                                  |
-        +---------+---------+-----+-----+---------+---------+
+                        runesmith
+                            |
+        +---------+---------+-----------+---------+
         v         v         v           v         v
      worker    worker    worker      worker    worker        one lane per document
       #1        #2        #3          #4        #5
@@ -73,17 +73,19 @@ and a `cluster-worker` never launches its successor. `[ HUMAN ]` hangs off
         v         v         v           v         v
   reviewer-* reviewer-* reviewer-* reviewer-* reviewer-*   one facet set per
         |         |         |           |         |
-        +---------+---------+-----+-----+---------+---------+
-                                  |
-                                  v
-                              runesmith <- merge facets; footprint check: git diff --name-only
-                                  |
-        +---------+---------+-----+-----+---------+---------+
+        +---------+---------+-----------+---------+
+                            |
+                            v
+                        runesmith <- merge facets; footprint check: git diff --name-only
+                            |
+        +---------+---------+-----------+---------+
         v         v         v           v         v
       editor    editor    editor      editor    editor
-                                  |
-                                  v
-                              runesmith --> report
+        |         |         |           |         |
+        +---------+---------+-----------+---------+
+                            |
+                            v
+                        runesmith --> report
 ```
 
 Each lane is isolated — one document, one worker, five reviewer facets, one
@@ -116,8 +118,8 @@ Every spoke owns its own return schema; nothing is restated here.
 | Spoke | Contract | Owner |
 |---|---|---|
 | `worker` | `handoff:` block (`done` / `next` / `blocked`) | `./.opencode/agents/worker.md` |
-| `reviewer-*` | one-type envelope — the facet populates its own key; the shape is owned by `./.opencode/REVIEW.md` | `./.opencode/agents/reviewer-{source,accuracy,scope,structure,overlap}.md` |
-| merged review report | five always-present type keys | `./.opencode/REVIEW.md` |
+| `reviewer-*` | `./.opencode/agents/reviewer-*.md` | `./.opencode/agents/reviewer-{source,accuracy,scope,structure,overlap}.md` |
+| merged review report | `./.opencode/REVIEW.md` § Merged Report | `./.opencode/REVIEW.md` |
 | `editor` | `changes:` report | `./.opencode/agents/editor.md` |
 | `spec-writer` | spec report | `./.opencode/agents/spec-writer.md` |
 | `cluster-worker` | plan JSON in, handoff / refusal JSON out | `./.opencode/agents/cluster-worker.md` |

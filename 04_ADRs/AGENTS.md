@@ -123,7 +123,7 @@ graph TD
   1. How the solution works internally
   2. How it fits into the homelab
 - No alternatives or considered options section — those belong in Research
-- Duplicates and contradictions with another note or ADR are `overlap` findings — link instead of repeating (`./.opencode/REVIEW.md` § The Five Facets)
+- Overlap is judged per `./.opencode/REVIEW.md` § The Five Facets.
 
 ## Agent Behaviour
 
@@ -132,5 +132,5 @@ Role permissions and handoff contracts are shared across sections — see the ro
 facets are owned by `./.opencode/REVIEW.md` § The Five Facets, and the report shape by
 § Facet Report.
 
-No spoke asks the human — escalation is owned by `./.opencode/WORKFLOW.md` § Escalation and
-the unresolved channel by `./.opencode/REVIEW.md` § Facet Report.
+Escalation is owned by `./.opencode/WORKFLOW.md` § Escalation and the unresolved channel by
+`./.opencode/REVIEW.md` § Facet Report.

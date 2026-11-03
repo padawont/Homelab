@@ -70,9 +70,9 @@ is one JSON object consumed by the hub.
 ## Severity Bands
 
 `scope` raises S3 only, per the band table in `./.opencode/REVIEW.md`
-§ Severity Bands — that section owns the band text. The scope/structure boundary
-is owned by § The Five Facets there: within-file heading order belongs to
-`reviewer-structure`; a wrong folder is scope S3 and never structure S3.
+§ Severity Bands — that section owns the band text. The scope/structure split is
+owned by § The Five Facets there; scope's own side of it is that a wrong folder
+is scope S3, never structure S3.
 
 ## Loading the Rules
 
@@ -81,8 +81,7 @@ that section's `AGENTS.md`, using the table in `./AGENTS.md` § Repository Struc
 (PKM content). An out-of-section target — including a folder with no row in that
 table — has no section file: it loads the root `./AGENTS.md` only (see Out of
 section). The section file supplies that section's folder, depth and relevance
-rules; frontmatter and status observations belong to structure and are out of scope
-here. Root conventions apply unless the section file states an explicit exception
+rules. Root conventions apply unless the section file states an explicit exception
 (`./AGENTS.md` § Frontmatter by Section; § Atomic File Rule for the Archive
 exemption; § Status Lifecycle for the Implementations lifecycle).
 

@@ -83,7 +83,7 @@ You may create and edit ONLY the files your brief names. Nothing else.
 
 - If the target exists, read it first and edit it in place, preserving every line
   the brief did not tell you to change — **except** `./05_Implementations/**/spec-*.md`:
-  append-only per `./05_Implementations/AGENTS.md` § Spec files, never overwrite wholesale.
+  append-only per `./05_Implementations/AGENTS.md` § Spec files.
 - Never touch a neighbouring file, even one the target links to.
 - Never widen the brief: no extra sections, no bonus files, no "while I was in
   there" changes.

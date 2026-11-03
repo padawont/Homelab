@@ -66,6 +66,11 @@ per facet, ordered by file path then line number.
 is `{ "type": "...", "issue": "..." }`. Only `runesmith` fills it, at merge time,
 for a facet that did not run, crashed, or returned a finding it could not settle.
 
+A facet that cannot settle a finding says so in its own `verdict`, not in
+`unresolved`: it returns `needs_recheck` and still emits `unresolved` empty. The
+facet is flagging "this needs a human", not pre-empting the hub's list — the
+finding is named there once, by `runesmith`, at merge.
+
 The envelope shape is owned here, and this section wins on any conflict with a
 facet file. A facet file links here rather than restating the shape, and states
 only which key it populates and what its `totals` counts.
@@ -74,7 +79,9 @@ Envelope rules owned here — a facet may reference, never redefine them: every 
 is always present; `folder` is the section folder or `"N/A"` for an out-of-section
 target; no field is ever `null` (emit an empty list or empty string); `fix_hint` is
 a fixed recommendation value consumers read verbatim; and `verdict` is one of
-`clean`, `issues`, `needs_recheck` — computed only by the hub (§ Verdict Precedence).
+`clean`, `issues`, `needs_recheck`. A facet may return `needs_recheck` to flag a
+finding it could not settle; the hub recomputes the final verdict at merge and
+populates `unresolved` from those findings (§ Verdict Precedence).
 
 ## Merged Report
 
@@ -84,14 +91,13 @@ a fixed recommendation value consumers read verbatim; and `verdict` is one of
 1. Concatenate each facet's findings into its own `types` key.
 2. Recompute `totals` across the merged findings.
 3. Keep at most 5 findings per type after the merge.
-4. Fill `unresolved` from every facet that did not run, crashed, or returned no
-   report, plus every finding a facet could not settle.
+4. Fill `unresolved` from every facet named by the trigger list in § Facet Report.
 
 ## Verdict Precedence
 
-Deterministic because only `runesmith` computes it, at merge time, so the same
-input always produces the same verdict. Consumers — `editor`, `loop-validation`,
-any skill — read the verdict and never paraphrase or recompute it.
+Deterministic because only `runesmith` computes the merged verdict, at merge
+time, so the same input always produces the same verdict. Consumers — `editor`,
+`loop-validation`, any skill — read the verdict and never paraphrase or recompute it.
 
 ```
 any needs_recheck          → needs_recheck  (logged in "unresolved")
@@ -104,8 +110,8 @@ even when a definite S1 or S2 is also present. The S1–S2 findings still block,
 the editor still applies every confirmed finding — the precedence only decides what
 `runesmith` escalates.
 
-A facet that did not run, crashed, or returned no report makes the merge
-`needs_recheck` and is listed under `unresolved` — never silently dropped.
+A non-empty `unresolved` — filled per the trigger list in § Facet Report — makes
+the merge `needs_recheck`, never a silent drop.
 
 ## Routing
 

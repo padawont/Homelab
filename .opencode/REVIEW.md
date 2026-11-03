@@ -63,13 +63,13 @@ A finding carries `severity`, `issue`, `evidence`, `fix_hint`. At most 5 finding
 per facet, ordered by file path then line number.
 
 `unresolved` is always present and always empty in a facet report; its item shape
-is `{ "type": "...", "issue": "..." }`. Only `runesmith` fills it, at merge time,
-for a facet that did not run, crashed, or returned a finding it could not settle.
+is `{ "type": "...", "issue": "..." }`. It is filled at merge for a facet that did
+not run, crashed, or returned a finding it could not settle.
 
 A facet that cannot settle a finding says so in its own `verdict`, not in
 `unresolved`: it returns `needs_recheck` and still emits `unresolved` empty. The
 facet is flagging "this needs a human", not pre-empting the hub's list — the
-finding is named there once, by `runesmith`, at merge.
+finding is named there once, at merge.
 
 The envelope shape is owned here, and this section wins on any conflict with a
 facet file. A facet file links here rather than restating the shape, and states
@@ -81,8 +81,9 @@ target; no field is ever `null` (emit an empty list or empty string); `fix_hint`
 a fixed recommendation value consumers read verbatim; and `verdict` is one of
 `clean`, `issues`, `needs_recheck`. Each facet computes its own report's `verdict`
 per § Verdict Precedence — it may return `needs_recheck` to flag a finding it
-could not settle. Only the merged report's verdict is recomputed by `runesmith`
-at merge time, which also populates `unresolved` from those findings.
+could not settle. The merged report's verdict is computed the same way, and
+`unresolved` is filled from those findings at merge — see
+`./.opencode/WORKFLOW.md` § Coordination Rule for who merges and when.
 
 ## Merged Report
 
@@ -96,9 +97,10 @@ at merge time, which also populates `unresolved` from those findings.
 
 ## Verdict Precedence
 
-Deterministic because only `runesmith` computes the merged verdict, at merge
-time, so the same input always produces the same verdict. Consumers — `editor`,
-`loop-validation`, any skill — read the verdict and never paraphrase or recompute it.
+Deterministic: the same input always produces the same verdict. Who computes the
+merged verdict, and when, is `./.opencode/WORKFLOW.md` § Coordination Rule — not
+restated here. Consumers — `editor`, `loop-validation`, any skill — read the
+verdict and never paraphrase or recompute it.
 
 ```
 any needs_recheck          → needs_recheck  (logged in "unresolved")

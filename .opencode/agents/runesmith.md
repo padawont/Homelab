@@ -71,6 +71,9 @@ permissions:
   resource: sshpass -e ssh -o StrictHostKeyChecking=no -o ConnectTimeout=10 -o PreferredAuthentications=password -o PubkeyAuthentication=no -o IdentitiesOnly=yes runic@192.168.111.7 KUBECONFIG=/etc/rancher/k3s/k3s.yaml helm list *
   effect: allow
 - action: shell
+  resource: sshpass -e ssh -o StrictHostKeyChecking=no -o ConnectTimeout=10 -o PreferredAuthentications=password -o PubkeyAuthentication=no -o IdentitiesOnly=yes runic@192.168.111.7 KUBECONFIG=/etc/rancher/k3s/k3s.yaml helm show *
+  effect: allow
+- action: shell
   resource: kubectl get *
   effect: allow
 - action: shell
@@ -90,6 +93,9 @@ permissions:
   effect: allow
 - action: shell
   resource: helm list *
+  effect: allow
+- action: shell
+  resource: helm show *
   effect: allow
 - action: shell
   resource: systemctl status *
@@ -117,6 +123,9 @@ permissions:
   effect: allow
 - action: shell
   resource: KUBECONFIG=/etc/rancher/k3s/k3s.yaml helm list *
+  effect: allow
+- action: shell
+  resource: KUBECONFIG=/etc/rancher/k3s/k3s.yaml helm show *
   effect: allow
 - action: shell
   resource: kubectl apply *
@@ -230,8 +239,7 @@ only the lane split:
 
 - **rs-* lane** — the specialist returns a `needs_input` payload;
   `rs-human-responds` is this contract and applies to no other agent.
-- **PKM lane** — a spoke returns the escalation in its own report, in the
-  shape its own agent file defines; the hub-wide procedure is
+- **PKM lane** — no `rs-human-responds`; the spoke's escalation follows
   `./.opencode/WORKFLOW.md` § Escalation. Which skills a spoke may load is its
   own `permissions` block, not yours to enumerate here.
 

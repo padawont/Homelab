@@ -87,8 +87,8 @@ names the one for that folder. A target whose `folder` is `"N/A"`, or whose fold
 has no row in that table (e.g. `.opencode/`, `.opencode/agents/`), has no section
 file: load the root `./AGENTS.md` only. Which frontmatter fields are citations
 comes from the loaded files, and the section file wins where they conflict; the
-root supplies the defaults (line limit, status lifecycle, link format). Three
-sections carry citations in more than one place, and each must be checked:
+root supplies the defaults (line limit, link format). Three sections carry
+citations in more than one place, and each must be checked:
 
 - `03_Research` — `sources` and `references`; see
   `./03_Research/AGENTS.md` § Frontmatter (required).

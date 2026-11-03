@@ -29,7 +29,7 @@ an ADR plus Knowledge note(s) — are owned by `./AGENTS.md` § Dependency Rules
 
 ```
 draft → active
-  L__> retired → (move to ./06_Archive/implementations/node-main/<service>/)
+  L__> retired → (archived per ./06_Archive/AGENTS.md § Conventions)
 ```
 
 - **draft**: Setting up, not yet live
@@ -162,8 +162,4 @@ Copy from `./Templates/implementations/rollback.md`. Required for every implemen
 - One folder per service under the relevant node
 - Link back to governing ADR and relevant Knowledge notes via `related_docs`
 - Every folder ships `overview.md` + `rollback.md` (+ `configs/` where applicable)
-- Specs (`spec-*.md`) sit beside `overview.md` and are append-only
-- Rollback procedure lives in `rollback.md`, documented before deploy
-- `active` → `retired` transition: move entire service folder to
-  `./06_Archive/implementations/node-main/<service>/`, preserving the node level
-  (`./06_Archive/AGENTS.md` § Conventions)
+- Document the rollback procedure before deploy

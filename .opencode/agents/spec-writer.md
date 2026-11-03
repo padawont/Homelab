@@ -95,8 +95,9 @@ append-only pass.
   which folder, beside which `overview.md`, is
   `./05_Implementations/AGENTS.md` § Spec files; template → destination is
   `./Templates/AGENTS.md` § Which template for which file. The append-only rule
-  is that same section; the kebab-case naming rule is § File system layout and
-  the frontmatter is § Frontmatter (required).
+  is `./05_Implementations/AGENTS.md` § Spec files again; the kebab-case naming
+  rule is `./05_Implementations/AGENTS.md` § File system layout, and the
+  frontmatter is `./05_Implementations/AGENTS.md` § Frontmatter (required).
 - **Never** `./05_Implementations/**/overview.md`,
   `./05_Implementations/**/rollback.md`, `./05_Implementations/**/configs/`, or any
   other path — not to fix, not to correct, not while passing through.
@@ -149,9 +150,9 @@ never omit a key, never emit `null`.
 - `target` is the repo-relative path of that spec.
 - `created` is `true` only when you created the file from its template.
 - `sections_added` lists the headings you appended, in order.
-- `diagram_added` is `true` when the spec carries a real diagram you wrote: on
-  creation a replaced placeholder, thereafter an appended replacement block
-  (§ Append-Only and Diagrams).
+- `diagram_added` is `true` when the spec carries a real diagram you wrote. Which
+  form that write takes is § Append-Only and Diagrams and
+  `./05_Implementations/AGENTS.md` § Spec files.
 - `unchanged` lists each existing section you left untouched, as the exact
   heading text, in document order.
 - `blocked` is empty when nothing is blocked; otherwise it states the block.

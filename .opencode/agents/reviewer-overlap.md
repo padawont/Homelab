@@ -63,7 +63,7 @@ escalates per `./.opencode/WORKFLOW.md` § Escalation.
 ## The One Type
 
 `overlap` is the facet defined in `./.opencode/REVIEW.md` § The Five Facets — that
-row owns its criterion and its band range (S4–S5).
+row owns its criterion and its band.
 
 ## Severity Bands
 
@@ -87,9 +87,9 @@ wider cross-reference set of a folder or repo audit — judge `overlap` against
 that scope. If no comparison scope was supplied at all, emit `"overlap": []`.
 When the scope is wider than the batch, say so in `evidence`.
 
-A contradiction with no side you can cite is never a guess: flag it as a signal in
-your own `verdict` (`needs_recheck`, with `unresolved` still empty) and let the hub
-compute the merged verdict, per `./.opencode/REVIEW.md` § Verdict Precedence.
+A contradiction with no side you can cite is never a guess — you never pick which
+side is right, and an unsettled finding is signalled exactly as
+`./.opencode/REVIEW.md` § Facet Report directs.
 
 ## Output Contract
 

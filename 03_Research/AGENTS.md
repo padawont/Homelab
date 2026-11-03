@@ -53,6 +53,10 @@ Names follow the repo naming rule (`./AGENTS.md` § General Conventions).
 
 ## Frontmatter (required)
 
+Applies to `overview.md` only. The two fragments — `alternatives.md` and
+`alternative-{name}.md` — are body-only and carry no frontmatter, per
+`./Templates/AGENTS.md` § Conventions.
+
 ```yaml
 ---
 title: ""
@@ -102,7 +106,7 @@ What question am I answering? Which idea(s) sparked this?
 
 ## Alternatives
 
-See ./alternatives.md for a full index; each alternative has its own file (./alternative-traefik.md, ./alternative-nginx.md, etc.)
+See ./03_Research/<topic>/alternatives.md for a full index; each alternative has its own file (./03_Research/<topic>/alternative-traefik.md, ./03_Research/<topic>/alternative-nginx.md, etc.)
 
 ## Plan for ADR
 
@@ -146,9 +150,9 @@ Why this was or wasn't selected.
 
 | Technology | File | Verdict |
 |---|---|---|
-| Traefik | ./alternative-traefik.md | Selected |
-| NGINX | ./alternative-nginx.md | Rejected — complexity |
-| HAProxy | ./alternative-haproxy.md | Rejected — no k8s CRDs |
+| Traefik | ./03_Research/<topic>/alternative-traefik.md | Selected |
+| NGINX | ./03_Research/<topic>/alternative-nginx.md | Rejected — complexity |
+| HAProxy | ./03_Research/<topic>/alternative-haproxy.md | Rejected — no k8s CRDs |
 ```
 
 ## Conventions

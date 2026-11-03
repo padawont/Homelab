@@ -42,12 +42,20 @@ Example:
 ```yaml
 ---
 title: "Deploy Traefik as ingress"
+status: archived          # archived, or retired for implementation records
 original_location: "./04_ADRs/42-deploy-traefik-ingress.md"
 archived_date: 2026-08-13
 reason: "Replaced by Caddy ingress"
 superseded_by: "./04_ADRs/43-deploy-caddy-ingress.md"   # optional
 ---
 ```
+
+`status` carries the source section's terminal value unchanged — `archived` for ideas,
+knowledge, research, and ADRs (`./01_Ideas/AGENTS.md`, `./02_Knowledge/AGENTS.md`,
+`./03_Research/AGENTS.md`, `./04_ADRs/AGENTS.md` § Frontmatter (required)), `retired` for
+implementations (`./05_Implementations/AGENTS.md` § Frontmatter (required)). The archival
+block records that value rather than re-deriving it, and the rest of the source content is
+preserved verbatim per § Conventions.
 
 `superseded_by` is optional — include it only when a successor exists.
 

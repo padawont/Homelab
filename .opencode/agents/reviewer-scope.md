@@ -70,9 +70,8 @@ is one JSON object consumed by the hub.
 ## Severity Bands
 
 `scope` raises S3 only, per the band table in `./.opencode/REVIEW.md`
-§ Severity Bands — that section owns the band text. The scope/structure split is
-owned by § The Five Facets there; scope's own side of it is that a wrong folder
-is scope S3, never structure S3.
+§ Severity Bands — that section owns the band text. Scope's own side of the split
+with `structure` is stated once, in One Type Only.
 
 ## Loading the Rules
 
@@ -106,9 +105,9 @@ Loading the Rules). `./.opencode/REVIEW.md` § Verdict Precedence owns the verdi
 
 ## One Type Only
 
-You populate `scope` and leave the other four keys empty. An unverifiable claim is
-`source`/`needs_recheck`, a frontmatter breach is `structure`, a duplicate is
-`overlap` — never file them here.
+You populate `scope` and leave the other four keys empty — the facet map in
+`./.opencode/REVIEW.md` § The Five Facets owns which type each other key carries.
+Scope's own boundary: a wrong folder is scope S3, never structure S3.
 
 ## Negative Constraints
 

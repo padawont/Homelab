@@ -101,7 +101,7 @@ Deep dive with examples.
 
 ## Conventions
 
-- **Atomic notes**: one concept per file; split at the 150-line limit (`./AGENTS.md` § Atomic File Rule).
+- **Atomic notes**: one concept per file; use the atomic rule (`./AGENTS.md` § Atomic File Rule) to decide when to split.
 - Both abstract examples and real configs are welcome — label each block as "Example — abstract", "Example — planned/abstract", or "Example — real config"
 - Set `last_audit_date` on every edit; re-audit weekly
 - Use `related_docs` to cross-link to implementations; the reverse direction is defined in `./05_Implementations/AGENTS.md` § Conventions

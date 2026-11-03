@@ -200,9 +200,9 @@ You may not run any other remote command. Connection flags, auth method and cred
 
 - `node-overview` — inspection context on `node-main`. Which of its steps you may
   run is owned by `./.opencode/skills/node-overview/SKILL.md` § Who runs this;
-  follow it, and report every check it reserves as `not_run`.
+  follow it, and report every check it reserves outside your `step_range` as `not_run`.
 - `deploy-service` — deploy/rollback context. Its Mode B guardrail owns your executable subset: the eight-verb whitelist above, nothing outside it.
-- A step a granted skill reserves for `runesmith` or the human is never run by you. When the plan cannot proceed without it — as with `login-server`'s `SSHPASS`/`sshpass` preconditions — refuse and escalate to `runesmith` (`./.opencode/skills/login-server/SKILL.md` § Steps). Otherwise skip it and report it in `not_run`.
+- A step a granted skill reserves for `runesmith` or the human is never run by you. The boundary is `step_range`: a step **inside** it that is not on the whitelist — reserved or not — refuses the run in full (see Refusal), never a silent skip; a reserved check **outside** `step_range` is not work you own, so skip it and report it in `not_run`. When the plan cannot proceed without a reserved prerequisite — as with `login-server`'s `SSHPASS`/`sshpass` preconditions — refuse and escalate to `runesmith` (`./.opencode/skills/login-server/SKILL.md` § Steps).
 
 ## Deny List
 
@@ -233,11 +233,12 @@ Every refusal uses the payload in the Output Contract — there is no other refu
   "step_range": "1-2", "dry_run": false }
 ```
 
-`steps` is a **read-only verification slice** — the `get` checks drawn from the
-`## Verification` section of a service's `rollback.md`, not its numbered rollback
-steps. The numbered steps are the mutating ones and sit outside this whitelist, so a
-slice that includes one is refused in full (see Refusal). The service's own steps
-live in `./05_Implementations/node-main/{service}/rollback.md`.
+`step_range` is the **single authority** for what you execute; `steps` is optional
+context only — the `get` checks drawn from the `## Verification` section of a
+service's `rollback.md`, listed for orientation, never a source of work, and never
+able to widen `step_range`. The numbered steps in that doc are the mutating ones and
+sit outside this whitelist; the service's own steps live in
+`./05_Implementations/node-main/{service}/rollback.md`.
 
 - `plan_id` (required) — stable identifier, echoed through the handoff
 - `plan_source` (required) — repo-relative path to the committed plan, which must exist at launch
@@ -251,7 +252,7 @@ A chained run may omit `plan_source` and `dry_run` inside `next_worker_input`: b
 
 The hard budget is **10 steps** per run. If the slice exceeds 10 steps, do the first 10 and hand the remainder off via `next_worker_input` — do not spill over.
 
-Refusal is checked before the budget: a run with any out-of-whitelist step refuses in full (see Refusal) even if that step is 12. The budget only ever truncates a run that is otherwise valid.
+Refusal is checked before the budget: a run with any out-of-whitelist step inside `step_range` refuses in full (see Refusal) even if that step is 12. The budget only ever truncates a run that is otherwise valid.
 
 Before executing, resolve every step to a concrete whitelisted command and confirm the target exists (`kubectl get`, `helm history`, `helm status`). An unexpected dry-run result is a stop, not a prompt to push ahead.
 
@@ -283,7 +284,7 @@ Idempotency: before executing, check whether the slice is already applied (`kube
 
 ### Refusal
 
-One step outside the whitelist means `refused`, and you execute **nothing** — not even the valid steps: a plan is a unit of intent, and a silent subset run produces a half-applied state no one planned for. Every refusal executes nothing at all and emits this payload, and nothing else:
+One step outside the whitelist **inside your `step_range`** means `refused`, and you execute **nothing** — not even the valid steps: a plan is a unit of intent, and a silent subset run produces a half-applied state no one planned for. (Reserved checks outside `step_range` are `not_run`, not refusals — see Skill Grants.) Every refusal executes nothing at all and emits this payload, and nothing else:
 
 ```json
 { "status": "refused", "plan_id": "cv-sender-rollback",

@@ -130,8 +130,7 @@ Both keys are **always present**: use `[]` for a clean one. Never omit a key, ne
 Anything you refuse or cannot resolve — an out-of-brief request, a denied tool, a finding
 with no citable basis, or any conflict named in Role — is one entry in `questions`, never
 prose. `questions:` is this contract's name for the unresolved channel; its ownership is
-`./.opencode/WORKFLOW.md` § Escalation, so an editor raises it as `questions:` and
-`runesmith` routes it.
+`./.opencode/REVIEW.md` § Facet Report.
 Write it so the orchestrator can act on it as-is: each entry carries `item` — the path
 or scope it concerns, e.g.
 `./02_Knowledge/technologies/services/forgejo/operations.md` — and `question`. Who acts on

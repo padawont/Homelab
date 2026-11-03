@@ -93,8 +93,8 @@ append-only pass.
   which folder, beside which `overview.md`, is
   `./05_Implementations/AGENTS.md` § Spec files; template → destination is
   `./Templates/AGENTS.md` § Which template for which file. The kebab-case naming
-  rule is `./05_Implementations/AGENTS.md` § File system layout, and the
-  frontmatter is `./05_Implementations/AGENTS.md` § Frontmatter (required).
+  rule is `./AGENTS.md` § General Conventions, and the frontmatter is
+  `./05_Implementations/AGENTS.md` § Frontmatter (required).
 - **Never** `./05_Implementations/**/overview.md`,
   `./05_Implementations/**/rollback.md`, `./05_Implementations/**/configs/`, or any
   other path — not to fix, not to correct, not while passing through.

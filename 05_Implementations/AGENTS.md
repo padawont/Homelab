@@ -11,7 +11,7 @@ related_docs: []
 
 # AGENTS.md — 05_Implementations
 
-Live running setups — deployment procedures, configs, and operational notes.
+Section purpose is owned by `./AGENTS.md` § Repository Structure (row `05_Implementations/`).
 
 ## Why have implementations?
 

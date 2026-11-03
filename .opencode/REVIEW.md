@@ -26,7 +26,7 @@ facet — are defined in `./.opencode/WORKFLOW.md` § Coordination Rule.
 | `source` | `reviewer-source` | Is every cited URL live, authoritative, and does it actually say what's claimed? | S1–S2 |
 | `accuracy` | `reviewer-accuracy` | Are commands, keys, defaults, ports and versions correct for *this* homelab? | S1–S2 |
 | `scope` | `reviewer-scope` | Correct folder and depth; homelab relevance per `./AGENTS.md` § General Conventions | S3 |
-| `structure` | `reviewer-structure` | Frontmatter, status, kebab-case tags, ISO dates, 150-line rule, `./` links, heading order | S3–S5 |
+| `structure` | `reviewer-structure` | Frontmatter, status and heading order; line limit, tags, dates and links per `./AGENTS.md` § Atomic File Rule and § General Conventions | S3–S5 |
 | `overlap` | `reviewer-overlap` | Duplicates or contradicts another note/ADR — link instead of repeat? | S4–S5 |
 
 This table is canonical for the roster: other files link here instead of

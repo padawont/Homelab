@@ -43,7 +43,7 @@ Example:
 ```yaml
 ---
 title: "Deploy NetBox as IPAM"
-status: archived          # archived, or retired for implementation records
+status: archived          # the source section's terminal value, unchanged
 original_location: "./04_ADRs/37-deploy-netbox.md"
 archived_date: 2026-08-13
 reason: "Replaced by NetBox on its own VLAN"
@@ -51,12 +51,11 @@ superseded_by: "./04_ADRs/58-deploy-netbox-vlan.md"
 ---
 ```
 
-`status` carries the source section's terminal value unchanged — `archived` for ideas,
-knowledge, research, and ADRs (`./01_Ideas/AGENTS.md`, `./02_Knowledge/AGENTS.md`,
-`./03_Research/AGENTS.md`, `./04_ADRs/AGENTS.md` § Frontmatter (required)), `retired` for
-implementations (`./05_Implementations/AGENTS.md` § Frontmatter (required)). The archival
-block records that value rather than re-deriving it, and the rest of the source content is
-preserved verbatim per § Conventions.
+`status` carries the source section's terminal value unchanged — the archival block
+records that value rather than re-deriving it. The value itself is owned by each section:
+see § Status Lifecycle in `./01_Ideas/AGENTS.md`, `./02_Knowledge/AGENTS.md`,
+`./03_Research/AGENTS.md`, `./04_ADRs/AGENTS.md`, and `./05_Implementations/AGENTS.md`.
+The rest of the source content is preserved verbatim per § Conventions.
 
 `superseded_by` is optional — include it only when a successor exists. For an archived ADR
 it mirrors that ADR's own `replaced-by` (`./04_ADRs/AGENTS.md` § Frontmatter (required));

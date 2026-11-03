@@ -128,10 +128,5 @@ graph TD
 
 ## Agent Behaviour
 
-Role permissions and handoff contracts are shared across sections — see the roster in
-`./.opencode/WORKFLOW.md` and the per-role contracts in `./.opencode/agents/`; the review
-facets are owned by `./.opencode/REVIEW.md` § The Five Facets, and the report shape by
-§ Facet Report.
-
-Escalation is owned by `./.opencode/WORKFLOW.md` § Escalation and the unresolved channel by
-`./.opencode/REVIEW.md` § Facet Report.
+Role permissions, handoff contracts and escalation: `./.opencode/WORKFLOW.md`; facets and
+report shape: `./.opencode/REVIEW.md`.

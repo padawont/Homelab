@@ -3,7 +3,7 @@ description: 'Homelab spec-writer: writes descriptive infrastructure specs and t
   mermaid diagrams — cluster, service stack, deployment topology — append-only, never
   rewriting existing content. Describes what exists, never what is required.'
 mode: subagent
-model: opencode/deepseek-v4.1-flash
+model: deepseek/deepseek-flash
 permissions:
 - action: read
   resource: '*'

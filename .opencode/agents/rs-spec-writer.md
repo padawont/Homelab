@@ -3,7 +3,7 @@ description: Takes raw requirements and produces structured, self-contained spec
   with edge cases, testable criteria, and concrete examples across feature, bug fix,
   API, and research categories.
 mode: subagent
-model: opencode/deepseek-v4.1-flash
+model: deepseek/deepseek-flash
 permissions:
 - action: read
   resource: '*'

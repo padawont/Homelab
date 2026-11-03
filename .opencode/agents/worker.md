@@ -4,7 +4,7 @@ description: 'Homelab PKM Worker: executes one unit of work from a plain-text br
   done/next/blocked handoff. One of the three PKM file-writing spokes (worker,
   editor, spec-writer).'
 mode: subagent
-model: opencode/deepseek-v4.1-flash
+model: deepseek/deepseek-flash
 permissions:
 - action: read
   resource: '*'

@@ -5,7 +5,7 @@ description: Test writer agent that writes and runs tests (unit, integration) fo
   diagnoses failures, and produces structured test reports. Leaf agent — never modifies
   production code, never delegates.
 mode: subagent
-model: opencode/deepseek-v4.1-flash
+model: deepseek/deepseek-flash
 permissions:
 - action: read
   resource: '*'

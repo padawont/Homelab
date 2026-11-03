@@ -3,7 +3,7 @@ description: 'Homelab PKM reviewer (source): judges only citation evidence — e
   cited URL live, authoritative, and actually saying what is claimed. Read-only, one
   type, never edits.'
 mode: subagent
-model: opencode/deepseek-v4.1-flash
+model: deepseek/deepseek-flash
 permissions:
 - action: read
   resource: '*'

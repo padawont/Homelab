@@ -3,7 +3,7 @@ description: 'Homelab PKM reviewer (structure): judges only form — frontmatter
   kebab-case tags, ISO dates, 150-line rule, ./ links, heading order. Read-only, one
   type, never edits.'
 mode: subagent
-model: opencode/deepseek-v4.1-flash
+model: deepseek/deepseek-flash
 permissions:
 - action: read
   resource: '*'

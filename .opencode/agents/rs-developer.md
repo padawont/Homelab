@@ -4,7 +4,7 @@ description: Developer agent that implements production-quality code, writes com
   by rs-spec-writer and orchestration decisions from RuneSmith. Integrates with the
   Runesmith skill ecosystem for structured workflows.
 mode: subagent
-model: opencode/deepseek-v4.1-flash
+model: deepseek/deepseek-flash
 permissions:
 - action: read
   resource: '*'

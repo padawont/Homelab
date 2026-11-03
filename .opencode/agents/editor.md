@@ -4,7 +4,7 @@ description: 'Homelab PKM Editor: applies the merged review report''s findings a
   Edits any briefed file; deletes only briefed paths under ./0*. Returns a JSON changes:/questions:
   report. Never fetches the web, never asks the human.'
 mode: subagent
-model: opencode/deepseek-v4.1-flash
+model: deepseek/deepseek-flash
 permissions:
 - action: read
   resource: '*'

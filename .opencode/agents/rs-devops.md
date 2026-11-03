@@ -5,7 +5,7 @@ description: DevOps agent that manages CI/CD pipelines, Docker configurations, K
   documentation indexes. Operates within Runesmith structured workflows — never deploys
   to production without RuneSmith approval.
 mode: subagent
-model: opencode/deepseek-v4.1-flash
+model: deepseek/deepseek-flash
 permissions:
 - action: read
   resource: '*'

@@ -3,7 +3,7 @@ description: 'RuneSmith orchestrator: runs rs-implementation-pipeline interviews
   launches all specialist agents directly per stage, maintains pipeline state, presents
   human gates, and routes specialist questions to the human'
 mode: primary
-model: opencode/deepseek-v4.1-flash
+model: deepseek/deepseek-flash
 permissions:
 - action: read
   resource: '*'

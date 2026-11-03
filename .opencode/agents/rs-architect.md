@@ -3,7 +3,7 @@ description: 'Deep-knowledge, deep-code-analysis, and plan-review specialist: ma
   architecture, analyzes impact, evaluates designs, and reviews plans/specs with structured
   verdicts. Read-only leaf subagent launched by RuneSmith.'
 mode: subagent
-model: opencode/deepseek-v4.1-flash
+model: deepseek/deepseek-flash
 permissions:
 - action: read
   resource: '*'

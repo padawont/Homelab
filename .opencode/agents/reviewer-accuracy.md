@@ -3,7 +3,7 @@ description: 'Homelab PKM reviewer (accuracy): judges only whether commands, key
   defaults, ports and versions are correct for this homelab. Read-only, one type,
   never edits.'
 mode: subagent
-model: opencode/deepseek-v4.1-flash
+model: deepseek/deepseek-flash
 permissions:
 - action: read
   resource: '*'

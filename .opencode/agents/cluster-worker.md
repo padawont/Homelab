@@ -4,7 +4,7 @@ description: 'Homelab cluster-worker: a narrow executor for committed operationa
   dry-runs first, and never asks the human — it refuses and escalates to runesmith.
   Never edits repo files.'
 mode: subagent
-model: opencode/deepseek-v4.1-flash
+model: deepseek/deepseek-flash
 permissions:
 - action: read
   resource: '*'

@@ -3,7 +3,7 @@ description: 'Homelab PKM reviewer (scope): judges only placement and depth — 
   section folder, right level, nothing homelab-irrelevant. Read-only, one type, never
   edits.'
 mode: subagent
-model: opencode/deepseek-v4.1-flash
+model: deepseek/deepseek-flash
 permissions:
 - action: read
   resource: '*'

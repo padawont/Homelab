@@ -3,7 +3,7 @@ description: 'Homelab PKM reviewer (overlap): judges only duplication and contra
   against the sibling drafts or wider cross-reference set the hub supplies — link
   instead of repeat. Read-only, one type, never edits.'
 mode: subagent
-model: opencode/deepseek-v4.1-flash
+model: deepseek/deepseek-flash
 permissions:
 - action: read
   resource: '*'

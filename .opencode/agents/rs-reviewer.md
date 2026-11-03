@@ -5,7 +5,7 @@ description: 'Deterministic code review subagent: executes rs-review-methodology
   review reports at Flash temperature 0.0. Edit-disabled for audit isolation — never
   modifies code.'
 mode: subagent
-model: opencode/deepseek-v4.1-flash
+model: deepseek/deepseek-flash
 permissions:
 - action: read
   resource: '*'

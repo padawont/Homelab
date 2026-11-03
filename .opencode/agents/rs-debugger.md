@@ -4,7 +4,7 @@ description: Debugging subagent that reproduces bugs, analyzes logs, reduces tes
   scripts only under /tmp/. Uses rs-discover and rs-consult skills. Never edits production
   files, delegates, or runs destructive commands.
 mode: subagent
-model: opencode/deepseek-v4.1-flash
+model: deepseek/deepseek-flash
 permissions:
 - action: read
   resource: '*'

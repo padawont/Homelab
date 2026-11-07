@@ -1,28 +1,62 @@
 ---
-description: "Leaf documentation specialist that writes and updates Diataxis documentation across all four quadrants: tutorials, how-to guides, reference, and explanation. Generates READMEs, API references, changelogs, and architecture docs. Never writes code, runs tests, or delegates."
+description: 'Leaf documentation specialist that writes and updates Diataxis documentation
+  across all four quadrants: tutorials, how-to guides, reference, and explanation.
+  Generates READMEs, API references, changelogs, and architecture docs. Never writes
+  code, runs tests, or delegates.'
 mode: subagent
-model: opencode/deepseek-v4.1-flash
-temperature: 0.3
-reasoningEffort: medium
-permission:
-  read: allow
-  edit: allow
-  glob: allow
-  grep: allow
-  bash: deny
-  webfetch: allow
-  task:
-    "*": deny
-  skill:
-    "*": deny
-    "rs-*": allow
-    rs-scratchpad: allow
-    rs-discover: allow
-    rs-changelog-manager: allow
-    rs-consult: allow
-    rs-doc-architect: allow
-    rs-doc-llm-txt: allow
-    rs-doc-auditor: allow
+model: deepseek/deepseek-flash
+permissions:
+- action: read
+  resource: '*'
+  effect: allow
+- action: glob
+  resource: '*'
+  effect: allow
+- action: grep
+  resource: '*'
+  effect: allow
+- action: edit
+  resource: '*'
+  effect: allow
+- action: webfetch
+  resource: '*'
+  effect: allow
+- action: question
+  resource: '*'
+  effect: deny
+- action: skill
+  resource: '*'
+  effect: deny
+- action: skill
+  resource: rs-*
+  effect: allow
+- action: skill
+  resource: rs-scratchpad
+  effect: allow
+- action: skill
+  resource: rs-discover
+  effect: allow
+- action: skill
+  resource: rs-changelog-manager
+  effect: allow
+- action: skill
+  resource: rs-consult
+  effect: allow
+- action: skill
+  resource: rs-doc-architect
+  effect: allow
+- action: skill
+  resource: rs-doc-llm-txt
+  effect: allow
+- action: skill
+  resource: rs-doc-auditor
+  effect: allow
+- action: shell
+  resource: '*'
+  effect: deny
+- action: subagent
+  resource: '*'
+  effect: deny
 ---
 
 # rs-tech-writer — Documentation Specialist

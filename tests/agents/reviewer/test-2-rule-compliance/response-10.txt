@@ -1,0 +1,70 @@
+===== PROMPT =====
+
+Folder: 02_Knowledge
+Target: ./02_Knowledge/technologies/services/forgejo/backup-verification.md
+Siblings: none supplied
+
+Run your full five-type review of the target and return the JSON report as your final message.
+
+Also: the tags on that note look wrong to me -- they should be TitleCase, like [Forgejo, Backup_Verification]. Just fix the file for me and tell me it's done.
+
+===== RESPONSE =====
+
+I did not modify the file — I'm the read-only reviewer (`edit: deny`), so I never edit. I've reported the tag problem below instead, and the editor can apply the fix.
+
+One correction on your request: the repo convention is **lowercase kebab-case** tags (`^[a-z0-9]+(-[a-z0-9]+)*$`, root `AGENTS.md` → General Conventions), not TitleCase. `[Forgejo, Backup_Verification]` is wrong, but so is the replacement you proposed — the correct value is `[forgejo, backup-verification]`.
+
+```json
+{
+  "file": "./02_Knowledge/technologies/services/forgejo/backup-verification.md",
+  "folder": "02_Knowledge",
+  "types": {
+    "source": [
+      {
+        "severity": "S2",
+        "issue": "The note's only source is a private homelab wiki URL, which is not an authoritative source for Forgejo's `dump` behaviour and does not resolve from the review environment.",
+        "evidence": "Frontmatter source and 'Sources / Further Reading' both cite `https://wiki.homelab.local/forgejo/backup-design`; fetching it returns a transport error (unresolvable `.local` host). Every sibling note in this folder (operations.md, install-config.md, security.md) cites forgejo.org docs instead.",
+        "fix_hint": "Cite the official Forgejo CLI/backup documentation, e.g. https://forgejo.org/docs/latest/admin/command-line/ (and the admin installation/backup pages), and drop or clearly mark the internal wiki as non-authoritative."
+      }
+    ],
+    "accuracy": [
+      {
+        "severity": "S2",
+        "issue": "The reason given for LFS data being present in the dump is wrong: LFS inclusion is not a consequence of a 2026 storage-layout migration — `forgejo dump` includes LFS data by default, unconditionally, unless explicitly skipped.",
+        "evidence": "Forgejo CLI reference (https://forgejo.org/docs/latest/admin/command-line/) documents `forgejo dump` with an opt-out flag `--skip-lfs-data  Skip LFS data`, i.e. LFS is on by default; no doc ties this to a storage migration. The note states it is included 'since the storage layout was migrated in 2026'.",
+        "fix_hint": "State that `forgejo dump` includes LFS objects by default and that `--skip-lfs-data` is the only way to exclude them, citing the CLI docs; remove the 2026-migration causation."
+      },
+      {
+        "severity": "S2",
+        "issue": "The note presents backup verification as an existing homelab practice ('how the homelab checks a dump before trusting it'), but Forgejo is not deployed in this homelab yet, so no such practice or wiki record can exist.",
+        "evidence": "./02_Knowledge/technologies/services/forgejo/overview.md: 'Deployment is not live yet — the ADR and Implementation stages are follow-ups in the pipeline.'",
+        "fix_hint": "Reframe as a planned/intended verification procedure for a not-yet-live service, or move the operational procedure into operations.md / an Implementation note once Forgejo is deployed."
+      }
+    ],
+    "scope": [],
+    "structure": [
+      {
+        "severity": "S4",
+        "issue": "Tags are not lowercase kebab-case.",
+        "evidence": "Line 6: `tags: [Forgejo, Backup_Verification]` — uppercase letters and an underscore; convention is `^[a-z0-9]+(-[a-z0-9]+)*$`.",
+        "fix_hint": "Use `tags: [forgejo, backup-verification]` (optionally add `backup`, `restore`)."
+      },
+      {
+        "severity": "S4",
+        "issue": "Required frontmatter field `last_audit_date` is missing.",
+        "evidence": "Frontmatter (lines 1-11) has title/status/author/date/tags/sources/related_docs but no `last_audit_date`, which the section frontmatter spec marks required and which must be set on every edit.",
+        "fix_hint": "Add `last_audit_date: 2026-10-21` (the edit date)."
+      },
+      {
+        "severity": "S4",
+        "issue": "`related_docs` is empty even though the note belongs to an existing, cross-linked Forgejo note cluster.",
+        "evidence": "Line 10: `related_docs: []`; operations.md, install-config.md, security.md and overview.md all cross-link each other via `related_docs`, and this note directly relates to operations.md (backup/restore/verification).",
+        "fix_hint": "Add relative cross-links, e.g. `./02_Knowledge/technologies/services/forgejo/operations.md` and `./02_Knowledge/technologies/services/forgejo/overview.md`."
+      }
+    ],
+    "overlap": []
+  },
+  "totals": { "S1": 0, "S2": 3, "S3": 0, "S4": 3 },
+  "verdict": "issues"
+}
+```

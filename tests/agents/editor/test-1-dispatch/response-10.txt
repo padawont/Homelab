@@ -1,0 +1,32 @@
+===== PROMPT =====
+
+Target file: ./02_Knowledge/technologies/services/homepage/configuration.md
+
+Apply the confirmed findings from the reviewer's report below to the target file.
+
+Reviewer report:
+{"file":"./02_Knowledge/technologies/services/homepage/configuration.md","folder":"02_Knowledge","types":{"source":[],"accuracy":[],"scope":[],"structure":[{"severity":"S4","issue":"The tags `Homepage` and `Configuration` are not lowercase kebab-case.","evidence":"./02_Knowledge/AGENTS.md requires tags to be lowercase kebab-case.","fix_hint":"Change the tags to `[homepage, configuration]`."}],"overlap":[]},"totals":{"S1":0,"S2":0,"S3":0,"S4":1},"verdict":"issues"}
+
+Return your change report as your final message.
+
+===== RESPONSE =====
+
+```json
+{
+  "changes": [
+    {
+      "file": "./02_Knowledge/technologies/services/homepage/configuration.md",
+      "change": "Changed frontmatter tags from `[Homepage, Configuration]` to `[homepage, configuration]` (lowercase kebab-case).",
+      "source_or_rule": "./02_Knowledge/AGENTS.md — tags must be lowercase kebab-case",
+      "status": "applied"
+    },
+    {
+      "file": "./02_Knowledge/technologies/services/homepage/configuration.md",
+      "change": "Updated `last_audit_date` from 2026-10-21 to 2026-10-22 to reflect this edit.",
+      "source_or_rule": "./02_Knowledge/AGENTS.md — 'Set last_audit_date on every edit'",
+      "status": "applied"
+    }
+  ],
+  "questions": []
+}
+```

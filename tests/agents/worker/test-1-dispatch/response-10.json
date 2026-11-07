@@ -1,26 +1,26 @@
 [
   {
     "type": "step_start",
-    "timestamp": 1792607270262,
-    "sessionID": "ses_ea047d0faffe3TEZEScWCJ31rA",
+    "timestamp": 1792609720542,
+    "sessionID": "ses_ea022709dffe0PT3Y8ceAycCMM",
     "part": {
-      "id": "prt_15fb83576001YGOQ76ZSk9pAj8",
-      "sessionID": "ses_ea047d0faffe3TEZEScWCJ31rA",
-      "messageID": "msg_15fb8308b001SVqdxTu4QmQvB2",
+      "id": "prt_15fdd98de001EMaH5AYguqYmcH",
+      "sessionID": "ses_ea022709dffe0PT3Y8ceAycCMM",
+      "messageID": "msg_15fdd90ce001hD9qBKi1X7fMHb",
       "type": "step-start",
-      "snapshot": "a344b40108b30afdb196836326a712db9cc12e5a"
+      "snapshot": "07c325e9c4d742e9998edc230ae71437480baa4c"
     }
   },
   {
     "type": "tool_use",
-    "timestamp": 1792607270567,
-    "sessionID": "ses_ea047d0faffe3TEZEScWCJ31rA",
+    "timestamp": 1792609720911,
+    "sessionID": "ses_ea022709dffe0PT3Y8ceAycCMM",
     "part": {
-      "partID": "prt_15fb8361a0010VHn15i7Qis3VE",
-      "sessionID": "ses_ea047d0faffe3TEZEScWCJ31rA",
-      "messageID": "msg_15fb8308b001SVqdxTu4QmQvB2",
+      "partID": "prt_15fdd998b0011QJFXzYWVXI7aX",
+      "sessionID": "ses_ea022709dffe0PT3Y8ceAycCMM",
+      "messageID": "msg_15fdd90ce001hD9qBKi1X7fMHb",
       "type": "tool",
-      "id": "call_193c2275f5f44f3a90e5feca",
+      "id": "call_fe2f78fb3ab4447a8d1302d9",
       "tool": "read",
       "state": {
         "status": "completed",
@@ -48,28 +48,72 @@
           "rawInput": "{\"path\":\"./01_Ideas/AGENTS.md\"}"
         },
         "time": {
-          "start": 1792607270426,
-          "end": 1792607270567
+          "start": 1792609720715,
+          "end": 1792609720911
+        }
+      }
+    }
+  },
+  {
+    "type": "tool_use",
+    "timestamp": 1792609720916,
+    "sessionID": "ses_ea022709dffe0PT3Y8ceAycCMM",
+    "part": {
+      "partID": "prt_15fdd99c6001qGTJzyHK0sPDVA",
+      "sessionID": "ses_ea022709dffe0PT3Y8ceAycCMM",
+      "messageID": "msg_15fdd90ce001hD9qBKi1X7fMHb",
+      "type": "tool",
+      "id": "call_571ae19c2e5949b4bdfb39d4",
+      "tool": "glob",
+      "state": {
+        "status": "completed",
+        "input": {
+          "pattern": "01_Ideas/**/*.md"
+        },
+        "output": "/tmp/opencode/agent-eval/run-wddeide9/01_Ideas/AGENTS.md\n/tmp/opencode/agent-eval/run-wddeide9/01_Ideas/local-ai/idea-local-open-weight-models.md\n/tmp/opencode/agent-eval/run-wddeide9/01_Ideas/open-knowledge-format/idea-okf.md",
+        "title": "glob",
+        "metadata": {
+          "metadata": {
+            "count": 3,
+            "truncated": false
+          },
+          "content": [
+            {
+              "type": "text",
+              "text": "/tmp/opencode/agent-eval/run-wddeide9/01_Ideas/AGENTS.md\n/tmp/opencode/agent-eval/run-wddeide9/01_Ideas/local-ai/idea-local-open-weight-models.md\n/tmp/opencode/agent-eval/run-wddeide9/01_Ideas/open-knowledge-format/idea-okf.md"
+            }
+          ],
+          "providerCall": {
+            "executed": false
+          },
+          "providerResult": {
+            "executed": false
+          },
+          "rawInput": "{\"pattern\":\"01_Ideas/**/*.md\"}"
+        },
+        "time": {
+          "start": 1792609720774,
+          "end": 1792609720916
         }
       }
     }
   },
   {
     "type": "step_finish",
-    "timestamp": 1792607270572,
-    "sessionID": "ses_ea047d0faffe3TEZEScWCJ31rA",
+    "timestamp": 1792609720922,
+    "sessionID": "ses_ea022709dffe0PT3Y8ceAycCMM",
     "part": {
-      "id": "prt_15fb836ac001U49YzfZIyOOTqm",
-      "sessionID": "ses_ea047d0faffe3TEZEScWCJ31rA",
-      "messageID": "msg_15fb8308b001SVqdxTu4QmQvB2",
+      "id": "prt_15fdd9a5a001xTemGQLNyTQwAD",
+      "sessionID": "ses_ea022709dffe0PT3Y8ceAycCMM",
+      "messageID": "msg_15fdd90ce001hD9qBKi1X7fMHb",
       "type": "step-finish",
       "reason": "tool-calls",
-      "snapshot": "a344b40108b30afdb196836326a712db9cc12e5a",
-      "cost": 0.00122532,
+      "snapshot": "07c325e9c4d742e9998edc230ae71437480baa4c",
+      "cost": 0.00143172,
       "tokens": {
-        "input": 3786,
-        "output": 46,
-        "reasoning": 19,
+        "input": 4330,
+        "output": 80,
+        "reasoning": 21,
         "cache": {
           "read": 1920,
           "write": 0
@@ -79,26 +123,69 @@
   },
   {
     "type": "step_start",
-    "timestamp": 1792607271815,
-    "sessionID": "ses_ea047d0faffe3TEZEScWCJ31rA",
+    "timestamp": 1792609722090,
+    "sessionID": "ses_ea022709dffe0PT3Y8ceAycCMM",
     "part": {
-      "id": "prt_15fb83b86001esbpQOMNYi6qqP",
-      "sessionID": "ses_ea047d0faffe3TEZEScWCJ31rA",
-      "messageID": "msg_15fb836b50012jEIiO4zRZ4cp2",
+      "id": "prt_15fdd9eea001j5RSuHY1Z63oXF",
+      "sessionID": "ses_ea022709dffe0PT3Y8ceAycCMM",
+      "messageID": "msg_15fdd9a66001CRxjJNmeGWABHd",
       "type": "step-start",
-      "snapshot": "a344b40108b30afdb196836326a712db9cc12e5a"
+      "snapshot": "07c325e9c4d742e9998edc230ae71437480baa4c"
     }
   },
   {
     "type": "tool_use",
-    "timestamp": 1792607272144,
-    "sessionID": "ses_ea047d0faffe3TEZEScWCJ31rA",
+    "timestamp": 1792609722536,
+    "sessionID": "ses_ea022709dffe0PT3Y8ceAycCMM",
     "part": {
-      "partID": "prt_15fb83c18001kgX8437QIrNr8x",
-      "sessionID": "ses_ea047d0faffe3TEZEScWCJ31rA",
-      "messageID": "msg_15fb836b50012jEIiO4zRZ4cp2",
+      "partID": "prt_15fdd9f49001tRMDJqZ53JRefe",
+      "sessionID": "ses_ea022709dffe0PT3Y8ceAycCMM",
+      "messageID": "msg_15fdd9a66001CRxjJNmeGWABHd",
       "type": "tool",
-      "id": "call_3c7727d88af440bca8b0519b",
+      "id": "call_0743cc2294b842a89f757298",
+      "tool": "read",
+      "state": {
+        "status": "completed",
+        "input": {
+          "path": "./01_Ideas/local-ai/idea-local-open-weight-models.md"
+        },
+        "output": "Read file ./01_Ideas/local-ai/idea-local-open-weight-models.md, lines 1-36\n1: ---\n2: title: \"Run open-weight AI models on local machine\"\n3: status: draft\n4: author: \"padawont\"\n5: date: 2026-09-19\n6: tags: [local-ai, self-hosting, inference, gpu]\n7: technologies: [ollama, llama-cpp, open-webui]\n8: related_ideas: []\n9: ---\n10: \n11: # Run open-weight AI models on local machine\n12: \n13: ## Objective\n14: \n15: Self-host open-weight LLMs on the local workstation so inference stays local —\n16: no API keys, no per-token cost, no data leaving the machine.\n17: \n18: ## Current Specs\n19: \n20: - CPU: AMD Ryzen 7 5800X3D — 8C/16T, 3D V-Cache\n21: - RAM: 31 GiB total (~24 GiB available)\n22: - GPU: AMD Radeon RX 5700 XT (RDNA1, Navi 10) — 8 GiB VRAM, `amdgpu` driver\n23: - Disk: 220 GB, 182 GB free\n24: - OS: CachyOS Linux, kernel 7.2.6\n25: - Runtime: Docker 29.8.1; no ROCm, no NVIDIA tooling\n26: \n27: ## Notes\n28: \n29: - 8 GiB VRAM fits Q4 7B–8B models; larger models partly offloaded to CPU.\n30: - No ROCm on this GPU — RDNA1 support is unofficial, so llama.cpp's Vulkan\n31:   backend is the likely path. Ollama is the simplest option.\n32: - Runs on this workstation under Docker, not the k3s node.\n33: \n34: ## Open Questions\n35: \n36: - Which serving stack performs best here: llama.cpp Vulkan or Ollama?",
+        "title": "read",
+        "metadata": {
+          "metadata": {
+            "truncated": false
+          },
+          "content": [
+            {
+              "type": "text",
+              "text": "Read file ./01_Ideas/local-ai/idea-local-open-weight-models.md, lines 1-36\n1: ---\n2: title: \"Run open-weight AI models on local machine\"\n3: status: draft\n4: author: \"padawont\"\n5: date: 2026-09-19\n6: tags: [local-ai, self-hosting, inference, gpu]\n7: technologies: [ollama, llama-cpp, open-webui]\n8: related_ideas: []\n9: ---\n10: \n11: # Run open-weight AI models on local machine\n12: \n13: ## Objective\n14: \n15: Self-host open-weight LLMs on the local workstation so inference stays local —\n16: no API keys, no per-token cost, no data leaving the machine.\n17: \n18: ## Current Specs\n19: \n20: - CPU: AMD Ryzen 7 5800X3D — 8C/16T, 3D V-Cache\n21: - RAM: 31 GiB total (~24 GiB available)\n22: - GPU: AMD Radeon RX 5700 XT (RDNA1, Navi 10) — 8 GiB VRAM, `amdgpu` driver\n23: - Disk: 220 GB, 182 GB free\n24: - OS: CachyOS Linux, kernel 7.2.6\n25: - Runtime: Docker 29.8.1; no ROCm, no NVIDIA tooling\n26: \n27: ## Notes\n28: \n29: - 8 GiB VRAM fits Q4 7B–8B models; larger models partly offloaded to CPU.\n30: - No ROCm on this GPU — RDNA1 support is unofficial, so llama.cpp's Vulkan\n31:   backend is the likely path. Ollama is the simplest option.\n32: - Runs on this workstation under Docker, not the k3s node.\n33: \n34: ## Open Questions\n35: \n36: - Which serving stack performs best here: llama.cpp Vulkan or Ollama?"
+            }
+          ],
+          "providerCall": {
+            "executed": false
+          },
+          "providerResult": {
+            "executed": false
+          },
+          "rawInput": "{\"path\":\"./01_Ideas/local-ai/idea-local-open-weight-models.md\"}"
+        },
+        "time": {
+          "start": 1792609722185,
+          "end": 1792609722536
+        }
+      }
+    }
+  },
+  {
+    "type": "tool_use",
+    "timestamp": 1792609722543,
+    "sessionID": "ses_ea022709dffe0PT3Y8ceAycCMM",
+    "part": {
+      "partID": "prt_15fdda043001ZtonCkCQnc5j9k",
+      "sessionID": "ses_ea022709dffe0PT3Y8ceAycCMM",
+      "messageID": "msg_15fdd9a66001CRxjJNmeGWABHd",
+      "type": "tool",
+      "id": "call_64cdfe052efd434eadaeb98b",
       "tool": "read",
       "state": {
         "status": "completed",
@@ -126,30 +213,30 @@
           "rawInput": "{\"path\":\"./Templates/ideas/idea.md\"}"
         },
         "time": {
-          "start": 1792607271960,
-          "end": 1792607272144
+          "start": 1792609722435,
+          "end": 1792609722543
         }
       }
     }
   },
   {
     "type": "step_finish",
-    "timestamp": 1792607272150,
-    "sessionID": "ses_ea047d0faffe3TEZEScWCJ31rA",
+    "timestamp": 1792609722550,
+    "sessionID": "ses_ea022709dffe0PT3Y8ceAycCMM",
     "part": {
-      "id": "prt_15fb83cd6001uZfJGoCP8Sl2XJ",
-      "sessionID": "ses_ea047d0faffe3TEZEScWCJ31rA",
-      "messageID": "msg_15fb836b50012jEIiO4zRZ4cp2",
+      "id": "prt_15fdda0b6001SZXAgWvumA5jzK",
+      "sessionID": "ses_ea022709dffe0PT3Y8ceAycCMM",
+      "messageID": "msg_15fdd9a66001CRxjJNmeGWABHd",
       "type": "step-finish",
       "reason": "tool-calls",
-      "snapshot": "a344b40108b30afdb196836326a712db9cc12e5a",
-      "cost": 0.0008215079999999999,
+      "snapshot": "07c325e9c4d742e9998edc230ae71437480baa4c",
+      "cost": 0.00044501999999999996,
       "tokens": {
-        "input": 2443,
-        "output": 45,
-        "reasoning": 9,
+        "input": 969,
+        "output": 87,
+        "reasoning": 11,
         "cache": {
-          "read": 3968,
+          "read": 6120,
           "write": 0
         }
       }
@@ -157,32 +244,32 @@
   },
   {
     "type": "step_start",
-    "timestamp": 1792607273159,
-    "sessionID": "ses_ea047d0faffe3TEZEScWCJ31rA",
+    "timestamp": 1792609723992,
+    "sessionID": "ses_ea022709dffe0PT3Y8ceAycCMM",
     "part": {
-      "id": "prt_15fb840c7001i83h7SVQQUINCY",
-      "sessionID": "ses_ea047d0faffe3TEZEScWCJ31rA",
-      "messageID": "msg_15fb83cde001LDRk2cmJPz8FKr",
+      "id": "prt_15fdda6580013SRFh2Cim41CP0",
+      "sessionID": "ses_ea022709dffe0PT3Y8ceAycCMM",
+      "messageID": "msg_15fdda0c1001L0pnNUB1WAJzTt",
       "type": "step-start",
-      "snapshot": "a344b40108b30afdb196836326a712db9cc12e5a"
+      "snapshot": "07c325e9c4d742e9998edc230ae71437480baa4c"
     }
   },
   {
     "type": "tool_use",
-    "timestamp": 1792607274454,
-    "sessionID": "ses_ea047d0faffe3TEZEScWCJ31rA",
+    "timestamp": 1792609725038,
+    "sessionID": "ses_ea022709dffe0PT3Y8ceAycCMM",
     "part": {
-      "partID": "prt_15fb84297001MH6d51qIlDs0O0",
-      "sessionID": "ses_ea047d0faffe3TEZEScWCJ31rA",
-      "messageID": "msg_15fb83cde001LDRk2cmJPz8FKr",
+      "partID": "prt_15fdda799001jYIQbrpOMJWtl7",
+      "sessionID": "ses_ea022709dffe0PT3Y8ceAycCMM",
+      "messageID": "msg_15fdda0c1001L0pnNUB1WAJzTt",
       "type": "tool",
-      "id": "call_4d65469de66542a480b9567e",
+      "id": "call_061210713ee548df8cc7eace",
       "tool": "write",
       "state": {
         "status": "completed",
         "input": {
           "path": "./01_Ideas/dispatch-check/idea-dispatch-check.md",
-          "content": "---\ntitle: \"Worker accepts a text brief and returns a handoff block\"\nstatus: draft\nauthor: \"padawont\"\ndate: 2026-10-21\ntags: [agents, workflow]\ntechnologies: []\nrelated_ideas: []\n---\n\n# Worker accepts a text brief and returns a handoff block\n\n## Objective\n\nThe worker does the work a brief names and reports it back in a\n`done`/`next`/`blocked` handoff block.\n"
+          "content": "---\ntitle: \"Worker accepts a text brief and returns a handoff block\"\nstatus: draft\nauthor: \"padawont\"\ndate: 2026-10-21\ntags: [agents, workflow, dispatch]\ntechnologies: []\nrelated_ideas: []\n---\n\n# Worker accepts a text brief and returns a handoff block\n\n## Objective\n\nThe worker does the work a brief names and reports it back in done/next/blocked.\n"
         },
         "output": "Created file successfully: 01_Ideas/dispatch-check/idea-dispatch-check.md",
         "title": "write",
@@ -202,31 +289,31 @@
           "providerResult": {
             "executed": false
           },
-          "rawInput": "{\"path\":\"./01_Ideas/dispatch-check/idea-dispatch-check.md\",\"content\":\"---\\ntitle: \\\"Worker accepts a text brief and returns a handoff block\\\"\\nstatus: draft\\nauthor: \\\"padawont\\\"\\ndate: 2026-10-21\\ntags: [agents, workflow]\\ntechnologies: []\\nrelated_ideas: []\\n---\\n\\n# Worker accepts a text brief and returns a handoff block\\n\\n## Objective\\n\\nThe worker does the work a brief names and reports it back in a\\n`done`/`next`/`blocked` handoff block.\\n\"}"
+          "rawInput": "{\"path\":\"./01_Ideas/dispatch-check/idea-dispatch-check.md\",\"content\":\"---\\ntitle: \\\"Worker accepts a text brief and returns a handoff block\\\"\\nstatus: draft\\nauthor: \\\"padawont\\\"\\ndate: 2026-10-21\\ntags: [agents, workflow, dispatch]\\ntechnologies: []\\nrelated_ideas: []\\n---\\n\\n# Worker accepts a text brief and returns a handoff block\\n\\n## Objective\\n\\nThe worker does the work a brief names and reports it back in done/next/blocked.\\n\"}"
         },
         "time": {
-          "start": 1792607273623,
-          "end": 1792607274454
+          "start": 1792609724313,
+          "end": 1792609725038
         }
       }
     }
   },
   {
     "type": "step_finish",
-    "timestamp": 1792607274469,
-    "sessionID": "ses_ea047d0faffe3TEZEScWCJ31rA",
+    "timestamp": 1792609725055,
+    "sessionID": "ses_ea022709dffe0PT3Y8ceAycCMM",
     "part": {
-      "id": "prt_15fb845e50011zKAncbevDD4MT",
-      "sessionID": "ses_ea047d0faffe3TEZEScWCJ31rA",
-      "messageID": "msg_15fb83cde001LDRk2cmJPz8FKr",
+      "id": "prt_15fddaa7f001IDv0QBPe7GeUVt",
+      "sessionID": "ses_ea022709dffe0PT3Y8ceAycCMM",
+      "messageID": "msg_15fdda0c1001L0pnNUB1WAJzTt",
       "type": "step-finish",
       "reason": "tool-calls",
-      "snapshot": "c538afcdc4121e67d75a4812010af7d08092bb2e",
-      "cost": 0.000621396,
+      "snapshot": "333200701923ca9c41362212a00777c7278cf74f",
+      "cost": 0.0010914960000000002,
       "tokens": {
-        "input": 1047,
-        "output": 167,
-        "reasoning": 59,
+        "input": 2702,
+        "output": 158,
+        "reasoning": 46,
         "cache": {
           "read": 6016,
           "write": 0
@@ -236,29 +323,109 @@
   },
   {
     "type": "step_start",
-    "timestamp": 1792607276256,
-    "sessionID": "ses_ea047d0faffe3TEZEScWCJ31rA",
+    "timestamp": 1792609726136,
+    "sessionID": "ses_ea022709dffe0PT3Y8ceAycCMM",
     "part": {
-      "id": "prt_15fb84ce0001meW9PjBC3SZCVs",
-      "sessionID": "ses_ea047d0faffe3TEZEScWCJ31rA",
-      "messageID": "msg_15fb845ed001hIB84xSps5JcI2",
+      "id": "prt_15fddaeb80015aEM3xMqEWxesO",
+      "sessionID": "ses_ea022709dffe0PT3Y8ceAycCMM",
+      "messageID": "msg_15fddaa8c001iCcYzKuezCEjjx",
       "type": "step-start",
-      "snapshot": "c538afcdc4121e67d75a4812010af7d08092bb2e"
+      "snapshot": "333200701923ca9c41362212a00777c7278cf74f"
+    }
+  },
+  {
+    "type": "tool_use",
+    "timestamp": 1792609726412,
+    "sessionID": "ses_ea022709dffe0PT3Y8ceAycCMM",
+    "part": {
+      "partID": "prt_15fddaf2a001VbmYamzRkczlLF",
+      "sessionID": "ses_ea022709dffe0PT3Y8ceAycCMM",
+      "messageID": "msg_15fddaa8c001iCcYzKuezCEjjx",
+      "type": "tool",
+      "id": "call_b5eea02c5e6f442da09d1b30",
+      "tool": "shell",
+      "state": {
+        "status": "completed",
+        "input": {
+          "command": "wc -l 01_Ideas/dispatch-check/idea-dispatch-check.md"
+        },
+        "output": "15 01_Ideas/dispatch-check/idea-dispatch-check.md\n",
+        "title": "shell",
+        "metadata": {
+          "metadata": {
+            "status": "completed",
+            "truncated": false,
+            "exit": 0
+          },
+          "content": [
+            {
+              "type": "text",
+              "text": "15 01_Ideas/dispatch-check/idea-dispatch-check.md\n"
+            }
+          ],
+          "providerCall": {
+            "executed": false
+          },
+          "providerResult": {
+            "executed": false
+          },
+          "rawInput": "{\"command\":\"wc -l 01_Ideas/dispatch-check/idea-dispatch-check.md\"}"
+        },
+        "time": {
+          "start": 1792609726250,
+          "end": 1792609726412
+        }
+      }
+    }
+  },
+  {
+    "type": "step_finish",
+    "timestamp": 1792609726419,
+    "sessionID": "ses_ea022709dffe0PT3Y8ceAycCMM",
+    "part": {
+      "id": "prt_15fddafd3001JrjbYSUn4AV4Qc",
+      "sessionID": "ses_ea022709dffe0PT3Y8ceAycCMM",
+      "messageID": "msg_15fddaa8c001iCcYzKuezCEjjx",
+      "type": "step-finish",
+      "reason": "tool-calls",
+      "snapshot": "333200701923ca9c41362212a00777c7278cf74f",
+      "cost": 0.00038768399999999996,
+      "tokens": {
+        "input": 887,
+        "output": 54,
+        "reasoning": 7,
+        "cache": {
+          "read": 8064,
+          "write": 0
+        }
+      }
+    }
+  },
+  {
+    "type": "step_start",
+    "timestamp": 1792609727799,
+    "sessionID": "ses_ea022709dffe0PT3Y8ceAycCMM",
+    "part": {
+      "id": "prt_15fddb53700165qYJQ65cmH2f2",
+      "sessionID": "ses_ea022709dffe0PT3Y8ceAycCMM",
+      "messageID": "msg_15fddafdf001IKbdTy1hgRxBnF",
+      "type": "step-start",
+      "snapshot": "333200701923ca9c41362212a00777c7278cf74f"
     }
   },
   {
     "type": "text",
-    "timestamp": 1792607276467,
-    "sessionID": "ses_ea047d0faffe3TEZEScWCJ31rA",
+    "timestamp": 1792609728863,
+    "sessionID": "ses_ea022709dffe0PT3Y8ceAycCMM",
     "part": {
-      "id": "prt_15fb84ce3001Jl69ntgoJyvsgO",
-      "sessionID": "ses_ea047d0faffe3TEZEScWCJ31rA",
-      "messageID": "msg_15fb845ed001hIB84xSps5JcI2",
+      "id": "prt_15fddb7b4001AWKUKtTpT0j7Ty",
+      "sessionID": "ses_ea022709dffe0PT3Y8ceAycCMM",
+      "messageID": "msg_15fddafdf001IKbdTy1hgRxBnF",
       "type": "text",
-      "text": "```yaml\nhandoff:\n  done:    created ./01_Ideas/dispatch-check/idea-dispatch-check.md (15 lines) with the\n           Idea frontmatter from ./01_Ideas/AGENTS.md and one short body section\n  next:    hub may queue review of the new idea note\n  blocked: nothing\n```",
+      "text": "```yaml\nhandoff:\n  done:    created ./01_Ideas/dispatch-check/idea-dispatch-check.md (15 lines) with the\n           required Idea frontmatter from ./01_Ideas/AGENTS.md and one short body section\n  next:    hub may queue review of the new idea note\n  blocked: nothing\n```",
       "time": {
-        "start": 1792607276259,
-        "end": 1792607276467
+        "start": 1792609728436,
+        "end": 1792609728863
       }
     }
   }

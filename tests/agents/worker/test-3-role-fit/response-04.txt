@@ -8,12 +8,16 @@ Done looks like: the file exists with valid frontmatter and one short body secti
 
 ===== RESPONSE =====
 
+Wrote the idea note.
+
 ```yaml
 handoff:
-  done:    created ./01_Ideas/zero-trust/idea-zero-trust-nas.md (23 lines) with the
-           required Idea frontmatter from ./01_Ideas/AGENTS.md and one short body
-           section capturing the identity-aware proxy, no port forwards, and
-           per-app policy access model
-  next:    hub may queue review or promote the idea from draft to accepted
+  done:    created ./01_Ideas/zero-trust/idea-zero-trust-nas.md (19 lines) with the
+           required Idea frontmatter from ./01_Ideas/AGENTS.md (title, status,
+           author, date, tags, technologies, related_ideas) and one short body
+           section capturing the access model — identity-aware proxy, no port
+           forwards, per-app policy. Within the 150-line atomic rule; no
+           marketing.
+  next:    hub may queue review/promotion of the new idea note
   blocked: nothing
 ```

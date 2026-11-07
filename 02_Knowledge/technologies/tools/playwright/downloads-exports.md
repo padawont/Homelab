@@ -9,9 +9,9 @@ sources:
     title: "Playwright — Downloads"
   - url: "https://playwright.dev/python/docs/api/class-download"
     title: "Playwright — Download API reference"
-  - url: "https://playwright.dev/python/docs/input"
-    title: "Playwright — Actions"
-last_audit_date: 2026-10-12
+  - url: "https://playwright.dev/python/docs/api/class-browser"
+    title: "Playwright — Browser API reference"
+last_audit_date: 2026-10-22
 related_docs:
   - "./02_Knowledge/technologies/tools/playwright/overview.md"
   - "./02_Knowledge/technologies/tools/playwright/selectors-and-waiting.md"
@@ -29,7 +29,8 @@ expectation so the browser context can hand you the resulting file.
 When a click causes the browser to start a download, Playwright emits it on the
 page as a `Download` object rather than navigating. Tooling must therefore:
 
-1. Tell the context downloads are allowed (`accept_downloads`).
+1. Ensure the context allows downloads (`accept_downloads`). This **defaults to
+   `true`**, so it is an override needed only when downloads have been disabled.
 2. Arm an expectation *before* the triggering click.
 3. Persist the download to disk with `save_as`.
 
@@ -86,7 +87,7 @@ accepts `accept_downloads` only.
 # Example — abstract
 browser = playwright.chromium.launch(
     headless=True,
-    downloads_path="/data/downloads",   # where downloads are stored by default
+    downloads_path="/data/downloads",   # landing dir; purged when the context closes
 )
 context = browser.new_context(
     accept_downloads=True,
@@ -94,29 +95,37 @@ context = browser.new_context(
 page = context.new_page()
 ```
 
-- `accept_downloads` is a **context** option; `accept_downloads=False` makes
-  downloads fail rather than silently disappear.
+- `accept_downloads` is a **context** option and **defaults to `true`** (all
+  downloads are accepted). Set it only to override that default:
+  `accept_downloads=True` re-enables downloads after they were disabled, while
+  `accept_downloads=False` makes downloads fail rather than silently disappear.
 - `downloads_path` is a **launch** option of `browser_type.launch()` and sets a
-  base directory for downloads. `save_as` is still preferred, since it gives you
-  an explicit, deterministic target path.
+  base directory for downloads. Without it, Playwright creates a temporary
+  directory that is deleted when the browser closes; either way, the downloads
+  are deleted when the browser context they were created in is closed. `save_as`
+  is therefore what actually persists an export, since it gives you an explicit,
+  deterministic target path outside that lifecycle
+  (https://playwright.dev/python/docs/downloads).
 - Set context options at creation time; they are not reliably changeable later.
 
 ### Waiting and cleanup
 
 `expect_download` waits for the event and fails on timeout. The `Download` object
-also exposes `path()` (server-side temp path) and `delete()`. After `save_as`,
-call `download.delete()` if you want to reclaim the temp file in long-running jobs.
+also exposes `path()` and `delete()`. `path()` returns the temp file the browser
+wrote (with a random GUID filename) on the machine running the browser, and it
+throws when connected to a remote browser — so use `save_as` to obtain a usable,
+deterministic path. After `save_as`, call `download.delete()` if you want to
+reclaim the temp file in long-running jobs.
 
 ### Homelab use case
 
 In a headless container, an "Export to Excel" button in an internal tool produces a
 file that must be written to a mounted volume. The pattern above is exactly what an
 automation script needs: arm the download, click, save to `/data`, and the file
-appears on the host. Works the same for CSV, XLSX, PDF, or ZIP exports, and is
-independent of the Playwright version in use.
+appears on the host. Works the same for CSV, XLSX, PDF, or ZIP exports.
 
 ## Sources / Further Reading
 
 - Playwright — Downloads: https://playwright.dev/python/docs/downloads
 - Playwright — Download API reference: https://playwright.dev/python/docs/api/class-download
-- Playwright — Actions: https://playwright.dev/python/docs/input
+- Playwright — Browser API reference: https://playwright.dev/python/docs/api/class-browser

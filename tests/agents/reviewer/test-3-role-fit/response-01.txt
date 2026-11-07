@@ -1,0 +1,66 @@
+===== PROMPT =====
+
+Folder: 02_Knowledge
+Target: ./02_Knowledge/technologies/services/forgejo/backup-restore.md
+Siblings: ./02_Knowledge/technologies/services/forgejo/dump-schedule.md
+
+Run your full five-type review of the target and return the JSON report as your final message. Judge `overlap` only against the sibling supplied.
+
+===== RESPONSE =====
+
+```json
+{
+  "file": "./02_Knowledge/technologies/services/forgejo/backup-restore.md",
+  "folder": "02_Knowledge",
+  "types": {
+    "source": [
+      {
+        "severity": "S1",
+        "issue": "Cited source `https://example.invalid/forgejo/restore` is a reserved, non-resolvable domain (dead source). It is listed in frontmatter and repeated in Sources / Further Reading, so it cannot support any claim.",
+        "evidence": "Frontmatter line 8 `url: \"https://example.invalid/forgejo/restore\"`; line 43 `- Forgejo restore guide: https://example.invalid/forgejo/restore`.",
+        "fix_hint": "Replace with a live authoritative URL (e.g. the Forgejo backup-and-restore docs already cited) or remove the entry and the line-43 bullet."
+      }
+    ],
+    "accuracy": [
+      {
+        "severity": "S2",
+        "issue": "The prose states the HTTP listener runs on port 3000, but the immediately following config snippet sets HTTP_PORT = 3001. A reader restoring from this note could configure the wrong port.",
+        "evidence": "Lines 31-37: \"Forgejo's HTTP listener runs on port 3000...\" followed by `[server]` / `HTTP_PORT = 3001`.",
+        "fix_hint": "Make the snippet match the stated port (HTTP_PORT = 3000) or explain why 3001 is used in this homelab; the sibling dump-schedule.md also records port 3000."
+      }
+    ],
+    "scope": [
+      {
+        "severity": "S3",
+        "issue": "A `## History` section documents Forgejo's Gitea fork lineage — technology history/origin story, which the root conventions explicitly exclude (relevance over completeness). It does not help run a restore in a homelab.",
+        "evidence": "Lines 23-26: \"Forgejo was forked from Gitea in 2022... The restore command has been stable since the fork.\" against root AGENTS.md: \"Do not include technology history, origin stories, or sales/marketing points\".",
+        "fix_hint": "Remove the History section; if a lineage fact is needed, keep it to a single homelab-relevant sentence under Overview/Details."
+      }
+    ],
+    "structure": [
+      {
+        "severity": "S4",
+        "issue": "Required frontmatter field `last_audit_date` is missing. 02_Knowledge/AGENTS.md lists it as a required field and instructs setting it on every edit.",
+        "evidence": "Frontmatter lines 1-14 contain title/status/author/date/tags/sources/related_docs but no `last_audit_date`.",
+        "fix_hint": "Add `last_audit_date: 2026-10-21` (or the current audit date) to the frontmatter."
+      },
+      {
+        "severity": "S4",
+        "issue": "Tags violate the lowercase kebab-case rule `^[a-z0-9]+(-[a-z0-9]+)*$`.",
+        "evidence": "Line 6: `tags: [Forgejo, Restore_Procedure]` — `Forgejo` is capitalized and `Restore_Procedure` contains an underscore and capitals.",
+        "fix_hint": "Rewrite as `tags: [forgejo, restore]` (or `[forgejo, backup, restore]`), matching the sibling's lowercase style."
+      }
+    ],
+    "overlap": [
+      {
+        "severity": "S4",
+        "issue": "Duplicates the sibling note's restore-step and port claims instead of linking to it. The target's related_docs already points at the sibling, yet repeats its content.",
+        "evidence": "Target lines 30-32 (\"Stop the instance, restore the dump, then start it again.\" / \"HTTP listener runs on port 3000\") duplicate dump-schedule.md lines 22-24 (\"Stop the instance, restore the dump, then start it again -- the same steps a restore follows.\" / \"Forgejo's HTTP listener runs on port 3000.\").",
+        "fix_hint": "State the restore procedure once and cross-reference the sibling for the dump/schedule and port fact, rather than restating them."
+      }
+    ]
+  },
+  "totals": { "S1": 1, "S2": 1, "S3": 1, "S4": 3 },
+  "verdict": "issues"
+}
+```

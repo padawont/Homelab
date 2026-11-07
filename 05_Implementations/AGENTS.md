@@ -1,6 +1,17 @@
+---
+title: "AGENTS.md — 05_Implementations"
+status: accepted
+author: "padawont"
+date: 2026-11-03
+tags: []
+sources: []
+last_audit_date: 2026-11-03
+related_docs: []
+---
+
 # AGENTS.md — 05_Implementations
 
-Live running setups — deployment procedures, configs, and operational notes.
+Section purpose is owned by `./AGENTS.md` § Repository Structure (row `05_Implementations/`).
 
 ## Why have implementations?
 
@@ -8,13 +19,14 @@ To document how services are actually deployed. Configs drift, but docs + config
 
 ## When to create
 
-After an ADR is accepted and before/during deployment.
+After an ADR is accepted and before/during deployment. The prerequisites themselves —
+an ADR plus Knowledge note(s) — are owned by `./AGENTS.md` § Dependency Rules.
 
 ## Status Lifecycle
 
 ```
 draft → active
-  L__> retired → (move to 06_Archive/implementations/)
+  L__> retired → (archived per ./06_Archive/AGENTS.md § Conventions)
 ```
 
 - **draft**: Setting up, not yet live
@@ -36,7 +48,27 @@ Example:
         └── ingress.yaml
 ```
 
-All names in kebab-case.
+Names follow the repo naming rule (`./AGENTS.md` § General Conventions).
+
+## Spec files
+
+Descriptive specs record *observed* state, not intent. `spec-writer` owns them and
+they are **append-only**: a correction is appended as a replacement block, never an
+edit to existing content.
+
+- `spec-cluster.md` — nodes, k3s version, namespaces
+- `spec-topology.md` — ingress → service → workload wiring
+- `spec-service-stack.md` — one service's deployed components
+
+They live inside the service folder beside `overview.md`, are copied from
+`./Templates/specs/`, and take `status` from the lifecycle above. Append-only
+starts once the file exists: on first fill the template's own placeholder diagram
+is replaced.
+
+The `status:` line is promoted by `runesmith` alone
+(`./.opencode/agents/runesmith.md` § Negative Constraints); the body below it
+remains `spec-writer`'s append-only replacement block and is never edited
+(`./.opencode/agents/spec-writer.md` § Append-Only and Diagrams).
 
 ## Frontmatter (required)
 
@@ -67,13 +99,13 @@ date: 2026-08-13
 tags: [kubernetes, networking, ingress, deployment]
 technologies: [traefik, kubernetes, helm]
 related_docs:
-  - "./04_ADRs/42-deploy-traefik-ingress.md"
+  - "./04_ADRs/26-adopt-nixos-on-node-main.md"
 references:
   online:
     - url: "https://doc.traefik.io/traefik/"
       title: "Traefik docs"
   repo:
-    - "./04_ADRs/42-deploy-traefik-ingress.md"
+    - "./04_ADRs/26-adopt-nixos-on-node-main.md"
 node: node-main
 ---
 ```
@@ -127,5 +159,6 @@ Copy from `./Templates/implementations/rollback.md`. Required for every implemen
 - One folder per service under the relevant node
 - Link back to governing ADR and relevant Knowledge notes via `related_docs`
 - Every folder ships `overview.md` + `rollback.md` (+ `configs/` where applicable)
-- Rollback procedure lives in `rollback.md`, documented before deploy
-- `active` → `retired` transition: move entire service folder to `./06_Archive/implementations/`
+- Document the rollback procedure before deploy
+- Retiring a service moves its folder to `./06_Archive/implementations/node-main/<service>/`
+  — see `./06_Archive/AGENTS.md` § Conventions and § Frontmatter (required)

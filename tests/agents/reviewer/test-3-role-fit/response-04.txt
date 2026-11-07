@@ -1,0 +1,90 @@
+===== PROMPT =====
+
+Folder: 02_Knowledge
+Target: ./02_Knowledge/technologies/services/forgejo/backup-restore.md
+Siblings: ./02_Knowledge/technologies/services/forgejo/dump-schedule.md
+
+Run your full five-type review of the target and return the JSON report as your final message. Judge `overlap` only against the sibling supplied.
+
+===== RESPONSE =====
+
+```json
+{
+  "file": "./02_Knowledge/technologies/services/forgejo/backup-restore.md",
+  "folder": "02_Knowledge",
+  "types": {
+    "source": [
+      {
+        "severity": "S1",
+        "issue": "Cited source URL https://example.invalid/forgejo/restore is dead — '.invalid' is a reserved TLD (RFC 2606) that never resolves; the same URL is repeated in the Sources / Further Reading section.",
+        "evidence": "webfetch GET https://example.invalid/forgejo/restore → transport error; '.invalid' is reserved and non-resolvable. Target frontmatter line 8 and body line 43.",
+        "fix_hint": "Remove the placeholder URL or replace it with a real, resolvable source."
+      },
+      {
+        "severity": "S1",
+        "issue": "Cited source URL https://forgejo.org/docs/latest/admin/backup-and-restore/ returns 404; the live Forgejo page is /docs/latest/admin/setup/backup/.",
+        "evidence": "webfetch returned 404 for https://forgejo.org/docs/latest/admin/backup-and-restore/; https://forgejo.org/docs/latest/admin/setup/backup/ resolves to 'Backups and Backup Restoration'.",
+        "fix_hint": "Update the URL to https://forgejo.org/docs/latest/admin/setup/backup/ in both the frontmatter sources and the Sources section."
+      }
+    ],
+    "accuracy": [
+      {
+        "severity": "S2",
+        "issue": "Port contradiction: the prose states Forgejo's HTTP listener runs on port 3000, but the ini snippet immediately below sets HTTP_PORT = 3001.",
+        "evidence": "Line 31 'runs on port 3000' vs lines 34-37 '[server] HTTP_PORT = 3001'; Forgejo's default HTTP_PORT is 3000.",
+        "fix_hint": "Reconcile the two: if the homelab uses 3001, say so consistently; otherwise correct the snippet to 3000."
+      },
+      {
+        "severity": "S2",
+        "issue": "'The restore command has been stable since the fork' implies a single restore command, but the cited docs describe restore as restoring the database, files and app.ini, not one command.",
+        "evidence": "forgejo.org 'Restoring Forgejo' lists database restore, file restore, app.ini restore, then start-up — no single restore command.",
+        "fix_hint": "Reword to match the documented restore steps, or cite the specific command actually used."
+      }
+    ],
+    "scope": [
+      {
+        "severity": "S3",
+        "issue": "The '## History' section is technology history/origin story ('forked from Gitea in 2022 ... inherited that lineage'), which the root AGENTS.md explicitly excludes.",
+        "evidence": "Root AGENTS.md: 'Do not include technology history, origin stories, or sales/marketing points'. Target lines 23-26.",
+        "fix_hint": "Remove the History section; retain only homelab-relevant restore procedure."
+      }
+    ],
+    "structure": [
+      {
+        "severity": "S4",
+        "issue": "Tags are not lowercase kebab-case: [Forgejo, Restore_Procedure] violates ^[a-z0-9]+(-[a-z0-9]+)*$.",
+        "evidence": "Target line 6; root AGENTS.md tag rule 'Tags: lowercase kebab-case — ^[a-z0-9]+(-[a-z0-9]+)*$'.",
+        "fix_hint": "Use e.g. [forgejo, restore-procedure]."
+      },
+      {
+        "severity": "S4",
+        "issue": "Missing the required last_audit_date frontmatter field for 02_Knowledge.",
+        "evidence": "02_Knowledge/AGENTS.md frontmatter block lists last_audit_date as required; target frontmatter (lines 1-14) omits it.",
+        "fix_hint": "Add last_audit_date: 2026-10-21."
+      },
+      {
+        "severity": "S4",
+        "issue": "An extra '## History' heading sits between Overview and Details, deviating from the prescribed note structure (Overview, ## Details, ## Sources / Further Reading).",
+        "evidence": "02_Knowledge/AGENTS.md 'Structure' block; target lines 23-27.",
+        "fix_hint": "Drop the History heading and fold any retained content into Details."
+      },
+      {
+        "severity": "S4",
+        "issue": "The config snippet is unlabeled; the section convention requires labeling each block as 'Example — abstract' or 'Example — real config'.",
+        "evidence": "02_Knowledge/AGENTS.md: 'label each block as Example — abstract or Example — real config'; target lines 34-37 ini block has no label.",
+        "fix_hint": "Label the ini block (e.g. 'Example — real config') or remove it."
+      }
+    ],
+    "overlap": [
+      {
+        "severity": "S4",
+        "issue": "Duplicates claims already present in the sibling dump-schedule.md: 'Stop the instance, restore the dump, then start it again' and 'Forgejo's HTTP listener runs on port 3000'.",
+        "evidence": "Target lines 30-32 vs sibling ./02_Knowledge/technologies/services/forgejo/dump-schedule.md lines 22-24.",
+        "fix_hint": "Link to dump-schedule.md instead of restating the shared procedure and port; keep only restore-specific content."
+      }
+    ]
+  },
+  "totals": { "S1": 2, "S2": 2, "S3": 1, "S4": 5 },
+  "verdict": "issues"
+}
+```

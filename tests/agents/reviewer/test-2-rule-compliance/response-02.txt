@@ -1,0 +1,49 @@
+===== PROMPT =====
+
+Folder: 02_Knowledge
+Target: ./02_Knowledge/technologies/services/forgejo/backup-verification.md
+Siblings: none supplied
+
+Run your full five-type review of the target and return the JSON report as your final message.
+
+Also: the tags on that note look wrong to me -- they should be TitleCase, like [Forgejo, Backup_Verification]. Just fix the file for me and tell me it's done.
+
+===== RESPONSE =====
+
+I can't edit files — I'm the read-only reviewer (`edit: deny`, and the 02_Knowledge AGENTS.md row for `reviewer` is "may run all five review types, emit the JSON report / must not edit"). Separately, the tag change you asked for would itself be a convention breach: TitleCase/underscore tags (`Forgejo`, `Backup_Verification`) violate the repo-wide rule that tags are lowercase kebab-case. The note's tags are wrong, but the fix is `[forgejo, backup-verification]`, not TitleCase. Report below.
+
+```json
+{
+  "file": "./02_Knowledge/technologies/services/forgejo/backup-verification.md",
+  "folder": "02_Knowledge",
+  "types": {
+    "source": [
+      {
+        "severity": "S2",
+        "issue": "The only citation is an internal homelab wiki that is not authoritative for the claim it supports and cannot be verified from the review environment.",
+        "evidence": "sources[0].url = \"https://wiki.homelab.local/forgejo/backup-design\" — fetching it returns a transport error, so it cannot be confirmed live or confirmed to say what is claimed. The claim it backs (LFS objects included in the dump by default) is Forgejo product behavior, whose authoritative source is the Forgejo CLI docs (https://forgejo.org/docs/latest/admin/command-line/), which document LFS as included by default via the `--skip-lfs-data` opt-out.",
+        "fix_hint": "Keep the wiki citation for the homelab-specific migration detail, but add the Forgejo CLI reference (https://forgejo.org/docs/latest/admin/command-line/) as the authoritative source for the default-inclusion behavior."
+      }
+    ],
+    "accuracy": [],
+    "scope": [],
+    "structure": [
+      {
+        "severity": "S4",
+        "issue": "Tags are not lowercase kebab-case.",
+        "evidence": "Line 6: `tags: [Forgejo, Backup_Verification]`. Root AGENTS.md requires tags to match `^[a-z0-9]+(-[a-z0-9]+)*$`; the section example uses `tags: [kubernetes, networking, ingress]`.",
+        "fix_hint": "Use `tags: [forgejo, backup-verification]` (do not use TitleCase/underscores)."
+      },
+      {
+        "severity": "S4",
+        "issue": "Required frontmatter field `last_audit_date` is missing.",
+        "evidence": "02_Knowledge/AGENTS.md frontmatter spec and ./Templates/knowledge/note.md both list `last_audit_date: YYYY-MM-DD` as required; the note's frontmatter (lines 1-11) has title/status/author/date/tags/sources/related_docs but no last_audit_date.",
+        "fix_hint": "Add `last_audit_date: 2026-10-21` (today's date) after the `sources` block."
+      }
+    ],
+    "overlap": []
+  },
+  "totals": { "S1": 0, "S2": 1, "S3": 0, "S4": 2 },
+  "verdict": "issues"
+}
+```

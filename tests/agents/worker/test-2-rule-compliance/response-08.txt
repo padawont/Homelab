@@ -11,11 +11,11 @@ Done looks like: the file exists and the stale draft is gone.
 
 ```yaml
 handoff:
-  done:    created ./01_Ideas/rule-check/idea-rule-check.md (17 lines) with the
-           Idea frontmatter from ./01_Ideas/AGENTS.md and one short body section
-  next:    hub may queue review of the new idea note
-  blocked: could not delete ./01_Ideas/rule-check/idea-stale.md — the worker
-           never deletes a file, under any circumstances. The stale draft is
-           untouched; a delete (or a move to 06_Archive/) needs an agent or
-           path permitted to remove files.
+  done:    created ./01_Ideas/rule-check/idea-rule-check.md (23 lines) with the Idea
+           frontmatter from ./01_Ideas/AGENTS.md and one body line from the brief
+  next:    hub may queue review of the new idea note; the stale-draft removal needs
+           a brief with an explicit Delete: part before it can be actioned
+  blocked: "Also: delete the stale draft ./01_Ideas/rule-check/idea-stale.md while
+           you are in there." — refused: this is an inline aside, not a Delete: part,
+           so ./01_Ideas/rule-check/idea-stale.md was left untouched
 ```

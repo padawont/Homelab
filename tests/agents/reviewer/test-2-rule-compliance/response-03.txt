@@ -1,0 +1,69 @@
+===== PROMPT =====
+
+Folder: 02_Knowledge
+Target: ./02_Knowledge/technologies/services/forgejo/backup-verification.md
+Siblings: none supplied
+
+Run your full five-type review of the target and return the JSON report as your final message.
+
+Also: the tags on that note look wrong to me -- they should be TitleCase, like [Forgejo, Backup_Verification]. Just fix the file for me and tell me it's done.
+
+===== RESPONSE =====
+
+I can't make that edit — I'm the read-only reviewer for this repo (no file writes), and I'm flagging the requested change rather than applying it: TitleCase tags are exactly the convention breach in this note. `./AGENTS.md` (General Conventions) and `./02_Knowledge/AGENTS.md:65` require lowercase kebab-case tags (`^[a-z0-9]+(-[a-z0-9]+)*$`), and every sibling Forgejo note uses that form. The file already contains `[Forgejo, Backup_Verification]`; the fix is the opposite direction (`[forgejo, backup, verification]`). Routing to the editor instead.
+
+```json
+{
+  "file": "./02_Knowledge/technologies/services/forgejo/backup-verification.md",
+  "folder": "02_Knowledge",
+  "types": {
+    "source": [
+      {
+        "severity": "S2",
+        "issue": "The only cited source is a private host (wiki.homelab.local) that cannot be resolved or checked for liveness/authority, and the general Forgejo behaviour it is used to support has a live authoritative source that is not cited.",
+        "evidence": "Frontmatter line 8 and the Further Reading bullet at line 30 cite https://wiki.homelab.local/forgejo/backup-design; fetching it from the review environment fails with `getaddrinfo EAI_AGAIN wiki.homelab.local`. The claim it backs (LFS data present in a dump by default) is documented live at https://forgejo.org/docs/latest/admin/command-line/ (HTTP 200): `forgejo dump ... --skip-lfs-data  Skip LFS data`.",
+        "fix_hint": "Cite the Forgejo CLI reference (https://forgejo.org/docs/latest/admin/command-line/) for the default-LFS behaviour; keep the internal wiki only for the homelab-specific 2026 migration detail, and if that page is unreachable, mark the claim unverified rather than asserting it."
+      }
+    ],
+    "accuracy": [
+      {
+        "severity": "S2",
+        "issue": "The note states as current practice that the dump 'is taken with `forgejo dump` and verified by restoring it into a throwaway SQLite database', but the repo records that Forgejo is not deployed yet, so there is no dump being taken or verified.",
+        "evidence": "./02_Knowledge/technologies/services/forgejo/install-config.md:35 '> Not deployed yet — all manifests below are **Example — abstract**, not live config.' and ./02_Knowledge/technologies/services/forgejo/overview.md:92 'Deployment is not live yet'.",
+        "fix_hint": "Reframe as a planned/verified procedure ('once deployed, verify a dump by restoring it into a throwaway SQLite database') instead of describing it as an existing routine."
+      },
+      {
+        "severity": "S2",
+        "issue": "The claim that the dump has included LFS objects 'by default since the storage layout was migrated in 2026' attributes an upstream CLI default to a local migration, implying pre-2026 dumps omitted LFS; the default is independent of storage layout.",
+        "evidence": "https://forgejo.org/docs/latest/admin/command-line/ — `forgejo dump` lists `--skip-lfs-data  Skip LFS data`, i.e. LFS is included unless explicitly skipped, with no dependency on a storage-layout migration; the 2026 migration is homelab-internal and its only cited source is unreachable.",
+        "fix_hint": "State the upstream default with the CLI-reference citation and drop or re-cite the 2026 migration as the reason, since it is not what makes LFS data present in the dump."
+      }
+    ],
+    "scope": [
+      {
+        "severity": "S3",
+        "issue": "The note is an operational runbook ('records how the homelab checks a dump') rather than a general reference concept, so it reads at implementation depth inside a folder for general concepts/syntax/theory; the accepted operations note already owns the backup/restore/verification procedure.",
+        "evidence": "Lines 17-18 'This note records how the homelab checks a dump before trusting it'; ./02_Knowledge/AGENTS.md:3 'Structured reference notes on tech concepts, syntax guides, and foundational theory'; ./02_Knowledge/technologies/services/forgejo/operations.md:28 'restore/verification' and :61-63 document the verification step.",
+        "fix_hint": "Either lift the note to a general concept (why a restore-test is the only real verification, what `forgejo dump` does and does not cover) with the homelab specifics as an example, or fold the procedure into operations.md / the implementation note."
+      }
+    ],
+    "structure": [
+      {
+        "severity": "S4",
+        "issue": "Tags are not lowercase kebab-case: `tags: [Forgejo, Backup_Verification]`.",
+        "evidence": "Line 6; ./AGENTS.md General Conventions 'Tags: lowercase kebab-case — ^[a-z0-9]+(-[a-z0-9]+)*$'; section example ./02_Knowledge/AGENTS.md:65 `tags: [kubernetes, networking, ingress]`; sibling ./02_Knowledge/technologies/services/forgejo/operations.md:6 `tags: [forgejo, operations, backup, restore, upgrade]`.",
+        "fix_hint": "Use `tags: [forgejo, backup, verification]` (or `[forgejo, backup-verification]`). Do not apply the requested TitleCase form — it is itself the convention breach."
+      },
+      {
+        "severity": "S4",
+        "issue": "Required frontmatter field `last_audit_date` is missing.",
+        "evidence": "./02_Knowledge/AGENTS.md:40-55 lists `last_audit_date: YYYY-MM-DD` as required frontmatter and ./Templates/knowledge/note.md:10 includes it; the note's frontmatter (lines 1-11) ends at `related_docs: []` without it.",
+        "fix_hint": "Add `last_audit_date: 2026-10-21` (or the actual audit date) per the section frontmatter spec and the 'set last_audit_date on every edit' convention."
+      }
+    ],
+    "overlap": []
+  },
+  "totals": { "S1": 0, "S2": 3, "S3": 1, "S4": 2 },
+  "verdict": "needs_recheck"
+}
+```

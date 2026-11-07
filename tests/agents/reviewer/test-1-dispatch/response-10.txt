@@ -1,0 +1,45 @@
+===== PROMPT =====
+
+Folder: 02_Knowledge
+Target: ./02_Knowledge/technologies/services/forgejo/backup-retention.md
+Siblings: ./02_Knowledge/technologies/services/forgejo/backup-pruning.md
+
+Run your full five-type review of the target and return the JSON report as your final message.
+
+===== RESPONSE =====
+
+```json
+{
+  "file": "./02_Knowledge/technologies/services/forgejo/backup-retention.md",
+  "folder": "02_Knowledge",
+  "types": {
+    "source": [
+      {
+        "severity": "S1",
+        "issue": "Cited source URL is dead — returns HTTP 404, so the note's only evidence no longer exists.",
+        "evidence": "GET https://forgejo.org/docs/latest/admin/backup-and-restore/ → 'non 2xx status code (404)'. The live Forgejo page is at https://forgejo.org/docs/latest/admin/setup/backup/ (title 'Backups and Backup Restoration'), and the admin index links to it as 'Backups and Backup Restoration'. The cited title 'Forgejo backup and restore' also does not match the real page title.",
+        "fix_hint": "Replace the URL in both frontmatter `sources` and the 'Sources / Further Reading' list with https://forgejo.org/docs/latest/admin/setup/backup/ and correct the title to 'Backups and Backup Restoration'."
+      }
+    ],
+    "accuracy": [],
+    "scope": [],
+    "structure": [],
+    "overlap": [
+      {
+        "severity": "S4",
+        "issue": "Duplicates the remit of sibling note backup-pruning.md without linking to it: the retention note describes the prune job's behaviour ('older ones are removed by the prune job', 'pruned by age') that the sibling owns, yet related_docs points only to operations.md.",
+        "evidence": "backup-retention.md lines 20-26 repeat the prune mechanism; sibling ./02_Knowledge/technologies/services/forgejo/backup-pruning.md is titled 'Forgejo backup pruning job' and covers exactly that. related_docs (line 11-12) lists only './02_Knowledge/technologies/services/forgejo/operations.md'.",
+        "fix_hint": "Add './02_Knowledge/technologies/services/forgejo/backup-pruning.md' to related_docs and trim the prune-mechanism sentences to a link instead of restating the sibling's content."
+      },
+      {
+        "severity": "S4",
+        "issue": "Contradicts the sibling's pruning mechanism: this note specifies a tiered '7 daily + 4 weekly' retention, which cannot be produced by the sibling's stated age-based prune ('deletes by mtime, not by filename').",
+        "evidence": "backup-retention.md line 25: 'Keep 7 daily dumps and 4 weekly dumps'; sibling backup-pruning.md line 23: 'It deletes by mtime, not by filename, so a renamed dump still expires.' A pure mtime age-delete cannot retain weekly dumps while dropping older dailies.",
+        "fix_hint": "Reconcile the two notes: either the prune job implements generational (GFS) retention, or the retention policy is a single age window. Align both notes to the actual job and cross-link them."
+      }
+    ]
+  },
+  "totals": { "S1": 1, "S2": 0, "S3": 0, "S4": 2 },
+  "verdict": "issues"
+}
+```

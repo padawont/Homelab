@@ -1,0 +1,39 @@
+===== PROMPT =====
+
+Folder: 02_Knowledge
+Target: ./02_Knowledge/technologies/services/forgejo/backup-retention.md
+Siblings: ./02_Knowledge/technologies/services/forgejo/backup-pruning.md
+
+Run your full five-type review of the target and return the JSON report as your final message.
+
+===== RESPONSE =====
+
+```json
+{
+  "file": "./02_Knowledge/technologies/services/forgejo/backup-retention.md",
+  "folder": "02_Knowledge",
+  "types": {
+    "source": [
+      {
+        "severity": "S1",
+        "issue": "The only cited source is dead. The URL https://forgejo.org/docs/latest/admin/backup-and-restore/ returns HTTP 404, so the note's evidence no longer exists.",
+        "evidence": "GET https://forgejo.org/docs/latest/admin/backup-and-restore/ → 404 (verified twice). The page has moved: the Forgejo v17.0/latest administrator guide index lists it as \"Backups and Backup Restoration\" at https://forgejo.org/docs/latest/admin/setup/backup/ (which loads successfully). The dead URL appears in both frontmatter (line 8) and the body Sources line (line 31).",
+        "fix_hint": "Replace both occurrences with the live URL https://forgejo.org/docs/latest/admin/setup/backup/ (and title \"Backups and Backup Restoration\")."
+      }
+    ],
+    "accuracy": [],
+    "scope": [],
+    "structure": [],
+    "overlap": [
+      {
+        "severity": "S4",
+        "issue": "The target restates the prune-job concept that the sibling note owns. It repeats that aged dumps are removed by the prune job and that the prune step is a separate job, duplicating the sibling's dedicated topic instead of linking to it.",
+        "evidence": "Target: \"older ones are removed by the prune job\" and \"Retention is not controlled by `app.ini` -- the prune step is its own job.\" Sibling ./02_Knowledge/technologies/services/forgejo/backup-pruning.md is titled \"Forgejo backup pruning job\" and is dedicated to exactly that job (\"The prune job is the timer that deletes aged dumps from the NAS\"). Target frontmatter related_docs (lines 11-12) links only to operations.md, not to the sibling.",
+        "fix_hint": "Keep the retention note focused on the retention policy and link the mechanism to the sibling: add \"./02_Knowledge/technologies/services/forgejo/backup-pruning.md\" to related_docs and reduce the prune-job sentences to a pointer rather than a restatement."
+      }
+    ]
+  },
+  "totals": { "S1": 1, "S2": 0, "S3": 0, "S4": 1 },
+  "verdict": "issues"
+}
+```

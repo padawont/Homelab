@@ -1,10 +1,21 @@
+---
+title: "AGENTS.md — 04_ADRs"
+status: accepted
+author: "padawont"
+date: 2026-11-03
+tags: []
+sources: []
+last_audit_date: 2026-11-03
+related_docs: []
+---
+
 # AGENTS.md — 04_ADRs
 
-Architectural Decision Records. The final greenlight — committing to a path forward.
+Section purpose is owned by `./AGENTS.md` § Repository Structure (row `04_ADRs/`).
 
 ## Why have ADRs?
 
-To document why decisions were made. ADRs answer "why did we do it this way?" months or years later. They include mermaid diagrams showing how the solution works and how it fits into the homelab. Alternatives are not discussed here — they were handled in Research.
+To document why decisions were made. ADRs answer "why did we do it this way?" months or years later. They include mermaid diagrams showing how the solution works and how it fits into the homelab. The alternatives that led here live in Research — see `./03_Research/AGENTS.md` § Structure of overview.md.
 
 ## When to create
 
@@ -14,12 +25,13 @@ After Research is accepted. Every significant architecture or technology choice 
 
 ```
 draft → accepted → (proceed to 05_Implementations/)
-  L__> archived → (move to 06_Archive/adrs/)
+  |         L__> archived → (move to 06_Archive/adrs/)   [superseded or deprecated]
+  L__> archived → (move to 06_Archive/adrs/)             [rejected while draft]
 ```
 
 - **draft**: Proposed, under review
 - **accepted**: Decision made — create an Implementation
-- **archived**: Deprecated or superseded
+- **archived**: Deprecated or superseded — set `replaced-by` when a newer ADR supersedes it
 
 ## Frontmatter (required)
 
@@ -70,64 +82,51 @@ See `./Templates/adr/adr.md` for a copyable template.
 
 ## Structure
 
-The ADR follows this layout:
+The ADR follows the layout of `./Templates/adr/adr.md` — headings, diagram type and order:
 
-```
-# ADR-{number}: Title
-```
+````markdown
+# ADR-{NNNN}: {Title}
 
-### Context
+## Context and Problem Statement
 
 What is the problem? What constraints exist? Which research informed this?
 
-### Decision
+## Decision
 
 What was decided? Why this technology?
 
-Include a mermaid diagram showing how the solution works internally:
-
-```
-┌──────────┐     ┌──────────┐     ┌───────────┐
-│ Internet │ ──► │ Traefik  │ ──► │ Service A │
-└──────────┘     └──────────┘     └───────────┘
+```mermaid
+graph TD
+    Internet --> Traefik
+    Traefik --> ServiceA["Service A"]
 ```
 
-### Fit into Homelab
+## Fit into Homelab
 
 How does this integrate with existing infrastructure?
 
-Include a mermaid diagram showing how it fits into the broader homelab:
-
+```mermaid
+graph TD
+    CloudLB["Cloud LB"] --> Node1["Node 1"]
+    Node1 --> Traefik
+    Node1 --> CertManager["Cert-Manager"]
+    Traefik --> Internal["Internal Services"]
 ```
-┌──────────┐     ┌──────────┐     ┌───────────┐
-│ Cloud LB │ ──► │ Node 1   │ ──► │ Traefik   │
-└──────────┘     └──────────┘     └───────────┘
-                          └──►  Cert-Manager
-                          └──►  Internal Services
-```
+````
 
 ## Conventions
 
 - Naming: `{issue-number}-{kebab-description}.md`
 - Use GitHub issue number as ADR number
-- Every ADR must link to its Research doc in `related_docs`
+- Trace back to the Research doc via `related_docs` — the ADR→Research requirement is owned by `./AGENTS.md` § Dependency Rules
 - `draft → accepted` requires a review (PR with at least 1 approving review)
 - Every ADR must contain at least two mermaid diagrams:
   1. How the solution works internally
   2. How it fits into the homelab
 - No alternatives or considered options section — those belong in Research
+- Overlap is judged per `./.opencode/REVIEW.md` § The Five Facets.
 
 ## Agent Behaviour
 
-| Role | May | Must not |
-|---|---|---|
-| `worker` | read, gather sources, create and edit the ADR | edit files outside its brief, add unsourced claims |
-| `reviewer` | run all five review types, emit the JSON report | edit, propose unverified fixes |
-| `editor` | revise the ADR and its JSON with a cited source or rule | change anything without a citation |
-| `spec-writer` | append a spec section referencing this ADR | rewrite or delete ADR content |
-| `cluster-worker` | not applicable to this folder | run operational plans here |
-
-Review types: `source`, `accuracy`, `scope`, `structure`, `overlap`.
-Escalation: anything unresolved goes to the hub in the handoff `blocked:` field — never a guess.
-- Every decision must trace back to its Research doc (`related_docs`).
-- `overlap` covers contradictions with existing ADRs.
+Role permissions, handoff contracts and escalation: `./.opencode/WORKFLOW.md`; facets and
+report shape: `./.opencode/REVIEW.md`.

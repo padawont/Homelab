@@ -13,7 +13,6 @@ evaluator can be changed and 200 responses re-graded for free.
 
 from __future__ import annotations
 
-import json
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, Callable
@@ -24,7 +23,7 @@ from pydantic_evals.reporting import EvaluationReport
 from harness.catalog import Catalog, ResponseRecord, catalog_path
 from harness.evaluators import configure_tracing, evaluators_for, run_succeeded, tool_spans
 from harness.prompts import TestSpec
-from harness.run_agent import final_text, load_response, tool_calls
+from harness.run_agent import extract_json_object, final_text, load_response, tool_calls
 
 DATASET_NAME = "agent-conformance"
 
@@ -58,7 +57,32 @@ def writes_from(events: list[dict[str, Any]]) -> dict[str, str]:
     return writes
 
 
-def case_metadata(record: ResponseRecord, writes: dict[str, str] | None = None) -> dict[str, Any]:
+def edits_from(events: list[dict[str, Any]]) -> dict[str, list[dict[str, str]]]:
+    """The in-place edits a run made, as ``{path: [{"old": ..., "new": ...}]}``.
+
+    The ``edit`` tool carries ``oldString``/``newString``, not a whole content blob, so
+    :func:`writes_from` cannot see it -- ``content`` is absent and the call is skipped.
+    Lifting the two strings here is what lets a rule assert that a specific breach was
+    actually replaced on disk, rather than merely that some file changed.
+    """
+    edits: dict[str, list[dict[str, str]]] = {}
+    for call in tool_calls(events):
+        if call.name != "edit":
+            continue
+        arguments = call.arguments
+        path = arguments.get("filePath") or arguments.get("path")
+        old = arguments.get("oldString")
+        new = arguments.get("newString")
+        if isinstance(path, str) and isinstance(old, str) and isinstance(new, str):
+            edits.setdefault(path.strip().lstrip("./"), []).append({"old": old, "new": new})
+    return edits
+
+
+def case_metadata(
+    record: ResponseRecord,
+    writes: dict[str, str] | None = None,
+    edits: dict[str, list[dict[str, str]]] | None = None,
+) -> dict[str, Any]:
     """Provenance and captured facts the custom rules read."""
     return {
         "agent": record.agent,
@@ -73,6 +97,7 @@ def case_metadata(record: ResponseRecord, writes: dict[str, str] | None = None) 
         "tools": list(record.tools),
         "footprint": record.footprint.model_dump(),
         "writes": dict(writes or {}),
+        "edits": {path: list(ops) for path, ops in (edits or {}).items()},
     }
 
 
@@ -88,11 +113,12 @@ def replay_task(repo_root: Path) -> Callable[[CaseInputs], Any]:
         if not inputs.spec.expect_json:
             return text
 
-        try:
-            decoded = json.loads(text)
-        except json.JSONDecodeError:
-            return text
-        return decoded if isinstance(decoded, dict) else text
+        # The report may arrive fenced and wrapped in prose; the fence is presentation,
+        # and scoring it as "not a JSON object" would report a formatting habit as a
+        # contract violation. A reply with no object at all stays text, so the shape
+        # rules can fail it with a reason.
+        decoded = extract_json_object(text)
+        return decoded if decoded is not None else text
 
     return task
 
@@ -104,7 +130,7 @@ def build_case(spec: TestSpec, record: ResponseRecord, repo_root: Path) -> Case:
         name=f"{record.agent}/{record.test_id}/run-{record.run:02d}",
         inputs=CaseInputs(spec=spec, record=record),
         expected_output=spec.expected(),
-        metadata=case_metadata(record, writes_from(events)),
+        metadata=case_metadata(record, writes_from(events), edits_from(events)),
         evaluators=evaluators_for(spec),
     )
 

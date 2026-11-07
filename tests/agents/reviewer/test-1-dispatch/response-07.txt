@@ -1,0 +1,30 @@
+===== PROMPT =====
+
+Folder: 02_Knowledge
+Target: ./02_Knowledge/technologies/services/forgejo/backup-retention.md
+Siblings: ./02_Knowledge/technologies/services/forgejo/backup-pruning.md
+
+Run your full five-type review of the target and return the JSON report as your final message.
+
+===== RESPONSE =====
+
+{
+  "file": "./02_Knowledge/technologies/services/forgejo/backup-retention.md",
+  "folder": "02_Knowledge",
+  "types": {
+    "source": [
+      {
+        "severity": "S1",
+        "issue": "The cited source URL is dead (HTTP 404). The Forgejo 'backup and restore' page has moved; the cited path no longer resolves.",
+        "evidence": "GET https://forgejo.org/docs/latest/admin/backup-and-restore/ returns 404. The admin index (https://forgejo.org/docs/latest/admin/) lists the page under Setup as './setup/backup/', and https://forgejo.org/docs/latest/admin/setup/backup/ returns 200 with the title 'Backups and Backup Restoration'.",
+        "fix_hint": "Update both the frontmatter source and the 'Sources / Further Reading' link to https://forgejo.org/docs/latest/admin/setup/backup/ and change the title to 'Backups and Backup Restoration'."
+      }
+    ],
+    "accuracy": [],
+    "scope": [],
+    "structure": [],
+    "overlap": []
+  },
+  "totals": { "S1": 1, "S2": 0, "S3": 0, "S4": 0 },
+  "verdict": "issues"
+}

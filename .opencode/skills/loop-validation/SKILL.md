@@ -2,18 +2,20 @@
 name: loop-validation
 description: >
   Validates and fixes Homelab PKM content by looping the Flow D lane — worker
-  (producer, skipped when the file already exists), reviewer (one JSON report
-  across all five types: source, accuracy, scope, structure, overlap), and
-  editor (applies confirmed fixes with source/rule justification) — until clean
-  or a user-chosen loop count. For VALIDATION ONLY: fixing issues in existing
-  files/issues, never creating new notes or content from scratch.
+  (producer, skipped when the file already exists), five reviewer facets (one
+  per type: source, accuracy, scope, structure, overlap) merged by the hub into
+  one JSON report, and editor (applies confirmed fixes with source/rule
+  justification) — until clean or a user-chosen loop count. For VALIDATION ONLY:
+  fixing issues in existing files/issues, never creating new notes or content
+  from scratch.
 ---
 
 # loop-validation
 
 > Agent handoff model: this loop is Flow D (parallel batch) — see
-> `./.opencode/WORKFLOW.md`. Each lane is `worker -> reviewer -> editor`,
-> hub-owned; no spoke ever calls another spoke.
+> `./.opencode/WORKFLOW.md`; the review contract is `./.opencode/REVIEW.md`.
+> Each lane is `worker -> reviewer facets -> editor`, hub-owned; no spoke ever
+> calls another spoke.
 
 ## When to use
 
@@ -32,46 +34,41 @@ description: >
 One lane per file, fixed order, never skipped:
 
 ```
-worker -> reviewer (JSON) -> editor   (repeat, max 10)
+worker -> reviewer-* (5, parallel) -> hub merge -> editor   (repeat, max 10)
 ```
 
 | Step | Subagent | Focus |
 |---|---|---|
 | Producer | `worker` | Drafts/repairs the file from the hub's brief — **skipped in validation** (the file already exists; `N = 1` review) |
-| Reviewer | `reviewer` | All five types → one JSON report, S1–S4 |
+| Reviewers | `reviewer-source`, `reviewer-accuracy`, `reviewer-scope`, `reviewer-structure`, `reviewer-overlap` | One facet per type, launched in parallel; each returns the same JSON envelope with only its own key populated |
+| Merge | `runesmith` (hub) | Concatenates the facet reports into one five-key report and applies the verdict precedence |
 | Editor | `editor` | Confirmed findings only, each citing source/rule |
 
 The **producer step is skipped**: validation works on existing files, so the
-repeating loop is `reviewer -> editor`. `worker` runs only if the hub decides a
-document must be produced — outside validation-only scope. The hub (main agent /
-RuneSmith) owns the loop, aggregates the reports, and posts them per loop and in
-the final report. No spoke launches another spoke.
+repeating loop is `reviewer facets -> merge -> editor`. `worker` runs only if the
+hub decides a document must be produced — outside validation-only scope. The hub
+(main agent / RuneSmith) owns the loop, launches the facets, merges the reports,
+and posts them per loop and in the final report. No spoke launches another spoke.
 
 ## Agent detail
 
-### Reviewer (`reviewer`)
+### Reviewer facets (`reviewer-*`)
 
-- One invocation covers all five types; they are **sections of one JSON
-  object**, not separate agents. The hub supplies the folder, target, and
-  sibling drafts (for `overlap` only).
-- Fetch and confirm every external `sources[]` / `references[]` URL is live
-  (`webfetch`).
-
-| type | question it answers | severity band |
-|---|---|---|
-| `source` | Is every cited URL live, authoritative, and does it actually say what's claimed? | S1–S2 |
-| `accuracy` | Are commands, keys, defaults, ports and versions correct for *this* homelab? | S1–S2 |
-| `scope` | Homelab-relevant, correct folder, right depth, no history/marketing? | S3 |
-| `structure` | Frontmatter, status, kebab-case tags, ISO dates, 150-line rule, `./` links, heading order | S3–S4 |
-| `overlap` | Duplicates or contradicts another note/ADR — link instead of repeat? | S4 |
-
-- The five types absorb the former review passes: `source` (fact-check),
-  `accuracy` (homelab correctness), `scope` (fit), `structure` (AGENTS.md
-  rules), `overlap` (duplication).
-- All five type keys are **always present**, even when empty. Every finding
-  carries `severity`, `issue`, `evidence`, and `fix_hint`.
-- `verdict` is `clean` (all types empty), `issues` (any finding), or
-  `needs_recheck` (a finding that cannot be resolved without a guess).
+- Five separate read-only agents, one per type; the hub launches them in
+  parallel and merges their reports into one JSON object.
+- The hub supplies the folder and target, plus sibling drafts for `overlap`
+  only.
+- `reviewer-source` confirms every external `sources[]` / `references[]` URL
+  is live, and `reviewer-accuracy` may fetch to check a value; the other three
+  cannot reach the web.
+- The five types, their questions, the merged report shape and the verdict
+  precedence are defined in `./.opencode/REVIEW.md` — this skill does not
+  restate them.
+- All five type keys are **always present** in the merged report, even when
+  empty. Every finding carries `severity`, `issue`, `evidence`, and `fix_hint`.
+- `verdict` precedence: any S1/S2 finding → `issues`; otherwise any
+  `needs_recheck` → `needs_recheck`; otherwise any finding → `issues`;
+  otherwise `clean`. The precedence lives in `REVIEW.md`, not here.
 - Judge `overlap` only against the sibling drafts the hub supplies — never
   reach across lanes, batches, or the wider repo.
 - Read-only (`edit: deny`); never edits, never delegates, never asks the human.
@@ -80,14 +77,15 @@ the final report. No spoke launches another spoke.
 ### Editor (`editor`)
 
 - The only agent in the loop that edits files (`edit: allow`).
-- Apply fixes for **confirmed** issues from the reviewer's JSON only.
+- Apply fixes for **confirmed** issues from the merged report only, plus any
+  correction the hub names directly — see `editor.md` for both sources.
 - Every single change cites its justification: a **source** (URL or `./`
   repo-relative path) or a **rule** from the relevant AGENTS.md — never
   silently.
-- Output status: `applied | deferred | unresolved`.
+- Output status, one per finding: `applied`, `deferred`, `unresolved`.
 - A finding without evidence is not confirmed: report it as `unresolved` with
   `source_or_rule: "none — no citable source"`, never apply it.
-- No `webfetch` — verification is the reviewer's job.
+- No `webfetch` — verification is the reviewer facets' job.
 - **Ambiguity is reported, never resolved by guessing.** `question` is denied
   for the editor; escalation is the hub's call, not the editor's.
 
@@ -103,9 +101,9 @@ the final report. No spoke launches another spoke.
 
 ### 2. Loop (per file)
 
-- Run the lane in order: producer (**skipped** — the file exists) → reviewer →
-  editor. Post the reviewer's JSON and the editor's change report to the main
-  chat.
+- Run the lane in order: producer (**skipped** — the file exists) → the five
+  reviewer facets in parallel → merge → editor. Post the merged report and the
+  editor's change report to the main chat.
 - **Max loop count:** 10 per file.
 - **Early stop:** after **7 consecutive clean loops** (every type empty, verdict
   `clean`, no edits made), the hub asks the user via the `question` tool:
@@ -114,11 +112,12 @@ the final report. No spoke launches another spoke.
 
 ### 3. Ambiguity handling
 
-When the reviewer returns `needs_recheck`, or the editor cannot cite a finding
-(wrong URL, unclear claim, conflict):
+When the merged report returns `needs_recheck`, or the editor cannot cite a
+finding (wrong URL, unclear claim, conflict):
 
 1. The editor reports it as `unresolved` (or `deferred`) — never a silent edit.
-2. The hub decides: re-run the reviewer with a tighter brief, or escalate.
+2. The hub decides: re-run the facet that raised it with a tighter brief, or
+   escalate.
 3. Still unresolved → the hub asks the user via the `question` tool. Never
    guess. (The editor cannot ask — `question: deny`.)
 
@@ -127,7 +126,7 @@ When the reviewer returns `needs_recheck`, or the editor cannot cite a finding
 | Case | Behavior |
 |---|---|
 | Empty / invalid target list | Stop and ask the user — never invent targets |
-| URL can't be fetched | Reviewer marks the `source` finding `unverifiable`, not `live` — no fabrication |
+| URL can't be fetched | `reviewer-source` records a `source` finding and, if it cannot be settled without a guess, `verdict: needs_recheck` — never `live` |
 | Editor can't cite a fix | Report `unresolved`/`deferred` → hub decides → hub asks the user |
 | All-clean from loop 1 | Still run to the 7-loop early-stop question |
 
@@ -137,7 +136,7 @@ After the final loop, print a consolidated report per file:
 
 - applied changes with their sources/rules
 - remaining issues (incl. any deferred as ambiguous / answered by the user)
-- scope/structure concerns from the reviewer's JSON
+- scope/structure concerns from the merged report
 - per-loop progress (what changed in each loop)
 
 ## Guardrails

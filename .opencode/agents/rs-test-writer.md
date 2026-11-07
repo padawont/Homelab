@@ -1,29 +1,63 @@
 ---
-description: "Test writer agent that writes and runs tests (unit, integration) following project conventions. Writes comprehensive test suites covering happy path, edge cases, error conditions, and security boundaries. Runs tests 3x for flakiness detection, diagnoses failures, and produces structured test reports. Leaf agent — never modifies production code, never delegates."
+description: Test writer agent that writes and runs tests (unit, integration) following
+  project conventions. Writes comprehensive test suites covering happy path, edge
+  cases, error conditions, and security boundaries. Runs tests 3x for flakiness detection,
+  diagnoses failures, and produces structured test reports. Leaf agent — never modifies
+  production code, never delegates.
 mode: subagent
-model: opencode/deepseek-v4.1-flash
-temperature: 0.2
-reasoningEffort: high
-permission:
-  read: allow
-  edit: allow
-  glob: allow
-  grep: allow
-  bash:
-    "*": allow
-    "rm -rf*": deny
-    "sudo *": deny
-    "git push --force ": deny
-    "git push --force": deny
-    "git push -f *": deny
-  webfetch: deny
-  task:
-    "*": deny
-  skill:
-    "*": deny
-    "rs-*": allow
-    "rs-test-helper-run": allow
-    "rs-test-helper-diagnose": allow
+model: deepseek/deepseek-flash
+permissions:
+- action: read
+  resource: '*'
+  effect: allow
+- action: glob
+  resource: '*'
+  effect: allow
+- action: grep
+  resource: '*'
+  effect: allow
+- action: edit
+  resource: '*'
+  effect: allow
+- action: webfetch
+  resource: '*'
+  effect: deny
+- action: question
+  resource: '*'
+  effect: deny
+- action: skill
+  resource: '*'
+  effect: deny
+- action: skill
+  resource: rs-*
+  effect: allow
+- action: skill
+  resource: rs-test-helper-run
+  effect: allow
+- action: skill
+  resource: rs-test-helper-diagnose
+  effect: allow
+- action: shell
+  resource: '*'
+  effect: allow
+- action: shell
+  resource: rm -rf*
+  effect: deny
+- action: shell
+  resource: sudo *
+  effect: deny
+- action: shell
+  resource: 'git push --force '
+  effect: deny
+- action: shell
+  resource: git push --force
+  effect: deny
+- action: shell
+  resource: git push -f *
+  effect: deny
+- action: subagent
+  resource: '*'
+  effect: deny
 ---
 
 # rs-test-writer — Test Gate Agent

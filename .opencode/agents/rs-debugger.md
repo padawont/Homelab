@@ -1,35 +1,59 @@
 ---
-description: >-
-  Debugging subagent that reproduces bugs, analyzes logs, reduces test cases,
-  and identifies root causes. Read-only on source code; writes temporary
-  reproduction scripts only under /tmp/. Uses rs-discover and rs-consult skills.
-  Never edits production files, delegates, or runs destructive commands.
+description: Debugging subagent that reproduces bugs, analyzes logs, reduces test
+  cases, and identifies root causes. Read-only on source code; writes temporary reproduction
+  scripts only under /tmp/. Uses rs-discover and rs-consult skills. Never edits production
+  files, delegates, or runs destructive commands.
 mode: subagent
-model: opencode/deepseek-v4.1-flash
-temperature: 0.2
-reasoningEffort: medium
-permission:
-  read: allow
-  glob: allow
-  grep: allow
-  edit: deny
-  bash:
-    "*": allow
-    "rm -rf *": deny
-    "git push *": deny
-    "git commit *": deny
-    "git add *": deny
-    "curl *": deny
-    "wget *": deny
-  webfetch: allow
-  task:
-    "*": deny
-  skill:
-    "*": deny
-    "rs-*": allow
-skills:
-  - rs-discover
-  - rs-consult
+model: deepseek/deepseek-flash
+permissions:
+- action: read
+  resource: '*'
+  effect: allow
+- action: glob
+  resource: '*'
+  effect: allow
+- action: grep
+  resource: '*'
+  effect: allow
+- action: edit
+  resource: '*'
+  effect: deny
+- action: webfetch
+  resource: '*'
+  effect: allow
+- action: question
+  resource: '*'
+  effect: deny
+- action: skill
+  resource: '*'
+  effect: deny
+- action: skill
+  resource: rs-*
+  effect: allow
+- action: shell
+  resource: '*'
+  effect: allow
+- action: shell
+  resource: rm -rf *
+  effect: deny
+- action: shell
+  resource: git push *
+  effect: deny
+- action: shell
+  resource: git commit *
+  effect: deny
+- action: shell
+  resource: git add *
+  effect: deny
+- action: shell
+  resource: curl *
+  effect: deny
+- action: shell
+  resource: wget *
+  effect: deny
+- action: subagent
+  resource: '*'
+  effect: deny
 ---
 
 # rs-debugger — RuneSmith Debugger Agent

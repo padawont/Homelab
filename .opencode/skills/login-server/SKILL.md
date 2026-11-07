@@ -9,13 +9,25 @@ description: >
 
 # login-server
 
+## Who runs this
+
+- `runesmith` — may run every step except the `sudo` ones below, which it asks the
+  human to run.
+- `cluster-worker` — may use only the `ssh`/`sshpass` transport form its
+  whitelist allows.
+- `spec-writer` — cannot run this skill (shell denied); `runesmith` supplies the
+  results in the brief instead.
+
 ## Steps
 
-1. Ensure `SSHPASS` is set. If unset, ask the user to export it
-   (`export SSHPASS=runic`) or provide the value. Never put the password in a
-   file.
-2. Ensure `sshpass` is installed. If missing, install it (Arch:
-   `sudo pacman -S sshpass`).
+1. Ensure `SSHPASS` is set. If unset, `runesmith` asks the user to export it in
+   their own shell from their password store (`export SSHPASS=<password>`, or a
+   bare `export SSHPASS` if already set in the environment) and never to type the
+   value into chat or a file. `cluster-worker` cannot ask — it refuses and
+   escalates to `runesmith`.
+2. Ensure `sshpass` is installed. If missing, `runesmith` asks the human to
+   install it (`sudo pacman -S sshpass`) — no agent runs `sudo`. `cluster-worker`
+   never installs packages.
 3. Run the remote command with password auth forced and key auth disabled:
 
    ```bash
@@ -33,8 +45,9 @@ description: >
      -o IdentitiesOnly=yes runic@192.168.111.7:/remote/path ./local-file
    ```
 
-5. If the SSH daemon is down, start it remotely via sudo:
-   `echo "$SSHPASS" | sudo -S systemctl start sshd`.
+5. If the SSH daemon is down, `runesmith` asks the human to start it remotely —
+   `echo "$SSHPASS" | sudo -S systemctl start sshd`. No agent runs `sudo` or
+   `systemctl` on the node.
 
 ## Connection table
 

@@ -1,14 +1,27 @@
+---
+title: "AGENTS.md — 03_Research"
+status: accepted
+author: "padawont"
+date: 2026-11-03
+tags: []
+sources: []
+last_audit_date: 2026-11-03
+related_docs: []
+---
+
 # AGENTS.md — 03_Research
 
-Deep dives that combine Ideas + Knowledge + online docs into a concrete plan for an ADR.
+Section purpose is owned by `./AGENTS.md` § Repository Structure (row `03_Research/`).
 
 ## Why have research?
 
-To make informed decisions. Research is the bridge between "this seems interesting" (Knowledge) and "let's commit" (ADR). It evaluates alternatives and produces the raw material for the ADR.
+To make informed decisions. The pipeline role and output are owned by `./AGENTS.md`
+§ Content Pipeline (row **Knowledge → Research**); what a topic folder must contain is
+defined below.
 
 ## When to create
 
-Before making a significant homelab decision. Research is required before an ADR.
+Before making a significant homelab decision — see `./AGENTS.md` § Dependency Rules.
 
 ## Status Lifecycle
 
@@ -23,9 +36,7 @@ draft → accepted → (proceed to 04_ADRs/)
 
 ## Inputs
 
-- Ideas from `./01_Ideas/` (what sparked this)
-- Knowledge from `./02_Knowledge/` (foundational understanding)
-- Online documentation (vendor docs, articles, comparisons)
+`./AGENTS.md` § Content Pipeline — row **Knowledge → Research**.
 
 ## File system layout
 
@@ -40,9 +51,13 @@ Example:
 └── alternative-haproxy.md
 ```
 
-All names in kebab-case.
+Names follow the repo naming rule (`./AGENTS.md` § General Conventions).
 
 ## Frontmatter (required)
+
+Applies to every file in the topic folder — `overview.md`, `alternatives.md` and
+`alternative-{name}.md` all carry the same keys below. How the fragment templates are
+handled when copied: `./Templates/AGENTS.md` § Conventions.
 
 ```yaml
 ---
@@ -57,6 +72,7 @@ references:
   - url: ""
     title: ""
 last_audit_date: YYYY-MM-DD
+related_docs: []
 ---
 ```
 
@@ -70,17 +86,19 @@ author: "padawont"
 date: 2026-08-13
 tags: [kubernetes, networking, ingress]
 sources:
-  - knowledge: "./02_Knowledge/technologies/kubernetes/ingress.md"
+  - knowledge: "./02_Knowledge/technologies/kubernetes/concepts/ingress.md"
 references:
   - url: "https://nginx.org/en/docs/"
     title: "NGINX documentation"
   - url: "https://doc.traefik.io/traefik/"
     title: "Traefik documentation"
 last_audit_date: 2026-08-13
+related_docs: []
 ---
 ```
 
-See `./Templates/research/overview.md` for a copyable template.
+See `./Templates/research/overview.md`, `./Templates/research/alternatives.md` and
+`./Templates/research/alternative.md` for copyable templates.
 
 ## Structure of overview.md
 
@@ -141,10 +159,11 @@ Why this was or wasn't selected.
 | NGINX | ./alternative-nginx.md | Rejected — complexity |
 | HAProxy | ./alternative-haproxy.md | Rejected — no k8s CRDs |
 ```
+
 ## Conventions
 
 - Each alternative technology gets its own file under the topic folder
 - Each research topic requires at least 3 `alternative-{name}.md` files
-- Must reference at least one Knowledge note or online source
+- Minimum sources: `./AGENTS.md` § Dependency Rules
 - Output must be detailed enough to write the ADR directly from the overview
-- If rejected, move entire topic folder to `./06_Archive/research/`
+- If rejected, archive the entire topic folder to `./06_Archive/research/` — see `./06_Archive/AGENTS.md` § Conventions

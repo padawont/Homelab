@@ -19,6 +19,7 @@ from __future__ import annotations
 
 import json
 import os
+import re
 import shutil
 import subprocess
 import time
@@ -166,6 +167,43 @@ def final_text(events: list[dict[str, Any]]) -> str:
         if isinstance(text, str):
             chunks.append(text)
     return "\n".join(chunks)
+
+
+_FENCE_RE = re.compile(r"```[a-zA-Z0-9_+-]*[ \t]*\r?\n(.*?)```", re.DOTALL)
+
+
+def extract_json_object(text: str) -> dict[str, Any] | None:
+    """The JSON object an assistant reply carries, fences and prose stripped.
+
+    An agent whose contract is "return this JSON shape" tends to wrap it in a
+    ```` ```json ```` fence and often adds a sentence around it. ``json.loads`` on the
+    raw reply therefore fails -- and because a failed parse is scored as "not a JSON
+    object", that looks exactly like an agent that ignored its output contract. The
+    fence is presentation, not content, so it is stripped here rather than downgraded
+    into a finding.
+
+    Order matters. The **last** fenced block wins, because that is where the final
+    answer sits when an earlier block shows an example. Only if no fence yields an
+    object does the whole reply, then the outermost brace span, get a turn.
+    """
+    if not isinstance(text, str) or not text.strip():
+        return None
+
+    candidates = [match.group(1).strip() for match in _FENCE_RE.finditer(text)]
+    candidates.reverse()
+    candidates.append(text.strip())
+    start, end = text.find("{"), text.rfind("}")
+    if start != -1 and end > start:
+        candidates.append(text[start : end + 1])
+
+    for candidate in candidates:
+        try:
+            decoded = json.loads(candidate)
+        except json.JSONDecodeError:
+            continue
+        if isinstance(decoded, dict):
+            return decoded
+    return None
 
 
 def session_id(events: list[dict[str, Any]]) -> str | None:

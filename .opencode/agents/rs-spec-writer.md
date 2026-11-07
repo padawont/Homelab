@@ -1,29 +1,55 @@
 ---
-description: "Takes raw requirements and produces structured, self-contained specifications with edge cases, testable criteria, and concrete examples across feature, bug fix, API, and research categories."
+description: Takes raw requirements and produces structured, self-contained specifications
+  with edge cases, testable criteria, and concrete examples across feature, bug fix,
+  API, and research categories.
 mode: subagent
-model: opencode/deepseek-v4.1-flash
-temperature: 0.2
-reasoningEffort: medium
-permission:
-  read: allow
-  edit:
-    "**": deny
-    ".runesmith/**": allow
-  glob: allow
-  grep: allow
-  webfetch: allow
-  bash:
-    "*": deny
-    "gh pr view*": allow
-    "gh pr list*": allow
-    "gh issue view*": allow
-    "gh issue list*": allow
-
-  task:
-    "*": deny
-  skill:
-    "*": deny
-    "rs-*": allow
+model: deepseek/deepseek-flash
+permissions:
+- action: read
+  resource: '*'
+  effect: allow
+- action: glob
+  resource: '*'
+  effect: allow
+- action: grep
+  resource: '*'
+  effect: allow
+- action: edit
+  resource: '**'
+  effect: deny
+- action: edit
+  resource: .runesmith/**
+  effect: allow
+- action: webfetch
+  resource: '*'
+  effect: allow
+- action: question
+  resource: '*'
+  effect: deny
+- action: skill
+  resource: '*'
+  effect: deny
+- action: skill
+  resource: rs-*
+  effect: allow
+- action: shell
+  resource: '*'
+  effect: deny
+- action: shell
+  resource: gh pr view*
+  effect: allow
+- action: shell
+  resource: gh pr list*
+  effect: allow
+- action: shell
+  resource: gh issue view*
+  effect: allow
+- action: shell
+  resource: gh issue list*
+  effect: allow
+- action: subagent
+  resource: '*'
+  effect: deny
 ---
 
 # rs-spec-writer — Specification Writer

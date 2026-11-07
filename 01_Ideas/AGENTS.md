@@ -1,6 +1,17 @@
+---
+title: "AGENTS.md — 01_Ideas"
+status: accepted
+author: "padawont"
+date: 2026-11-03
+tags: []
+sources: []
+last_audit_date: 2026-11-03
+related_docs: []
+---
+
 # AGENTS.md — 01_Ideas
 
-Raw, unstructured concept capture. Low friction — just enough context to remember.
+Section purpose is owned by `./AGENTS.md` § Repository Structure (row `01_Ideas/`).
 
 ## Why have ideas?
 
@@ -8,7 +19,7 @@ To capture every thought about the homelab before it's lost. Ideas are the seed 
 
 ## When to create
 
-Any thought about new tech, homelab changes, or wishlist items.
+The moment the thought occurs — a one-line capture is enough to start.
 
 ## Status Lifecycle
 
@@ -30,7 +41,7 @@ draft → accepted
 └── overview.md        # high-level summary of the topic area
 ```
 
-All names in kebab-case. Multiple files per topic allowed. Use the atomic rule (150 lines) to decide when to split.
+Names follow the repo naming rule (`./AGENTS.md` § General Conventions). Multiple files per topic allowed. Use the atomic rule (`./AGENTS.md` § Atomic File Rule) to decide when to split.
 
 ## Frontmatter (required)
 
@@ -69,6 +80,6 @@ No strict structure — freeform markdown. The template provides a starting poin
 ## Conventions
 
 - No formal review needed for `draft → accepted`
-- No stale timeout — ideas live indefinitely
-- When `accepted`, the idea is ready — optionally create a Knowledge note
+- No stale timeout for `draft` or `accepted` — ideas live indefinitely in this section; once `archived`, an idea moves to `./06_Archive/ideas/` and follows `./06_Archive/AGENTS.md` § Conventions
+- When `accepted` (worth pursuing), what happens next is the pipeline step owned by `./AGENTS.md` § Content Pipeline
 - Use `idea-notes.md` for loose thoughts that don't warrant their own file

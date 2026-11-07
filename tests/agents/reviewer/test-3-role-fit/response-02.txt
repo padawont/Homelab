@@ -1,0 +1,84 @@
+===== PROMPT =====
+
+Folder: 02_Knowledge
+Target: ./02_Knowledge/technologies/services/forgejo/backup-restore.md
+Siblings: ./02_Knowledge/technologies/services/forgejo/dump-schedule.md
+
+Run your full five-type review of the target and return the JSON report as your final message. Judge `overlap` only against the sibling supplied.
+
+===== RESPONSE =====
+
+```json
+{
+  "file": "./02_Knowledge/technologies/services/forgejo/backup-restore.md",
+  "folder": "02_Knowledge",
+  "types": {
+    "source": [
+      {
+        "severity": "S1",
+        "issue": "Cited source is a non-resolving placeholder URL.",
+        "evidence": "sources[0].url is \"https://example.invalid/forgejo/restore\" (titled \"Forgejo restore guide\"), and the same URL is repeated in \"Sources / Further Reading\". `.invalid` is a reserved TLD (RFC 2606) that can never resolve; fetching it returns a transport error.",
+        "fix_hint": "Replace with a real, reachable Forgejo restore reference (e.g. the current backup docs page) or remove the entry."
+      },
+      {
+        "severity": "S1",
+        "issue": "Second cited source URL is dead — returns HTTP 404.",
+        "evidence": "sources[1].url is \"https://forgejo.org/docs/latest/admin/backup-and-restore/\"; fetching returns 404. Forgejo has moved this page to /docs/latest/admin/setup/backup/ (\"Backups and Backup Restoration\"), per the current admin index.",
+        "fix_hint": "Update the URL to the live docs path (https://forgejo.org/docs/latest/admin/setup/backup/)."
+      },
+      {
+        "severity": "S2",
+        "issue": "Unsourced factual claim about tooling stability.",
+        "evidence": "\"The restore command has been stable since the fork.\" is not supported by any cited source — the only two sources are the placeholder URL and the now-dead docs page.",
+        "fix_hint": "Cite a source that states this, or drop the claim."
+      }
+    ],
+    "accuracy": [
+      {
+        "severity": "S2",
+        "issue": "Stated port contradicts the config example, and the contradiction is self-defeating.",
+        "evidence": "Prose says \"Forgejo's HTTP listener runs on port 3000, so a restore must not change the configured port\", but the following block sets `HTTP_PORT = 3001`. Forgejo's default is 3000; a restore under pressure would follow the 3001 block and misconfigure the listener.",
+        "fix_hint": "Make the example use the actual configured port (3000) and remove the inconsistency, or state which port this homelab uses."
+      }
+    ],
+    "scope": [
+      {
+        "severity": "S3",
+        "issue": "Contains technology history / origin story, which is excluded from the PKM.",
+        "evidence": "\"## History\" section: \"Forgejo was forked from Gitea in 2022, and its backup tooling inherited that lineage.\" Root AGENTS.md: \"Do not include technology history, origin stories, or sales/marketing points.\"",
+        "fix_hint": "Remove the History section; keep only homelab-relevant restore procedure content."
+      }
+    ],
+    "structure": [
+      {
+        "severity": "S4",
+        "issue": "Required frontmatter field `last_audit_date` is missing.",
+        "evidence": "Frontmatter has title/status/author/date/tags/sources/related_docs but no `last_audit_date`, which the 02_Knowledge frontmatter spec and ./Templates/knowledge/note.md both list as required.",
+        "fix_hint": "Add `last_audit_date: 2026-10-21` (or the actual audit date)."
+      },
+      {
+        "severity": "S4",
+        "issue": "Tags violate the lowercase kebab-case tag rule.",
+        "evidence": "`tags: [Forgejo, Restore_Procedure]` — uppercase letters and an underscore. Convention (root AGENTS.md): tags must match `^[a-z0-9]+(-[a-z0-9]+)*$`.",
+        "fix_hint": "Use `tags: [forgejo, restore-procedure]`."
+      },
+      {
+        "severity": "S4",
+        "issue": "Code/config block is not labelled as abstract or real config.",
+        "evidence": "The ```ini block (`[server]` / `HTTP_PORT = 3001`) carries no label. 02_Knowledge convention: \"label each block as 'Example — abstract' or 'Example — real config'\".",
+        "fix_hint": "Add a label comment/heading identifying the block as abstract or real config."
+      }
+    ],
+    "overlap": [
+      {
+        "severity": "S4",
+        "issue": "Duplicates claims already made in the sibling note instead of linking to it.",
+        "evidence": "Sibling ./02_Knowledge/technologies/services/forgejo/dump-schedule.md states \"Stop the instance, restore the dump, then start it again\" and \"Forgejo's HTTP listener runs on port 3000\" — both repeated verbatim in this note's Details. related_docs already links the sibling, so the content should be referenced, not copied.",
+        "fix_hint": "Replace the duplicated restore steps/port statement with a link to ./02_Knowledge/technologies/services/forgejo/dump-schedule.md and keep only restore-specific detail here."
+      }
+    ]
+  },
+  "totals": { "S1": 2, "S2": 2, "S3": 1, "S4": 4 },
+  "verdict": "issues"
+}
+```

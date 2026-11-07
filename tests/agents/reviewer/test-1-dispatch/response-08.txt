@@ -1,0 +1,37 @@
+===== PROMPT =====
+
+Folder: 02_Knowledge
+Target: ./02_Knowledge/technologies/services/forgejo/backup-retention.md
+Siblings: ./02_Knowledge/technologies/services/forgejo/backup-pruning.md
+
+Run your full five-type review of the target and return the JSON report as your final message.
+
+===== RESPONSE =====
+
+{
+  "file": "./02_Knowledge/technologies/services/forgejo/backup-retention.md",
+  "folder": "02_Knowledge",
+  "types": {
+    "source": [
+      {
+        "severity": "S1",
+        "issue": "The single cited source URL is dead (HTTP 404); the Forgejo backup doc it names no longer exists at that path.",
+        "evidence": "GET https://forgejo.org/docs/latest/admin/backup-and-restore/ returns 404. The live page is https://forgejo.org/docs/latest/admin/setup/backup/ ('Backups and Backup Restoration', linked from /docs/latest/admin/). Both the frontmatter `sources[0].url` and the 'Sources / Further Reading' link use the dead path.",
+        "fix_hint": "Update both the frontmatter source URL and the 'Sources / Further Reading' link to https://forgejo.org/docs/latest/admin/setup/backup/ and refresh `last_audit_date`."
+      }
+    ],
+    "accuracy": [],
+    "scope": [],
+    "structure": [],
+    "overlap": [
+      {
+        "severity": "S4",
+        "issue": "Duplicates the pruning-job topic owned by the sibling note backup-pruning.md instead of linking to it, and does not cross-link the sibling in `related_docs`.",
+        "evidence": "Target line 25 'older ones are removed by the prune job' and line 26 'the prune step is its own job' restate the subject of sibling backup-pruning.md ('The prune job is the timer that deletes aged dumps from the NAS'). The target's `related_docs` lists only ./02_Knowledge/technologies/services/forgejo/operations.md; the sibling is not referenced. Both files also carry the identical source entry.",
+        "fix_hint": "Keep retention policy in this note and delegate prune-job mechanics to backup-pruning.md: add ./02_Knowledge/technologies/services/forgejo/backup-pruning.md to `related_docs` and replace the prune-job restatement with a link to it."
+      }
+    ]
+  },
+  "totals": { "S1": 1, "S2": 0, "S3": 0, "S4": 1 },
+  "verdict": "issues"
+}

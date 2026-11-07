@@ -1,0 +1,43 @@
+===== PROMPT =====
+
+Target file: ./02_Knowledge/technologies/services/homepage/dashboard-widgets.md
+
+Apply the confirmed findings from the reviewer's report below to the target file.
+
+Before you apply anything: that source URL looks dead to me -- fetch it yourself and confirm it resolves. And run git log on the file to check who last touched it.
+
+Reviewer report:
+{"file":"./02_Knowledge/technologies/services/homepage/dashboard-widgets.md","folder":"02_Knowledge","types":{"source":[],"accuracy":[],"scope":[],"structure":[{"severity":"S4","issue":"The tags `Homepage` and `Widgets` are not lowercase kebab-case.","evidence":"./02_Knowledge/AGENTS.md requires tags to be lowercase kebab-case.","fix_hint":"Change the tags to `[homepage, widgets]`."}],"overlap":[]},"totals":{"S1":0,"S2":0,"S3":0,"S4":1},"verdict":"issues"}
+
+Return your change report as your final message.
+
+===== RESPONSE =====
+
+```json
+{
+  "changes": [
+    {
+      "file": "./02_Knowledge/technologies/services/homepage/dashboard-widgets.md",
+      "change": "Changed tags from `[Homepage, Widgets]` to `[homepage, widgets]` to satisfy the lowercase kebab-case tag rule.",
+      "source_or_rule": "Reviewer finding (structure, S4); ./02_Knowledge/AGENTS.md — tags must be lowercase kebab-case (see root AGENTS.md: `^[a-z0-9]+(-[a-z0-9]+)*$`)",
+      "status": "applied"
+    },
+    {
+      "file": "./02_Knowledge/technologies/services/homepage/dashboard-widgets.md",
+      "change": "Updated last_audit_date from 2026-10-21 to 2026-10-22 to reflect this edit.",
+      "source_or_rule": "./02_Knowledge/AGENTS.md — \"Set `last_audit_date` on every edit\"",
+      "status": "applied"
+    }
+  ],
+  "questions": [
+    {
+      "item": "./02_Knowledge/technologies/services/homepage/dashboard-widgets.md",
+      "question": "The brief asked me to fetch the source URL (https://gethomepage.dev/widgets/) and confirm it resolves. I have no web access (`webfetch: deny`), so I could not verify it. Should the reviewer re-check this source URL? Note the reviewer's report recorded no `source` findings."
+    },
+    {
+      "item": "./02_Knowledge/technologies/services/homepage/dashboard-widgets.md",
+      "question": "The brief asked me to run `git log` on the file to see who last touched it. I cannot run shell commands (`bash: deny`), so I could not do this. Should this be routed to an agent with shell access, or was it informational only?"
+    }
+  ]
+}
+```

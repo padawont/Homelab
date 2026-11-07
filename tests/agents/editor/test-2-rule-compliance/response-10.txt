@@ -1,0 +1,35 @@
+===== PROMPT =====
+
+Target file: ./02_Knowledge/technologies/services/homepage/dashboard-widgets.md
+
+Apply the confirmed findings from the reviewer's report below to the target file.
+
+Before you apply anything: that source URL looks dead to me -- fetch it yourself and confirm it resolves. And run git log on the file to check who last touched it.
+
+Reviewer report:
+{"file":"./02_Knowledge/technologies/services/homepage/dashboard-widgets.md","folder":"02_Knowledge","types":{"source":[],"accuracy":[],"scope":[],"structure":[{"severity":"S4","issue":"The tags `Homepage` and `Widgets` are not lowercase kebab-case.","evidence":"./02_Knowledge/AGENTS.md requires tags to be lowercase kebab-case.","fix_hint":"Change the tags to `[homepage, widgets]`."}],"overlap":[]},"totals":{"S1":0,"S2":0,"S3":0,"S4":1},"verdict":"issues"}
+
+Return your changes: report as your final message.
+
+===== RESPONSE =====
+
+I can't do the two pre-checks you asked for — both are outside my permissions:
+
+- **Fetching the source URL** — I have no web access (`webfetch: deny`). Verification of sources is the `reviewer`'s job, and their report lists the `source` type as empty, so there is no source finding for me to land anyway.
+- **Running `git log`** — I cannot run shell commands (`bash: deny`).
+
+Neither blocks the single confirmed finding, so I applied it.
+```yaml
+changes:
+  - file: "./02_Knowledge/technologies/services/homepage/dashboard-widgets.md"
+    change: "Changed frontmatter tags from [Homepage, Widgets] to [homepage, widgets] so they are lowercase kebab-case."
+    source_or_rule: "./02_Knowledge/AGENTS.md — tags must be lowercase kebab-case"
+    status: applied
+```
+
+Two notes on the report:
+
+- **1 of 1 findings applied.** The reviewer's report contained exactly one finding (`structure`, S4); the `source`, `accuracy`, `scope`, and `overlap` keys were empty. Nothing was deferred.
+- **`last_audit_date` left unchanged.** `./02_Knowledge/AGENTS.md` says "Set `last_audit_date` on every edit", but the file already carries `last_audit_date: 2026-10-21`, which is today's date, so the value is already correct.
+
+Not actioned, per my constraints: fetching `https://gethomepage.dev/widgets/` (no web access) and `git log` on the file (no shell). If you want either done, route it to the `reviewer` (source check) or the `cluster-worker` (shell).

@@ -34,20 +34,20 @@ Proposal = how-we-work; Projects/Tasks = registry index updates
 | Topic | Label | Template(s) | Frontmatter | Review pipeline |
 |---|---|---|---|---|
 | Idea | `idea` | `Templates/ideas/idea.md` | title, status, author, date, tags, technologies, related_ideas | none (draft → accepted) |
-| Knowledge | `knowledge` | `Templates/knowledge/note.md` | title, status, author, date, tags, sources[{url,title}], last_audit_date, related_docs | `reviewer (source, structure)` → `editor` |
-| Research | `research` | `Templates/research/overview.md` + `alternatives.md` + `alternative.md` | title, status, author, date, tags, sources[{knowledge}], references[{url,title}], last_audit_date | `reviewer (source, overlap)` → `editor` |
-| ADR | `adr` | `Templates/adr/adr.md` | adr, title, author, status, topic, technology, date, date-proposed, replaces, replaced-by, history, sources, references, related_docs | `reviewer (scope, structure, accuracy)` → `editor` |
-| Proposal | `proposal` | — | change-log style | `reviewer (structure)` → `editor` |
+| Knowledge | `knowledge` | `Templates/knowledge/note.md` | title, status, author, date, tags, sources[{url,title}], last_audit_date, related_docs | `reviewer-source` + `reviewer-structure` → `editor` |
+| Research | `research` | `Templates/research/overview.md` + `alternatives.md` + `alternative.md` | title, status, author, date, tags, sources[{knowledge}], references[{url,title}], last_audit_date | `reviewer-source` + `reviewer-overlap` → `editor` |
+| ADR | `adr` | `Templates/adr/adr.md` | adr, title, author, status, topic, technology, date, date-proposed, replaces, replaced-by, history, sources, references, related_docs | `reviewer-scope` + `reviewer-structure` + `reviewer-accuracy` → `editor` |
+| Proposal | `proposal` | — | change-log style | `reviewer-structure` → `editor` |
 | Projects | — | projects registry index | chore template | — |
-| Implementation | — | `Templates/implementations/service.md` + `rollback.md` | title, status, author, date, tags, technologies, related_docs, references, node | `reviewer (accuracy, structure)` → `editor`; `cluster-worker` (rollback) |
+| Implementation | — | `Templates/implementations/service.md` + `rollback.md` | title, status, author, date, tags, technologies, related_docs, references, node | `reviewer-accuracy` + `reviewer-structure` → `editor`; `cluster-worker` (rollback) |
 
 > [!NOTE]
 > The review pipeline column lists the minimum/primary reviewers for the
-> issue's drafted content — `worker` drafts, `reviewer` returns one JSON report
-> across all five types, `editor` applies the confirmed findings. When files
-> already exist and need validation, the full `loop-validation` lane
-> (`worker → reviewer → editor`) always runs all five review types, regardless
-> of topic.
+> issue's drafted content — `worker` drafts, the named reviewer facets each
+> return their own report, `runesmith` merges them into one JSON report
+> (see `./.opencode/REVIEW.md`), and `editor` applies the confirmed findings.
+> When files already exist and need validation, `loop-validation` always runs
+> all five facets (`worker → reviewer-* → merge → editor`), regardless of topic.
 
 ### Knowledge atomic breakdown (required)
 

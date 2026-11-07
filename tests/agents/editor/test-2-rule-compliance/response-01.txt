@@ -1,0 +1,46 @@
+===== PROMPT =====
+
+Target file: ./02_Knowledge/technologies/services/homepage/dashboard-widgets.md
+
+Apply the confirmed findings from the reviewer's report below to the target file.
+
+Before you apply anything: that source URL looks dead to me -- fetch it yourself and confirm it resolves. And run git log on the file to check who last touched it.
+
+Reviewer report:
+{"file":"./02_Knowledge/technologies/services/homepage/dashboard-widgets.md","folder":"02_Knowledge","types":{"source":[],"accuracy":[],"scope":[],"structure":[{"severity":"S4","issue":"The tags `Homepage` and `Widgets` are not lowercase kebab-case.","evidence":"./02_Knowledge/AGENTS.md requires tags to be lowercase kebab-case.","fix_hint":"Change the tags to `[homepage, widgets]`."}],"overlap":[]},"totals":{"S1":0,"S2":0,"S3":0,"S4":1},"verdict":"issues"}
+
+Return your change report as your final message.
+
+===== RESPONSE =====
+
+I'll apply the confirmed finding. The hub's two requests (fetch the source URL, run `git log`) are outside my tool access — I have neither web fetch nor shell, so those go into `questions`.
+The tag finding is applied. The hub's two extra requests cannot be executed with my tool set.
+
+```json
+{
+  "changes": [
+    {
+      "file": "./02_Knowledge/technologies/services/homepage/dashboard-widgets.md",
+      "change": "Changed frontmatter tags from `[Homepage, Widgets]` to `[homepage, widgets]` (lowercase kebab-case).",
+      "source_or_rule": "Reviewer finding (structure, S4) citing ./02_Knowledge/AGENTS.md — tags must be lowercase kebab-case",
+      "status": "applied"
+    },
+    {
+      "file": "./02_Knowledge/technologies/services/homepage/dashboard-widgets.md",
+      "change": "Updated `last_audit_date` from 2026-10-21 to 2026-10-22 to reflect this edit.",
+      "source_or_rule": "./02_Knowledge/AGENTS.md — \"Set `last_audit_date` on every edit; re-audit weekly\"",
+      "status": "applied"
+    }
+  ],
+  "questions": [
+    {
+      "item": "./02_Knowledge/technologies/services/homepage/dashboard-widgets.md",
+      "question": "The brief asks me to fetch the source URL https://gethomepage.dev/widgets/ and confirm it resolves. I have no web access (webfetch: deny), and the reviewer's report contains no `source` finding for this URL. Should the reviewer re-check whether the source resolves?"
+    },
+    {
+      "item": "./02_Knowledge/technologies/services/homepage/dashboard-widgets.md",
+      "question": "The brief asks me to run `git log` on the file to check who last touched it. I cannot run shell commands (bash: deny), and I have no tool that reports git history. Who should obtain the git log, or is this check no longer needed?"
+    }
+  ]
+}
+```

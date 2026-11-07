@@ -1,6 +1,17 @@
+---
+title: "AGENTS.md — 02_Knowledge"
+status: accepted
+author: "padawont"
+date: 2026-11-03
+tags: []
+sources: []
+last_audit_date: 2026-11-03
+related_docs: []
+---
+
 # AGENTS.md — 02_Knowledge
 
-Structured reference notes on tech concepts, syntax guides, and foundational theory.
+Section purpose is owned by `./AGENTS.md` § Repository Structure (row `02_Knowledge/`).
 
 ## Why have knowledge notes?
 
@@ -35,7 +46,7 @@ draft → accepted
     └── hardware/        # physical hardware, specs, diagrams
 ```
 
-All names in kebab-case. Each topic is a folder with atomic notes inside. Max 3 levels deep.
+Names follow the repo naming rule (`./AGENTS.md` § General Conventions). Each topic is a folder with atomic notes inside. Max 3 levels deep.
 
 ## Frontmatter (required)
 
@@ -68,7 +79,7 @@ sources:
     title: "Kubernetes Ingress docs"
 last_audit_date: 2026-08-13
 related_docs:
-  - "./05_Implementations/node-main/traefik/overview.md"
+  - "./05_Implementations/node-main/k3s/overview.md"
 ---
 ```
 
@@ -79,14 +90,23 @@ See `./Templates/knowledge/note.md` for a copyable template.
 ```
 # Title
 
-Overview — what is this concept? Why does it matter?
+## Overview
+What is this concept? Why does it matter?
 
 ## Details
-
 Deep dive with examples.
 
 ## Sources / Further Reading
 ```
+
+## Conventions
+
+- **Atomic notes**: one concept per file; use the atomic rule (`./AGENTS.md` § Atomic File Rule) to decide when to split.
+- Both abstract examples and real configs are welcome — label each block as "Example — abstract", "Example — planned/abstract", or "Example — real config"
+- Set `last_audit_date` on every edit; re-audit weekly
+- Use `related_docs` to cross-link to implementations; the reverse direction is defined in `./05_Implementations/AGENTS.md` § Conventions
+
+### Example blocks
 
 Example — abstract:
 
@@ -98,39 +118,33 @@ metadata: { name: example-ingress }
 spec:
   rules:
     - host: example.com
-      http: { paths: [{ path: /, pathType: Prefix }] }
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend: { service: { name: app-service, port: { number: 80 } } }
 ```
 
-Example — real config from node-main:
+Example — planned/abstract (Forgejo is not deployed):
 
 ```yaml
-# actual running config, may drift from this doc
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata: { name: forgejo-ingress, namespace: forgejo }
 spec:
   ingressClassName: traefik
+  tls: [{ hosts: [git.homelab.local], secretName: forgejo-tls }]
   rules:
     - host: git.homelab.local
-      http: { paths: [{ path: /, pathType: Prefix }] }
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend: { service: { name: forgejo-http, port: { number: 3000 } } }
 ```
-
-## Conventions
-
-- **Atomic notes**: one concept per file. When a file hits 150 lines (including frontmatter and blank lines), split it.
-- Both abstract examples and real configs are welcome — label each block as "Example — abstract" or "Example — real config"
-- Set `last_audit_date` on every edit; re-audit weekly
-- Use `related_docs` to cross-link to implementations and vice-versa
 
 ## Agent Behaviour
 
-| Role | May | Must not |
-|---|---|---|
-| `worker` | read, gather sources, create and edit the note | edit files outside its brief, add unsourced claims |
-| `reviewer` | run all five review types, emit the JSON report | edit, propose unverified fixes |
-| `editor` | revise the note and its JSON with a cited source or rule | change anything without a citation |
-| `spec-writer` | append a spec section referencing this note | rewrite or delete note content |
-| `cluster-worker` | not applicable to this folder | run operational plans here |
-
-Review types: `source`, `accuracy`, `scope`, `structure`, `overlap`.
-Escalation: anything unresolved goes to the hub in the handoff `blocked:` field — never a guess.
+Role permissions, handoff contracts, and escalation are shared across sections — see the
+roster in `./.opencode/WORKFLOW.md`; the review facets are owned by `./.opencode/REVIEW.md`
+§ The Five Facets, and the report shape by § Facet Report.

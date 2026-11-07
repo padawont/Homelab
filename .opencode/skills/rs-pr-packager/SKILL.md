@@ -45,8 +45,8 @@ requirements — producing output ready for `gh pr create` or manual submission.
 | grep                | Scan commit messages for Conventional Commit patterns   |
 
 The `gh` CLI is **optional** — the skill can output a PR body for manual
-submission or pipe it directly into `gh pr create`. If available, load the
-`gh` skill for submission (`skill({ name: "gh" })`).
+submission or pipe it directly into `gh pr create`. If available, use the
+`gh` CLI directly for submission; there is no `gh` skill to load.
 
 This skill does not delegate tasks to external agents via the task() tool; all work is performed by the calling agent.
 
@@ -203,7 +203,7 @@ of the output and suggest corrective action.
 
 ### Step 7: Output
 
-If the `gh` CLI is loaded and the user confirms, execute:
+If the `gh` CLI is available and the user confirms, execute:
 
 ```bash
 gh pr create \
@@ -268,5 +268,5 @@ loaded and executed independently, and the caller coordinates results.
 - [ADR 0002: GitHub Etiquettes](/adr/0002-github-etiquettes/) — The canonical conventions this skill enforces (sibling knowledge-base repo)
 - [AGENTS.md Git Guidelines](./AGENTS.md) — local source of truth in this repo
 - [Conventional Commits 1.0.0](https://www.conventionalcommits.org/en/v1.0.0/) — Commit message specification
-- [gh Skill](/knowledge/tooling/opencode/skills/gh-case-study.md) — Optional dependency for PR submission
+- [gh Case Study](/knowledge/tooling/opencode/skills/gh-case-study.md) — CLI dependency for PR submission, not a skill
 - [Workflow Skill Patterns](/knowledge/tooling/opencode/skills/workflow-patterns.md) — Cross-cutting workflow conventions

@@ -64,7 +64,10 @@ it, never the reverse.
 
 ## Conventions
 
-- Move (not copy) — original file is deleted from the source section
+- Move, in two writes — `worker` writes the copy here (`./.opencode/agents/worker.md`
+  § Inputs); `editor` then deletes the source path (`./.opencode/WORKFLOW.md`
+  § Ownership Matrix). No other agent deletes, and a folder is deleted only after every
+  file in it has a copy. The 31-day purge below is the human's, never a spoke's.
 - Preserve original content verbatim; add archival frontmatter on top
 - Preserve directory structure (e.g. `./06_Archive/implementations/node-main/traefik/`)
 - **Purge after 31 days** — files older than 31 days are deleted

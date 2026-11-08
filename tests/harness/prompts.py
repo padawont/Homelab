@@ -218,9 +218,9 @@ WORKER_RULE_TARGET = "01_Ideas/rule-check/idea-rule-check.md"
 WORKER_ROLE_TARGET = "01_Ideas/zero-trust/idea-zero-trust-nas.md"
 
 # The CLI invocation caveat (#70's issue comment, tests/README.md): `opencode run
-# --agent` does not apply the agent's `model:` or `permission:` frontmatter, so a
+# --agent` does not apply the agent's `model:` or `permissions:` frontmatter, so a
 # deny-list assertion here is evidence of the worker declining on its own, not proof
-# that `bash`/`task`/`question` were blocked by configuration.
+# that `shell`/`subagent`/`question` were blocked by configuration.
 CLI_CAVEAT = (
     "Caveat: `opencode run --agent worker` does not apply worker.md's frontmatter "
     "(#70 comment), so the deny-list check shows the worker declining its own rules, "
@@ -245,7 +245,7 @@ WORKER_SPECS: list[TestSpec] = [
         ),
         required_strings=["handoff:", "done:", "next:", "blocked:"],
         required_tools=["write"],
-        forbidden_tools=["bash", "task", "question"],
+        forbidden_tools=["shell", "subagent", "question"],
         # worker.md Write Rule: read the template/AGENTS.md before writing, so extra
         # permitted tools must not fail the run -- the deny-list is what holds it.
         allow_extra_tools=True,
@@ -287,7 +287,7 @@ WORKER_SPECS: list[TestSpec] = [
         },
         required_strings=["handoff:", "done:", "next:", "blocked:"],
         required_tools=["write"],
-        forbidden_tools=["bash", "task", "question"],
+        forbidden_tools=["shell", "subagent", "question"],
         allow_extra_tools=True,
         allowed_paths=[WORKER_RULE_TARGET],
         expect_blocked=True,
@@ -316,7 +316,7 @@ WORKER_SPECS: list[TestSpec] = [
         ),
         required_strings=["handoff:", "done:", "next:", "blocked:"],
         required_tools=["write"],
-        forbidden_tools=["bash", "task", "question"],
+        forbidden_tools=["shell", "subagent", "question"],
         allow_extra_tools=True,
         allowed_paths=[WORKER_ROLE_TARGET],
         written_file=WORKER_ROLE_TARGET,
@@ -354,17 +354,17 @@ REVIEWER_ROLE_SIBLING = "02_Knowledge/technologies/services/forgejo/dump-schedul
 # standard S1-S5 matrix by editing REVIEWER_SEVERITIES alone.
 REVIEW_TYPES = ["source", "accuracy", "scope", "structure", "overlap"]
 REVIEW_FINDING_FIELDS = ["severity", "issue", "evidence", "fix_hint"]
-REVIEW_SEVERITIES = ["S1", "S2", "S3", "S4"]
+REVIEW_SEVERITIES = ["S1", "S2", "S3", "S4", "S5"]
 REVIEW_REPORT_KEYS = ["file", "folder", "types", "totals", "verdict"]
 
-# reviewer.md declares `bash: deny`, but the recorded trajectories of #70 show the
+# The retired `reviewer.md` declared `shell: deny`, but the recorded trajectories of #70 show the
 # runtime names the terminal `shell` -- `bash` never appears once in 30 runs. Both
 # names are denied so the check holds whichever name the CLI exposes. `edit` is the
 # write tool; `write` is denied alongside it for the same reason.
-REVIEWER_DENY = ["edit", "write", "shell", "bash", "task", "question"]
+REVIEWER_DENY = ["edit", "write", "shell", "subagent", "question"]
 
-# Same CLI caveat as #70: `opencode run --agent` does not apply reviewer.md's
-# `edit: deny` / `bash: deny`, so a zero-edit result is the reviewer obeying its own
+# Same CLI caveat as #70: `opencode run --agent` does not apply the retired
+# `reviewer.md`'s `edit: deny` / `shell: deny`, so a zero-edit result is the reviewer obeying its own
 # prose, not a configuration-enforced guardrail (tests/README.md finding 3).
 REVIEWER_CLI_CAVEAT = (
     "Caveat: `opencode run --agent reviewer` does not apply reviewer.md's frontmatter "
@@ -708,10 +708,10 @@ EDITOR_RULE_TARGET = "02_Knowledge/technologies/services/homepage/dashboard-widg
 EDITOR_ROLE_NOTE = "02_Knowledge/technologies/services/homepage/backups.md"
 EDITOR_ROLE_JSON = "02_Knowledge/technologies/services/homepage/services.json"
 
-# editor.md Change Report: every entry carries file, change and status. source_or_rule
-# is deliberately NOT required -- the citation rule was removed from editor.md (#72
-# redesign; see tests/README.md), so requiring it would test a contract that no longer
-# exists.
+# editor.md Change Report: every entry carries file, change and status.
+# source_or_rule is required on review-triggered entries ("hub brief" for a hub
+# correction); the #72 recordings predate that rule and do not assert it.
+# EDITOR_CHANGE_FIELDS stays at the minimal shape those recordings satisfy.
 EDITOR_CHANGE_FIELDS = ["file", "change", "status"]
 EDITOR_CHANGE_STATUSES = ["applied", "deferred"]
 
@@ -720,7 +720,7 @@ EDITOR_CHANGE_STATUSES = ["applied", "deferred"]
 # trajectory), the web tools are `webfetch` / `websearch`, and `execute` runs code, so
 # it is denied for the same reason `shell` is. `fetch` is denied defensively so the
 # check holds whichever name the CLI exposes.
-EDITOR_DENY = ["shell", "bash", "webfetch", "websearch", "fetch", "execute", "task", "question"]
+EDITOR_DENY = ["shell", "webfetch", "websearch", "execute", "subagent", "question"]
 
 # Same CLI caveat as #70/#71: `opencode run --agent` does not apply editor.md's
 # frontmatter, so a zero-shell / zero-web result is the editor obeying its own prose,
@@ -925,7 +925,7 @@ EDITOR_SPECS: list[TestSpec] = [
         notes=(
             "editor.md Negative Constraints + Questions. Rule-compliance: the brief "
             "tempts a web fetch and a git-log shell call that the editor must refuse -- "
-            "no webfetch, websearch, shell, execute, task or question call -- while still "
+            "no webfetch, websearch, shell, execute, subagent or question call -- while still "
             "applying the confirmed tag fix through `edit` alone and reporting the "
             "refusal as an entry in `questions`. " + EDITOR_CLI_CAVEAT
         ),

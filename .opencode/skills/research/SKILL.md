@@ -93,14 +93,15 @@ next step.
 
 ### Reviewer (`reviewer-source`)
 
-- Behavior: verify the citations in the written file — every `sources[]` /
-  `references[]` URL live, authoritative, and actually saying what's claimed.
-  The hub does the KB check and the one-source fetch; this skill does not hand
-  fetching to `reviewer-source`.
+- Behavior: verify the citations in the written file — every citation slot in
+  `./.opencode/agents/reviewer-source.md` § Loading the Rules live, authoritative,
+  and actually saying what's claimed. The hub does the KB check and the
+  one-source fetch; this skill does not hand fetching to `reviewer-source`.
 - Permissions: read/glob/grep/webfetch as `reviewer-source.md` defines;
   read-only (`edit: deny`) — never edits.
-- Never fabricates a result: an unreachable URL is a `source` finding, not
-  `live`; if it cannot be settled without a guess, `verdict: needs_recheck`.
+- Never fabricates a result: a 404 or a host that does not resolve is a `source`
+  S1 finding; a 403, 5xx or timeout is `fix_hint: "needs-human"` and
+  `verdict: needs_recheck`. Neither is ever `live`.
 - Launched as `reviewer-source` (all five keys still emitted, only `source`
   populated): its JSON `source` findings (`severity`, `issue`, `evidence`,
   `fix_hint`) are this skill's verification result; the other four type keys

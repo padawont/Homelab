@@ -52,18 +52,21 @@ Digest shape: `{file, segments:[{kind, hash, normalised_text, line}], facts[]}`.
 ### 2 · Fan out (one agent per file)
 
 - Launch one **read-only** `reviewer-overlap` subagent per file, all in parallel
-  (batch into waves of ≤20 for large scopes). Its frontmatter sets `edit: deny`
-  and `webfetch: deny`, so read-only and no-fetch are permission-enforced.
+  (batch into waves of ≤20 for large scopes). Its frontmatter declares `edit: deny`
+  and `webfetch: deny`; the CLI path is not guaranteed to enforce frontmatter (see
+  `tests/README.md` finding 3), so the prose guardrail still matters.
 - Each agent receives its file's digest plus the list of all other files it
   must cross-reference. The hub must pass that wider scope explicitly, so the
   facet's overlap check is authorised rather than overreaching.
-- Task prompt scope: cross-reference only, return standard `repetition`
-  records; section/homelab-fit review is OUT OF SCOPE.
-- It returns only standard `repetition` records — no prose, no edits.
+- Task prompt scope: cross-reference only; section/homelab-fit review is OUT OF
+  SCOPE. The facet returns the standard envelope, not a second record shape.
 - **Mapping:** the facet returns one JSON object — read its `types.overlap` key.
-  Each finding's `evidence` carries the normalised shared value and `fix_hint`
-  the recommendation (`link-instead | extract | merge | keep`); this skill
-  assembles those findings into its `repetition` record.
+  Each finding's `evidence` carries the normalised shared value and `fix_hint` the
+  recommendation, from the closed set in `./.opencode/REVIEW.md` § Fix Hints
+  (`link-instead | extract | merge | keep | needs-human`). Copy it verbatim into
+  the record's `fix_hint`; this skill owns no second vocabulary and no
+  translation. A `needs-human` finding stays `needs-human` here — the canonical
+  copy is not this skill's to guess.
 
 ### 3 · Aggregate (main agent)
 
@@ -90,24 +93,25 @@ Emit every cluster in this format — the same record everywhere:
 repetition:
   id: REP-001
   type: fact | diagram | config | prose | table | procedure | frontmatter
-  severity: S1 | S2 | S3 | S4 | S5
+  severity: S4 | S5
   canonical: "path/to/canonical.md:42"
   repeated_in:
     - "./path/to/duplicate.md:87"
   match: "normalised shared value"
-  recommendation: link-instead | extract | merge | keep | needs-human
+  fix_hint: link-instead | extract | merge | keep | needs-human
+  coverage: compared | not-compared
   agent: "file:./path/to/source.md"
 ```
 
 Then the table view:
 
-| id | type | sev | canonical | repeated in | recommendation |
-|---|---|---|---|---|---|
+| id | type | sev | canonical | repeated in | fix_hint |
 
 ## Hand-off
 
-- Confirmed `link-instead` / `extract` fixes go to `editor`, citing the
-  canonical path as the source. Never edit directly.
+- Confirmed `link-instead` / `extract` / `merge` fixes go to `editor`, citing the
+  canonical path as the source; a `merge` brief names both paths. Never edit
+  directly.
 - Ambiguous canonical or intentional repetition → `needs-human`.
 
 ## Guardrails

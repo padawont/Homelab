@@ -65,10 +65,15 @@ They live inside the service folder beside `overview.md`, are copied from
 starts once the file exists: on first fill the template's own placeholder diagram
 is replaced.
 
-The `status:` line is promoted by `runesmith` alone
-(`./.opencode/agents/runesmith.md` § Negative Constraints); the body below it
-remains `spec-writer`'s append-only replacement block and is never edited
-(`./.opencode/agents/spec-writer.md` § Append-Only and Diagrams).
+`runesmith` decides the `status:` value; `spec-writer` is the only agent that writes
+the line, on that directive (`./.opencode/agents/runesmith.md` § Negative Constraints).
+The body below it remains `spec-writer`'s append-only replacement block and is never
+edited (`./.opencode/agents/spec-writer.md` § Append-Only and Diagrams).
+
+A confirmed finding on a spec is answered by `spec-writer` as a replacement block and
+never reaches `editor` (`./.opencode/REVIEW.md` § Routing); the only line that changes is
+`status:`, written by `spec-writer` on `runesmith`'s directive, and the body stays
+append-only.
 
 ## Frontmatter (required)
 
@@ -161,4 +166,5 @@ Copy from `./Templates/implementations/rollback.md`. Required for every implemen
 - Every folder ships `overview.md` + `rollback.md` (+ `configs/` where applicable)
 - Document the rollback procedure before deploy
 - Retiring a service moves its folder to `./06_Archive/implementations/node-main/<service>/`
-  — see `./06_Archive/AGENTS.md` § Conventions and § Frontmatter (required)
+  — the copy is `worker`'s and the source deletion is `editor`'s, in that order — see
+  `./06_Archive/AGENTS.md` § Conventions and § Frontmatter (required)

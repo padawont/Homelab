@@ -17,8 +17,8 @@ plan's big chunk and, when available, the reference list `research` verified
 for each file. `implement` and `research` are modular — each can run without
 the other.
 
-> Agent handoff model: the Writer fan-out is Flow D (parallel batch) — see
-> `./.opencode/WORKFLOW.md`.
+> Agent handoff model: the Writer fan-out is the producer column of Flow D
+> (parallel batch) — see `./.opencode/WORKFLOW.md`.
 
 ## When to use
 
@@ -51,10 +51,10 @@ the other.
 ## Workflow
 
 **Batch fan-out (Flow D)** — one `worker` per planned file, launched in
-parallel, one lane per file. After the fan-out the hub queues the five reviewer
-facets (per file, merged into one JSON report) and `editor` (confirmed findings
-only), then does the footprint check with `git diff --name-only`. See
-`./.opencode/WORKFLOW.md` and `./.opencode/REVIEW.md`.
+parallel, one lane per file. The hub then does the footprint check with
+`git diff --name-only` and stops: review and fixing are `loop-validation`'s
+pass, not this skill's. See `./.opencode/WORKFLOW.md` and
+`./.opencode/REVIEW.md`.
 
 1. For each planned file, launch ONE worker, instructed as Writer, in
    parallel. Each Writer receives ONLY its own

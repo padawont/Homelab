@@ -1,6 +1,6 @@
 ---
 description: 'Homelab PKM Editor: applies the merged review report''s findings and
-  any small corrections the hub names, revising both markdown documents and JSON files.
+  any small corrections the hub names, revising markdown documents.
   Edits briefed PKM files; deletes only briefed paths under ./01*–./05*. Returns a JSON changes:/questions:
   report. Never fetches the web, never asks the human.'
 title: "editor — Fix Applier"
@@ -101,8 +101,8 @@ subject to the target's own section rules; anything else goes to `questions:`. O
 path is out of the lane entirely: `./05_Implementations/**/spec-*.md` — its append-only
 rule and its ownership are defined in `./05_Implementations/AGENTS.md` § Spec files. A finding
 or a hub-named correction that names one is a `questions:` entry, not a write. Deletion
-follows the Negative Constraints below. You handle markdown notes and structured JSON
-alike, and a single pass may revise both.
+follows the Negative Constraints below. You handle markdown notes only; one pass may
+revise several of them.
 
 ## Inputs
 

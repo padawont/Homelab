@@ -30,6 +30,17 @@ agent's facet set or merges facet reports. Other files link to § Coordination
 Rule for that rule rather than restating it; the facet roster itself is owned by
 `./.opencode/REVIEW.md` (§ The Five Facets).
 
+**Code lane.** The `rs-*` roster and its per-stage dispatch are owned by
+`./.opencode/skills/rs-implementation-pipeline/SKILL.md` § Stage Dispatch Loop.
+This file does not enumerate them, and the topology below shows the PKM spokes
+only.
+
+**Permission caveat.** The `permissions:` blocks are enforced when an agent is
+launched as a subagent. On the `opencode run` CLI path they are not applied
+(`./tests/README.md`, finding 3), so a single-agent run relies on the prose in
+its agent file, not on the block. Do not treat a stated `deny` as enforced
+outside the subagent path.
+
 ## Topology
 
 ```
@@ -108,8 +119,10 @@ documents reference them; no Flow A or Flow C is documented.
         ... strictly sequential; stop on refused or failed
 ```
 
-`runesmith` chains workers one handoff payload at a time. Every `cluster-worker` run
-ends in exactly one of three payloads, discriminated by `status`
+`runesmith` chains workers one handoff payload at a time. The whitelist it
+executes is the contract in `./.opencode/contracts/cluster-worker.md`. Every
+`cluster-worker` run ends in exactly one of three payloads, discriminated by
+`status`
 (`./.opencode/agents/cluster-worker.md` § Output Contract): `completed` carries
 `chain_complete` and `next_worker_input`; `refused` and `failed` carry neither, because
 neither can be chained. `next_worker_input` is
@@ -144,6 +157,10 @@ Every spoke owns its own return schema; nothing is restated here.
 | `cluster-worker` `status: "failed"` | Stop the chain; report the failed payload — shape owned by § Failed of the same file. Part of the slice ran; `state_after` is the report, and no worker resumes automatically. |
 | `status: "completed"` + `chain_complete: true` | Chain ends successfully — no next worker is launched; report the final `state_after` |
 | `status: "completed"` + `chain_complete: false` | Launch the next worker with `next_worker_input` |
+
+The code lane's cycle cap, recurrence count and escalation triggers are owned by
+`./.opencode/skills/rs-implementation-pipeline/SKILL.md` § Escalation Triggers and
+§ Review Cycle Loop — this table covers the PKM and ops runs only.
 
 ## Escalation
 
@@ -209,3 +226,7 @@ table rather than a property of any single spoke:
 - **`source_or_rule`.** Required on every `changes` entry whose trigger is a review
   report; a hub-named correction carries `"hub brief"`. `./.opencode/agents/editor.md`
   § Output Contract links here for this rule rather than restating the trigger.
+- **Two spec writers.** `spec-writer` writes the append-only, observed-state
+  `./05_Implementations/**/spec-*.md`; `rs-spec-writer` belongs to the code lane
+  and turns requirements into implementation specs. A spec request names which
+  one it means.

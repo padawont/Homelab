@@ -19,8 +19,12 @@ order over SSH, then report the results in chat.
 
 This skill runs in `runesmith`, which has a read-only shell allowlist and never
 runs `sudo`. On the node, use the `runic` kubeconfig form
-(`KUBECONFIG=/etc/rancher/k3s/k3s.yaml kubectl ...`); any `sudo`/`systemctl`/
-`journalctl`/`crictl` step is reported as not-run and handed to the human.
+(`KUBECONFIG=/etc/rancher/k3s/k3s.yaml kubectl ...`). Granted are
+`kubectl get`, `describe`, `logs`, `rollout status`, `version`, `cluster-info`
+and `top`, plus `helm status`/`history`/`list`/`show`. Everything host-level —
+`systemctl`, `journalctl`, `crictl`, `df`, `free`, `lsblk`, `uptime`,
+`nixos-version` — is not granted: that step is reported as `not_run` and printed
+as a copy-paste block for the human (Step 1).
 `cluster-worker` may run only the `kubectl get`/`describe`/`logs` and
 `helm status`/`history` subset its whitelist permits, with the same restriction.
 `spec-writer` cannot run this skill; `runesmith` supplies the facts in the brief
@@ -42,23 +46,31 @@ instead.
 - NEVER mutate cluster or service state: no `kubectl apply/edit/delete/scale/
   cordon/drain`, no `helm install/upgrade/rollback`, no
   `systemctl start/stop/restart`, no `nixos-rebuild`, no `kill`.
-- Use ONLY inspection commands: `kubectl get/describe/logs/events/top`,
-  `systemctl status/list-units/list-unit-files`, `journalctl`, `df`, `free`,
-  `lsblk`, `uptime`, `nixos-version`, `k3s crictl ps/images`.
-- No output redirection to files, no `scp` to/from the node, no writing anything.
+- Use ONLY inspection commands. The agent may run `kubectl
+  get/describe/logs/events/top` and `helm status/history/list/show`; the
+  host-level entries in the same list (`systemctl`, `journalctl`, `df`, `free`,
+  `lsblk`, `uptime`, `nixos-version`, `crictl`) belong to the human's Step 1
+  block.
+- No output redirection to files, no `scp` **push** to the node — a pull-only
+  copy follows `login-server` — and no writing anything. No pipes either: the
+  hub's allowlist denies `|`, so report full command output instead of trimming
+  it with `head`.
 - If the overview reveals a problem that needs fixing, STOP — report findings
   and recommend the action. Do not perform it.
 - When in doubt whether a command mutates state, do not run it; ask the user.
 
 ## Step-by-step overview
 
-Run each step in order; record results as you go. Batch related commands per
-SSH call.
+Run each step in order; record results as you go. A human may batch related
+commands per SSH call; the agent issues one whitelisted command per call, because
+the transport denies `;`, `&&` and `|`.
 
 Commands below are written in the root form (`sudo k3s kubectl …`). An agent has
-no `sudo`: it substitutes `KUBECONFIG=/etc/rancher/k3s/k3s.yaml kubectl …` and
-reports any step that only works as root — `sudo`, `systemctl`, `journalctl`,
-`crictl` — as not-run for the human.
+no `sudo`: it substitutes `KUBECONFIG=/etc/rancher/k3s/k3s.yaml kubectl …` for
+the Kubernetes steps and reports any step that only works as root — `sudo`,
+`systemctl`, `journalctl`, `crictl` — as not-run for the human. Step 1 is
+host-level and therefore **human-run in full**: the agent prints it as a
+copy-paste block and reports the scope as `not_run`.
 
 Two scopes:
 - **Kubernetes-only** (default): Steps 2–6. Use when the user only wants
@@ -66,15 +78,17 @@ Two scopes:
 - **Full (includes host/system)**: Step 1 + Steps 2–6. Use ONLY when the work
   involves the node OS itself — systemd, disk, kernel, NixOS config.
 
-### Step 1 — Host & system health *(optional — only in full scope)*
-- identity/version: `hostname; uname -a; nixos-version`
+### Step 1 — Host & system health *(human-run, optional — only in full scope)*
+Print this block for the human; the agent runs none of it and reports
+`not_run`. One command per shell call (no `;` chaining).
+- identity/version: `hostname`, `uname -a`, `nixos-version`
 - uptime/load: `uptime`
 - memory: `free -h`
-- disk space + inodes: `df -h; df -i`
+- disk space + inodes: `df -h`, `df -i`
 - disk layout: `lsblk`
 - failed systemd units: `systemctl list-units --type=service --state=failed`
 - running systemd services: `systemctl list-units --type=service --state=running --no-pager`
-- recent system errors: `journalctl -p err -b --no-pager --no-hostname | tail -50`
+- recent system errors: `journalctl -p err -b --no-pager --no-hostname`
 - k3s service: `sudo systemctl status k3s --no-pager -l` and `sudo journalctl -u k3s -b --no-pager -n 50`
 
 ### Step 2 — k3s cluster state
@@ -97,8 +111,8 @@ Two scopes:
 
 ### Step 5 — Resource usage (CPU + RAM)
 - nodes (CPU + memory): `sudo k3s kubectl top nodes`
-- pods by CPU: `sudo k3s kubectl top pods -A --sort-by=cpu | head -20`
-- pods by memory: `sudo k3s kubectl top pods -A --sort-by=memory | head -20`
+- pods by CPU: `sudo k3s kubectl top pods -A --sort-by=cpu`
+- pods by memory: `sudo k3s kubectl top pods -A --sort-by=memory`
 - memory pressure (host, full scope only): `free -h` (already in Step 1 when in full scope)
 
 ### Step 6 — Error deep-dive (why things are down)

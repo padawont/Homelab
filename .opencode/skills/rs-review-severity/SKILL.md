@@ -38,6 +38,12 @@ Do NOT invoke when:
 | S4    | Minor    | No             | Style violation, naming nit, comment typo, formatting                   |
 | S5    | Nitpick  | No             | Suggestion, preference, future improvement, non-blocking                |
 
+These are **code-lane** bands. The PKM roster uses a different S1–S5 scale
+(`./.opencode/REVIEW.md` § Severity Bands) — same letters, unrelated definitions;
+never compare or map them. The banded shape follows
+https://www.tiobe.com/knowledge/article/severity-levels/, which argues for
+ordering fixes by level; it does not define these bands.
+
 ## Classification Rules
 
 1. **Rule 1 — Safety first**: If a finding could lead to data loss, security breach, or PII exposure, classify S1 regardless of other factors.

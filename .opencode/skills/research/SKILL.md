@@ -73,21 +73,40 @@ issue). It is not a standalone Knowledge-base audit.
 2. Classify it: live, dead, or wrong — not saying what's claimed.
 3. If dead/wrong, record a working replacement only if the SAME website
    yields one — do not open a second website.
-4. Record the outcome through `reviewer-source`'s report (see Report below) —
-   never as a parallel per-file record.
+4. Record the outcome in the verified list (§ Report) and, when the source is
+   dead, wrong or unreadable, through `reviewer-source`'s report as well.
 
 ### Report
 
-Aggregate per file: source origin (`kb | online | plan-only`) and the pinned
-references, stated through `reviewer-source`'s `source` findings. The report is
-the five-key JSON object defined in `./.opencode/REVIEW.md`, with only the
-`source` key populated — the other four come back empty.
-Report to RuneSmith, then STOP. Do NOT load implement — RuneSmith drives the
-next step.
+Two parts, both required:
+
+1. **The facet report** — the five-key JSON object defined in
+   `./.opencode/REVIEW.md` § Facet Report, with only the `source` key populated
+   (the other four come back empty). It carries the failures: dead, wrong or
+   unreadable citations.
+2. **The verified list** — this skill's own per-file record. A citation that
+   passes produces no facet finding at all, so without this list the pinned
+   reference would vanish from the hand-off:
+
+   ```yaml
+   verified:
+     - file: "./02_Knowledge/technologies/kubernetes/concepts/ingress.md"
+       origin: kb            # kb | online | plan-only
+       references:
+         - "https://kubernetes.io/docs/concepts/services-networking/ingress/"
+   ```
+
+   One entry per planned file. `references` is empty only when nothing could be
+   pinned; `origin: plan-only` says the file has no source and its writer must
+   mark every claim `unverified`.
+
+Report both to RuneSmith, then STOP. The verified list is the hand-off contract
+for `implement`; the facet report is the audit trail. Do NOT load implement —
+RuneSmith drives the next step.
 
 > [!NOTE]
-> The pinned reference list is the hand-off contract for `implement` — writers
-> cite only URLs that carry no S1–S2 `source` finding.
+> Writers cite only URLs that carry no S1–S2 `source` finding, drawn from this
+> verified list.
 
 ## Role contract (no new agent file — bind existing subagent)
 
@@ -108,8 +127,9 @@ next step.
   populated): its JSON `source` findings (`severity`, `issue`, `evidence`,
   `fix_hint`) are this skill's verification result; the other four type keys
   come back empty.
-- Output: the five-key JSON report from `./.opencode/REVIEW.md` — this skill
-  defines no second record shape.
+- Output: the five-key report from `./.opencode/REVIEW.md` plus the verified
+  list of § Report — the facet shape is REVIEW.md's, the verified list is this
+  skill's.
 
 ## Edge cases
 
@@ -129,7 +149,9 @@ next step.
 - Default successor is `implement`.
 - KB first — never webfetch before checking the local KB.
 - KB scope = target file + its own folder; never search the wider repo.
-- At most ONE external link/website per planned file.
+- At most ONE external link/website per planned file — that is the budget for
+  *verifying*, not a cap on what the finished note may cite: further citations
+  are the facets' business in `loop-validation`.
 - Never open a second website to replace a dead/wrong source.
 - READ-ONLY: never edit or write any content file.
 - Do NOT load or chain foundation, implement, or loop-validation — RuneSmith drives.

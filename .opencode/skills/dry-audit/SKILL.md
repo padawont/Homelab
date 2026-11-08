@@ -17,7 +17,8 @@ description: >
 
 - A user asks whether content is duplicated / DRY-compliant.
 - A file, a folder, or the whole repo needs a repetition check.
-- After `implement` writes files, before `loop-validation`.
+- After `implement` writes files and before `loop-validation` — the optional
+  middle step of the chain in `./.opencode/skills/foundation/SKILL.md` § Workflow.
 
 ## When NOT to use
 
@@ -113,6 +114,9 @@ Then the table view:
   canonical path as the source; a `merge` brief names both paths. Never edit
   directly.
 - Ambiguous canonical or intentional repetition → `needs-human`.
+- A repo-wide audit can exceed `editor`'s 25-entry pass
+  (`./.opencode/agents/editor.md` § Output Contract): batch the confirmed fixes
+  into passes of at most 25 and never drop the excess.
 
 ## Guardrails
 

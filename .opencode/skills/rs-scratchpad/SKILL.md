@@ -15,7 +15,7 @@ metadata:
 
 ## Purpose
 
-Manages per-session scratchpad directories under `.runesmith/{date}-{sanitized-branch}/` with three commands: **init** (create), **clear** (destroy), and **status** (report). Tracks the active session via `.opencode/.runesmith-active`.
+Manages per-session scratchpad directories under `.runesmith/{date}-{sanitized-branch}/` with three commands: **init** (create the `pipeline/` subdir), **clear** (destroy — human-run), and **status** (report). Tracks the active session via `.opencode/.runesmith-active`. Only `pipeline/` is created up front; any other subdirectory is created on demand by the agent that owns it, because no single actor holds write grants across the whole tree.
 
 ## When to Invoke
 
@@ -46,14 +46,13 @@ Do NOT invoke when:
    - List `.runesmith/` subdirectories whose name starts with `{date}-{sanitized-branch}` (using the sanitized branch name from Step 3).
    - If no match exists, use the candidate path as-is.
    - If a match exists, append a numeric counter suffix: `-1`, `-2`, etc. Increment until finding an unused path.
-6. Create the session directory and seven subdirectories:
-   - `.runesmith/{date}-{sanitized-branch}[/-N]/specs/`
-   - `.runesmith/{date}-{sanitized-branch}[/-N]/reports/`
-   - `.runesmith/{date}-{sanitized-branch}[/-N]/logs/`
-   - `.runesmith/{date}-{sanitized-branch}[/-N]/cache/`
+6. Create the session directory and the `pipeline/` subdirectory:
    - `.runesmith/{date}-{sanitized-branch}[/-N]/pipeline/`
-   - `.runesmith/{date}-{sanitized-branch}[/-N]/stages/`
-   - `.runesmith/{date}-{sanitized-branch}[/-N]/prs/`
+
+   Do not pre-create `specs/`, `reports/`, `logs/`, `cache/`, `stages/` or
+   `prs/`: an agent that needs one creates it when it writes there, and the
+   orchestrator's write grant covers `.runesmith/*/pipeline/` only
+   (`./.opencode/agents/runesmith.md` § Negative Constraints).
 7. Canonicalize the session path with `Path(path).resolve()` before writing to `.opencode/.runesmith-active`.
 8. Return the session path, list of created subdirectories, and success status.
 9. Handle `mkdir` failure by returning an error message with the failed path.
@@ -64,7 +63,7 @@ On success:
 
 ```
 Session created: .runesmith/2026-07-11-feat_my-feature/
-Subdirectories: specs/, reports/, logs/, cache/, pipeline/, stages/, prs/
+Subdirectories: pipeline/
 Active session pointer set.
 ```
 
@@ -73,7 +72,7 @@ On collision:
 ```
 Session created: .runesmith/2026-07-11-feat_my-feature-1/
 Collision detected, counter-based disambiguation applied.
-Subdirectories: specs/, reports/, logs/, cache/, pipeline/, stages/, prs/
+Subdirectories: pipeline/
 Active session pointer set.
 ```
 
@@ -84,6 +83,12 @@ Error: Failed to create session directory .runesmith/2026-07-11-feat_my-feature/
 ```
 
 ### clear — Destroy the active session scratchpad
+
+**Human-run.** No roster agent holds a delete grant under `.runesmith/`:
+`runesmith` never deletes (`./.opencode/agents/runesmith.md` § Negative
+Constraints) and `editor`'s deletion is limited to `./01*`–`./05*`
+(`./.opencode/agents/editor.md` § Negative Constraints). An orchestrator that
+reaches this command stops and asks the human to run it.
 
 1. Read `.opencode/.runesmith-active` to get the active session path.
 2. If the file is absent or empty, return an error indicating no active session.
@@ -137,7 +142,9 @@ Active session pointer NOT cleared.
 2. If the file is absent or empty, return a message indicating no active session and suggest using `init`.
 3. If the session directory exists:
    - Report the session path.
-   - For each subdirectory (`specs/`, `reports/`, `logs/`, `cache/`, `pipeline/`, `stages/`, `prs/`), count files and report the count.
+   - For `pipeline/`, and for any other subdirectory that exists (`specs/`,
+     `reports/`, `logs/`, `cache/`, `stages/`, `prs/` are created on demand),
+     count files and report the count.
    - Report total file count and total session size in human-readable format (KB/MB).
 4. If the session directory does not exist, report the stale pointer with the path and suggest running `clear`.
 
@@ -147,14 +154,9 @@ With active session:
 
 ```
 Active session: .runesmith/2026-07-11-feat_my-feature/
-  specs:    3 files
-  reports:  1 file
-  logs:     5 files
-  cache:    2 files
   pipeline: 0 files
-  stages:   0 files
-  prs:      0 files
-Total: 11 files, 1.2 MB
+  (specs/reports/logs/cache/stages/prs appear only when present)
+Total: 0 files, 0 KB
 ```
 
 With no active session:
@@ -172,7 +174,10 @@ Run `rs-scratchpad clear` to clean up the pointer.
 
 ## Required Permissions
 
-The agent needs filesystem read/write on `.runesmith/` and `.opencode/.runesmith-active`, plus `git rev-parse` and basic filesystem commands.
+The agent needs filesystem read on `.runesmith/`, write on
+`.runesmith/*/pipeline/` and `.opencode/.runesmith-active`, plus `git rev-parse`
+and basic filesystem commands. `clear` additionally needs a delete grant that no
+roster agent holds — it is human-run.
 
 ## See Also
 

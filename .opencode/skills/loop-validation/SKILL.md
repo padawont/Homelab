@@ -59,8 +59,9 @@ and posts them per loop and in the final report. No spoke launches another spoke
 - The hub supplies the folder and target, plus sibling drafts for `overlap`
   only.
 - `reviewer-source` confirms every external `sources[]` / `references[]` URL
-  is live, and `reviewer-accuracy` may fetch to check a value; the other three
-  cannot reach the web.
+  is live, and `reviewer-accuracy` may fetch a cited artifact to read it — the
+  web is its gate, never its evidence (`./.opencode/agents/reviewer-accuracy.md`
+  § Severity Bands); the other three cannot reach the web.
 - The five types, their questions, the merged report shape and the verdict
   precedence are defined in `./.opencode/REVIEW.md` — this skill does not
   restate them.
@@ -144,7 +145,9 @@ After the final loop, print a consolidated report per file:
 
 ## Guardrails
 
-- **Validation only** — fix issues in existing files; never create new content.
+- **Validation only** — fix issues in existing files; never author a new note.
+  A `split` or `extract` fix may create the one file the merged report names,
+  and nothing else.
 - Never guess (ambiguous → `unresolved` → hub escalates) or fabricate results.
 - **The editor never asks the human** — `question` is denied; the hub escalates.
 - Keep the 10-loop cap and the 7-consecutive-clean early stop.

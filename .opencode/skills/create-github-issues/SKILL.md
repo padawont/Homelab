@@ -31,23 +31,23 @@ Proposal = how-we-work; Projects/Tasks = registry index updates
 
 ## Per-topic spec
 
-| Topic | Label | Template(s) | Frontmatter | Review pipeline |
+| Topic | Label | Template(s) | Frontmatter | Review focus |
 |---|---|---|---|---|
-| Idea | `idea` | `Templates/ideas/idea.md` | title, status, author, date, tags, technologies, related_ideas | none (draft → accepted) |
-| Knowledge | `knowledge` | `Templates/knowledge/note.md` | title, status, author, date, tags, sources[{url,title}], last_audit_date, related_docs | `reviewer-source` + `reviewer-structure` → `editor` |
-| Research | `research` | `Templates/research/overview.md` + `alternatives.md` + `alternative.md` | title, status, author, date, tags, sources[{knowledge}], references[{url,title}], last_audit_date | `reviewer-source` + `reviewer-overlap` → `editor` |
-| ADR | `adr` | `Templates/adr/adr.md` | adr, title, author, status, topic, technology, date, date-proposed, replaces, replaced-by, history, sources, references, related_docs | `reviewer-scope` + `reviewer-structure` + `reviewer-accuracy` → `editor` |
-| Proposal | `proposal` | — | change-log style | `reviewer-structure` → `editor` |
+| Idea | `idea` | `Templates/ideas/idea.md` | title, status, author, date, tags, technologies, related_ideas | `structure`, `scope` |
+| Knowledge | `knowledge` | `Templates/knowledge/note.md` | title, status, author, date, tags, sources[{url,title}], last_audit_date, related_docs | `source`, `structure` |
+| Research | `research` | `Templates/research/overview.md` + `alternatives.md` + `alternative.md` | title, status, author, date, tags, sources[{knowledge}], references[{url,title}], last_audit_date | `source`, `overlap` |
+| ADR | `adr` | `Templates/adr/adr.md` | adr, title, author, status, topic, technology, date, date-proposed, replaces, replaced-by, history, sources, references, related_docs | `scope`, `structure`, `accuracy` |
+| Proposal | `proposal` | — | change-log style | `structure` |
 | Projects | — | projects registry index | chore template | — |
-| Implementation | — | `Templates/implementations/service.md` + `rollback.md` | title, status, author, date, tags, technologies, related_docs, references, node | `reviewer-accuracy` + `reviewer-structure` → `editor`; `cluster-worker` (rollback) |
+| Implementation | — | `Templates/implementations/service.md` + `rollback.md` | title, status, author, date, tags, technologies, related_docs, references, node | `accuracy`, `structure`; `cluster-worker` (rollback) |
 
 > [!NOTE]
-> The review pipeline column lists the minimum/primary reviewers for the
-> issue's drafted content — `worker` drafts, the named reviewer facets each
-> return their own report, `runesmith` merges them into one JSON report
-> (see `./.opencode/REVIEW.md`), and `editor` applies the confirmed findings.
-> When files already exist and need validation, `loop-validation` always runs
-> all five facets (`worker → reviewer-* → merge → editor`), regardless of topic.
+> The review-focus column is emphasis only, never a reduced set. Every topic's
+> drafted content gets **all five facets** — `worker` writes, then
+> `loop-validation` runs `reviewer-* → merge → editor` (`./.opencode/REVIEW.md`
+> § The Five Facets). The named facets are where a defect of that topic most
+> often lands, so the hub reads their findings first; it still launches all
+> five, and it never treats an unnamed facet as out of scope.
 
 ### Knowledge atomic breakdown (required)
 
@@ -138,9 +138,13 @@ notes before drafting — never a single "mega note" or 2-3 broad files.
 |---|---|
 | `gh issue create --title "Epic: …" --body-file epic.md --label epic --repo RunicEngines/knowledge-base` | Create epic |
 | `gh issue create --title "Knowledge: …" --body-file k1.md --label knowledge --parent {epic-number} --repo RunicEngines/knowledge-base` | Create sub-issue |
-| `gh issue edit {epic} --add-sub-issue {issue} --repo RunicEngines/knowledge-base` | Link existing issue as sub-issue |
 | `gh issue view {n} --json number,title,labels,parent,subIssues,body --repo RunicEngines/knowledge-base` | Read structure |
-| `gh label list --repo RunicEngines/knowledge-base` | List labels |
+
+`gh issue edit` and `gh label list` are **not** on the hub's granted surface
+(`./.opencode/agents/runesmith.md` holds `issue list`, `issue view` and
+`issue create` only), so they are human-run steps. `--body-file` needs a real
+path: a human shell may write anywhere, while the hub may write a body only
+under `.runesmith/*/pipeline/`.
 
 Author from `git config user.name`; dates ISO 8601 (`YYYY-MM-DD`); kebab-case
 titles.

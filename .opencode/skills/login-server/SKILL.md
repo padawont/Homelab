@@ -41,10 +41,13 @@ description: >
    A human may instead quote the remote command.
 
 4. To transfer files, use the same password-only flags in one line. An agent may
-   only pull (remote source first); pushing a file to the node is the human's:
+   only **pull** (remote source first); pushing a file to the node is the
+   human's:
 
    ```bash
+   # human only — push to the node
    sshpass -e scp -o PreferredAuthentications=password -o PubkeyAuthentication=no -o IdentitiesOnly=yes ./local-file runic@192.168.111.7:/remote/path
+   # allowed for an agent — pull from the node
    sshpass -e scp -o PreferredAuthentications=password -o PubkeyAuthentication=no -o IdentitiesOnly=yes runic@192.168.111.7:/remote/path ./local-file
    ```
 

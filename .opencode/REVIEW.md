@@ -32,6 +32,12 @@ facet — are defined in `./.opencode/WORKFLOW.md` § Coordination Rule.
 This table is canonical for the roster: other files link here instead of
 re-enumerating the five types.
 
+There are no per-topic subsets. Every target gets all five facets, whatever its
+section or issue topic; a per-topic reviewer list elsewhere in the skills names
+*emphasis* — which facet a defect is most likely to come from — never a reduced
+set. A topic that names fewer facets is read through this rule, not instead of
+it.
+
 Where `source` and `accuracy` meet, the cited evidence decides which key carries
 the finding, and only one does. `source` owns every mismatch between a claim and
 the artifact cited for it: when the cited source contradicts the claim, is silent
@@ -42,6 +48,13 @@ different one. `accuracy` therefore reads the cited artifact before filing and
 stops when it does not carry the claim: that defect is already `source`'s.
 
 ## Severity Bands
+
+These are the **PKM severity** bands. The code lane's `S1–S5` are a different
+scale with different definitions (`./.opencode/skills/rs-review-severity/SKILL.md`)
+and the two are never compared or mapped onto each other. The banded shape
+follows the severity-level rationale in
+https://www.tiobe.com/knowledge/article/severity-levels/ — that source argues for
+ordering fixes by level; it does not define these bands, which this section owns.
 
 - **S1** — factually wrong / dead source.
 - **S2** — materially misleading; sends the reader down the wrong path.
@@ -192,7 +205,7 @@ the merged report means the consumer receives the merge described above.
 | `editor` | the merged report, one per target |
 | `spec-writer` | the merged report, one per `./05_Implementations/**/spec-*.md` target |
 | `loop-validation` | the merged report, posted before the editor runs |
-| `research` | a hub-launched `reviewer-source` report on the written or planned file's citations; no merge needed |
+| `research` | a hub-launched `reviewer-source` report on the written or planned file's citations; no merge needed — research's own per-file verified list (`./.opencode/skills/research/SKILL.md` § Report) rides alongside it |
 | `dry-audit` | a hub-launched `reviewer-overlap` report per file |
 
 A target under `./05_Implementations/**/spec-*.md` goes to `spec-writer`, never to

@@ -31,7 +31,8 @@ Run the steps in order.
     whitelisted verbs (`kubectl get`/`describe`/`logs`, `rollout undo`/
     `restart`/`status`, `helm status`/`history`/`list`/`rollback`, `ssh`
     transport).
-  - No other agent besides `cluster-worker` runs this skill: `spec-writer` has shell
+  - No agent other than `cluster-worker` runs this skill's **Mode B** commands:
+    the hub loads the skill for steps 1–2 and 5, and `spec-writer` has shell
     denied.
 - **Follow the Implementation doc**: deployment MUST follow the steps in the
   service's `05_Implementations/node-main/{service}/overview.md`. Do not
@@ -93,8 +94,12 @@ Run the steps in order.
 
 ### Step 4 — Post-deploy verification
 
-- Run the post-deploy verification steps from the service's `overview.md`
-  (rollout status, pod readiness, endpoints reachable).
+- Mode B: the hub launches `cluster-worker` (Flow B) with the service's
+  `overview.md` as `plan_source` and `step_section: "## Verification"` — the
+  human does not paste output back by hand, and the hub does not improvise the
+  checks.
+- The checks are the ones listed in `overview.md` (rollout status, pod
+  readiness, endpoints reachable).
 - If verification fails, do not update the PKM notes. Diagnose, report, and
   propose a fix (or roll back per `rollback.md` if the user requests).
 

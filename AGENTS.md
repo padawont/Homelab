@@ -103,8 +103,8 @@ Each section owns its status values and transitions — see the section's AGENTS
 | PR workflow | draft → tests pass → review → merge |
 | Merge strategy | Squash merge (default); merge commits or rebase merge by exception |
 | Code review | Code/tooling changes: at least 1 approving review, all threads resolved. PKM notes: their section's convention (e.g. `./01_Ideas/AGENTS.md`) |
-| Labels (existing) | `adr`, `area: python`, `area: tools`, `bug`, `configs`, `dagger`, `deployment`, `devspace`, `documentation`, `duplicate`, `enhancement`, `epic`, `good first issue`, `help wanted`, `implementation`, `invalid`, `knowledge`, `question`, `research`, `testing`, `wontfix` |
-| Labels (to create before use) | `idea` and `proposal` are required by `./.opencode/skills/create-github-issues/SKILL.md` for the Idea and Proposal pipeline stages, but are not part of the existing label set — create them on the issue repo before use. Do not substitute an existing label |
+| Labels (this repo, `padawont/Homelab`) | `adr`, `area: python`, `area: tools`, `bug`, `configs`, `dagger`, `deployment`, `devspace`, `documentation`, `duplicate`, `enhancement`, `epic`, `good first issue`, `help wanted`, `implementation`, `invalid`, `knowledge`, `question`, `research`, `testing`, `wontfix` |
+| Labels (issue repo, `RunicEngines/knowledge-base`) | `adr`, `area: adr`, `area: ci-cd`, `area: data-transport`, `area: databases`, `area: okf`, `area: openchoreo`, `area: python`, `area: storage`, `area: tools`, `area: typescript`, `blocked`, `bug`, `documentation`, `duplicate`, `enhancement`, `epic`, `fast-track`, `good first issue`, `help wanted`, `idea`, `implementation`, `invalid`, `knowledge`, `org`, `proposal`, `question`, `research`, `won't do`, `wontfix` — `idea` and `proposal` exist, so no pre-creation step is needed |
 | Tests | `devbox run test` (pytest) must pass before merge; no hosted CI is configured |
 
 ## General Conventions

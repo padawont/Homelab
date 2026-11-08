@@ -176,7 +176,9 @@ Propose, then confirm at filing:
 ## GitHub issue filing (after confirmation)
 
 Issues live in `RunicEngines/knowledge-base`; notes live here. Read
-`create-github-issues` for issue structure only.
+`create-github-issues` for issue structure only. Write each body to
+`.runesmith/*/pipeline/{id}.md` — the hub's only writable path — and pass that
+path to `--body-file`.
 
 1. Present the table and WAIT. The user picks the gaps and supplies the
    **parent epic** number (or names the stage's issue). Never file without one.

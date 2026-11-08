@@ -36,10 +36,16 @@ permissions:
 - { action: shell, resource: 'sshpass -e ssh -o StrictHostKeyChecking=no -o ConnectTimeout=10 -o PreferredAuthentications=password -o PubkeyAuthentication=no -o IdentitiesOnly=yes runic@192.168.111.7 KUBECONFIG=/etc/rancher/k3s/k3s.yaml helm history *', effect: allow }
 - { action: shell, resource: 'sshpass -e ssh -o StrictHostKeyChecking=no -o ConnectTimeout=10 -o PreferredAuthentications=password -o PubkeyAuthentication=no -o IdentitiesOnly=yes runic@192.168.111.7 KUBECONFIG=/etc/rancher/k3s/k3s.yaml helm list *', effect: allow }
 - { action: shell, resource: 'sshpass -e ssh -o StrictHostKeyChecking=no -o ConnectTimeout=10 -o PreferredAuthentications=password -o PubkeyAuthentication=no -o IdentitiesOnly=yes runic@192.168.111.7 KUBECONFIG=/etc/rancher/k3s/k3s.yaml helm show *', effect: allow }
+- { action: shell, resource: 'sshpass -e ssh -o StrictHostKeyChecking=no -o ConnectTimeout=10 -o PreferredAuthentications=password -o PubkeyAuthentication=no -o IdentitiesOnly=yes runic@192.168.111.7 KUBECONFIG=/etc/rancher/k3s/k3s.yaml kubectl version*', effect: allow }
+- { action: shell, resource: 'sshpass -e ssh -o StrictHostKeyChecking=no -o ConnectTimeout=10 -o PreferredAuthentications=password -o PubkeyAuthentication=no -o IdentitiesOnly=yes runic@192.168.111.7 KUBECONFIG=/etc/rancher/k3s/k3s.yaml kubectl cluster-info*', effect: allow }
+- { action: shell, resource: 'sshpass -e ssh -o StrictHostKeyChecking=no -o ConnectTimeout=10 -o PreferredAuthentications=password -o PubkeyAuthentication=no -o IdentitiesOnly=yes runic@192.168.111.7 KUBECONFIG=/etc/rancher/k3s/k3s.yaml kubectl top *', effect: allow }
 - { action: shell, resource: 'kubectl get *', effect: allow }
 - { action: shell, resource: 'kubectl describe *', effect: allow }
 - { action: shell, resource: 'kubectl logs *', effect: allow }
 - { action: shell, resource: 'kubectl rollout status *', effect: allow }
+- { action: shell, resource: 'kubectl version*', effect: allow }
+- { action: shell, resource: 'kubectl cluster-info*', effect: allow }
+- { action: shell, resource: 'kubectl top *', effect: allow }
 - { action: shell, resource: 'helm status *', effect: allow }
 - { action: shell, resource: 'helm history *', effect: allow }
 - { action: shell, resource: 'helm list *', effect: allow }
@@ -52,6 +58,9 @@ permissions:
 - { action: shell, resource: 'KUBECONFIG=/etc/rancher/k3s/k3s.yaml helm history *', effect: allow }
 - { action: shell, resource: 'KUBECONFIG=/etc/rancher/k3s/k3s.yaml helm list *', effect: allow }
 - { action: shell, resource: 'KUBECONFIG=/etc/rancher/k3s/k3s.yaml helm show *', effect: allow }
+- { action: shell, resource: 'KUBECONFIG=/etc/rancher/k3s/k3s.yaml kubectl version*', effect: allow }
+- { action: shell, resource: 'KUBECONFIG=/etc/rancher/k3s/k3s.yaml kubectl cluster-info*', effect: allow }
+- { action: shell, resource: 'KUBECONFIG=/etc/rancher/k3s/k3s.yaml kubectl top *', effect: allow }
 - { action: shell, resource: 'systemctl status *', effect: allow }
 - { action: shell, resource: 'journalctl -u *', effect: allow }
 - { action: shell, resource: 'journalctl -n *', effect: allow }
@@ -104,8 +113,10 @@ routing.
 > (operational chain), the handoff contract, and termination: see
 > `./.opencode/WORKFLOW.md`.
 
-Both lanes — the PKM lane and the code lane — are yours; their roster is owned
-by `./.opencode/WORKFLOW.md`.
+Both lanes — PKM and code — are yours. The PKM spokes and flows are owned by
+`./.opencode/WORKFLOW.md`; the code lane's roster and per-stage dispatch by
+`./.opencode/skills/rs-implementation-pipeline/SKILL.md` § Stage Dispatch Loop.
+`spec-writer` vs `rs-spec-writer`: `./.opencode/WORKFLOW.md` § Ownership Matrix.
 
 Your shell grant is deliberately narrow: read-only inspection, the `gh issue`
 calls the issue-filing skills need, and the `login-server` transport (including an
@@ -186,7 +197,14 @@ file's § Escalation Triggers. Consume its report like any other gate input.
 
 ## Output Contract
 
-Return exactly this JSON object as your final message:
+Return exactly this JSON object as your final message on a **code-lane** run.
+A PKM review/validation or deploy/ops run ends with the report that run's skill
+specifies instead — the merged review report plus `editor`'s `changes:` report
+(`./.opencode/REVIEW.md`), or the `cluster-worker` handoff payload
+(`./.opencode/agents/cluster-worker.md` § Output Contract). `findings` counts
+code-lane findings only: the code lane's S1–S5 are `rs-review-severity`'s, not
+PKM's bands (`./.opencode/REVIEW.md` § Severity Bands).
+
 ```json
 { "pipeline": { "status": "completed", "stages_completed": 5, "total_cycles": 3,
   "findings": 0, "final_gate": "approved", "failed": {} } }

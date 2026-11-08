@@ -310,6 +310,12 @@ severity definitions from `rs-review-severity`; this table describes pipeline
 handling behaviour per severity level. The default split shown below can be
 customised via Q9.
 
+These are **code-lane** S1–S5, not PKM's (`./.opencode/REVIEW.md` § Severity
+Bands): same letters, unrelated definitions, never compared. The banded shape
+follows the severity-level rationale in
+https://www.tiobe.com/knowledge/article/severity-levels/ — that source argues for
+ordering fixes by level; it does not define these bands.
+
 | Severity | Definition                                          | Auto-Fix         | Merge-Blocking |
 | -------- | --------------------------------------------------- | ---------------- | -------------- |
 | S1       | Critical: security vulnerability, data loss, crash  | Yes              | Yes            |
@@ -387,7 +393,10 @@ per-stage `requires_analysis` flag can force review for specific stages.
 
 ### Gate Strategies
 
-Three strategies control where human approval is required:
+Three strategies control where human approval is required. The `AskQuestion`
+blocks below are illustrative only: the `question` tool takes `questions[]`, each
+with `header` and `options[].label` / `description`. The hub translates a gate
+into that shape and never pastes one of these blocks verbatim.
 
 **`every_stage`** — Human gate after every stage. Pipeline pauses at each
 stage boundary and presents a summary before proceeding.
@@ -535,7 +544,7 @@ File purposes:
 | Launch specialist agents per stage                     | RuneSmith |
 | Present human gates, await response                    | RuneSmith |
 | Human-required escalation (conflict, adjudication)     | RuneSmith (via question tool) |
-| Execute a single stage                                 | RuneSmith |
+| Execute a single stage                                 | Specialist agent (launched by RuneSmith) |
 | Read config for current stage                          | RuneSmith |
 | Delegate to specialist agents (drafter, reviewers)     | RuneSmith |
 | Validate gate conditions                               | RuneSmith |
@@ -595,8 +604,8 @@ complete before launching the next. No parallel stage execution.
 | Tool     | Required | Scope                         | Purpose                                        |
 | -------- | -------- | ----------------------------- | ---------------------------------------------- |
 | read     | Yes      | `.runesmith/`, project source | Read existing config, detect project structure |
-| write    | Yes      | `.runesmith/` directory       | Write `pipeline-config.yaml`                   |
-| edit     | Yes      | `.runesmith/` directory       | Update `pipeline-state.yaml`, gate reports     |
+| write    | Yes      | `.runesmith/*/pipeline/`      | Write `pipeline-config.yaml`                   |
+| edit     | Yes      | `.runesmith/*/pipeline/`      | Update `pipeline-state.yaml`, gate reports     |
 | glob     | Yes      | `.runesmith/` directory       | Discover existing artifacts                    |
 | grep     | Yes      | `.runesmith/` directory       | Search state files                             |
 | bash     | Yes      | `git rev-parse`               | Determine branch for artifact path             |

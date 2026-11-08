@@ -25,7 +25,8 @@ issue so `research` can consume the plan passed in chat.
 
 ## When NOT to use
 
-- Writing/verifying stage content (research, implement, loop-validation).
+- Writing/verifying stage content (research, implement, dry-audit,
+  loop-validation).
 - More than one issue or more than one stage in scope — stop and ask.
 - A plan for this stage already exists in the session (mid-pipeline
   re-entry goes straight to research).
@@ -49,13 +50,16 @@ issue so `research` can consume the plan passed in chat.
 6. Assemble the plan inline in the main chat (no file is written):
    - one big-chunk section for THIS stage: deliverable, file list, concept
      per file, dependencies, candidate sources.
-   - inline `Skills:` line — `research → implement → loop-validation`
-     (modular: each can run alone; Idea/S1: `implement → loop-validation`;
-     user declines implementation: stop after foundation).
-   - batch note: the planned file set is produced as a Flow D batch —
-     `worker` fan-out (one per file) → five reviewer facets + hub merge →
-     `editor` — executed by `implement`. foundation itself stays read-only and
-     never fans out.
+   - inline `Skills:` line — `research → implement → loop-validation`, with
+     `dry-audit` optional between implement and loop-validation (modular: each
+     can run alone; Idea/S1: `implement → loop-validation`; user declines
+     implementation: stop after foundation).
+   - batch note: the planned file set is written as a Flow D batch —
+     `worker` fan-out (one per file) — executed by `implement`. The same files
+     are then reviewed and fixed as a second Flow D pass — five reviewer facets
+     + hub merge → `editor` — executed by `loop-validation` (or by `dry-audit`
+     first, for duplication). `implement` does not review; foundation itself
+     stays read-only and never fans out.
    - one row in the top-of-file execution table (Sx | topic | skills chain).
    - downstream stages as `follow-up` lines only.
 7. Emit the FULL plan to RuneSmith in the main chat and STOP. Report as

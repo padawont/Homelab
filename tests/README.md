@@ -129,7 +129,7 @@ TestSpec(
     fixtures={"05_Implementations/node-main/plan.md": "…"},   # seeded into the clone
     required_strings=["handoff:", "done:", "next:", "blocked:"],
     required_tools=["write"],
-    forbidden_tools=["bash", "task", "question"],
+    forbidden_tools=["shell", "subagent", "question"],
     allow_extra_tools=True,      # read is permitted, so it must not fail the run
     allowed_paths=["01_Ideas/…"],
     max_tool_calls=4,
@@ -165,8 +165,8 @@ Those written-file checks need the file's **bytes**, which the footprint does no
 case metadata, so the rules stay replayable from disk like every other check.
 
 **Read `test-2` carefully.** It records whether the worker declines to widen its own
-brief — it is *not* proof that `bash`, `task` or `question` were blocked, because the CLI
-invocation path does not apply the agent's `permission:` frontmatter (finding 3 below).
+brief — it is *not* proof that `shell`, `subagent` or `question` were blocked, because the
+CLI invocation path does not apply the agent's `permissions:` frontmatter (finding 3 below).
 The same caveat is repeated in each spec's `notes`.
 
 ### The retired `reviewer` specs (#71)
@@ -206,7 +206,7 @@ Two harness changes made this possible, both pinned by offline tests in
 `test_evaluators.py`:
 
 - **`run_agent.extract_json_object()`** reads a report that arrives in a ```` ```json ````
-  fence, wrapped in prose, or bare. `reviewer.md` shows its schema fenced, so the fence is
+  fence, wrapped in prose, or bare. The retired `reviewer.md` showed its schema fenced, so the fence is
   presentation and is stripped before the shape rules see it. The **last** fenced block
   wins, because an earlier one is usually an example. Without this every JSON assertion
   would fail for a reason that looks like a contract violation.
@@ -222,9 +222,9 @@ rule requires **that type** to hold a finding mentioning one of them. That is ho
 planted defect is pinned to the correct type key: a wrong-port finding filed under
 `structure` fails the check even though the port was noticed.
 
-`severity_values` is a field rather than a constant so the band set can move — from the
-reviewer's current S1–S4 to the standard S1–S5 matrix used by `rs-review-severity` —
-without touching the evaluator. See "Deferred" below.
+`severity_values` is a field rather than a constant so the band set can move.
+`REVIEW.md` owns the S1–S5 bands the five facets read; `rs-review-severity` is the
+code-lane matrix. The evaluator reads whatever set the spec declares.
 
 **`test-2`'s zero-edit result is compliance, not enforcement** — the same CLI caveat as
 #70, repeated in each spec's `notes`.
@@ -251,7 +251,8 @@ report** and whose write is a **diff**, so #72 added two more harness pieces:
 - **The JSON change report.** `editor.md` returns a JSON object — `changes` plus
   `questions` — the same shape family the reviewer uses. `extract_json_object()` strips a
   fence or surrounding prose when the spec sets `expect_json`, so `changes_shape` reads a
-  dict: a non-empty `changes` list whose entries carry `file`, `change` and `status`, with
+  dict: a non-empty `changes` list whose entries carry `file`, `change`,
+  `source_or_rule` and `status`, with
   `questions` always present. It is JSON and not YAML for a concrete reason — in the first
   YAML version a value containing `: ` (e.g. `` Added `last_audit_date: 2026-10-21` ``)
   broke the parse in 3 of 30 runs. `question_raised` (used by `test-2`) requires the
@@ -265,13 +266,13 @@ report** and whose write is a **diff**, so #72 added two more harness pieces:
 The editor-shaped fields are `changes_fields`, `change_statuses`, `changed_paths`,
 `report_covers`, `edit_fixes` and `expect_question`.
 
-**#72 was redesigned to the current `editor.md`.** The issue as written tests a citation
-rule — `source_or_rule` on every entry, `unresolved` for an uncited finding — that was
-**removed from `editor.md`**: the editor may now edit any file, delete files, and is no
-longer required to cite. `test-2` therefore tests what the editor still refuses (shell,
-web, delegation, question), and `source_or_rule` is **not** required. The issue's original
-acceptance criteria (`unresolved` on an uncited finding, a citation on every applied
-entry) no longer match the agent and are not asserted.
+**#72 was redesigned to the current `editor.md`.** The editor may edit briefed PKM
+files and delete briefed paths under `./01*`–`./05*`. `source_or_rule` is required on
+entries whose trigger is a review report and carries `"hub brief"` for a hub-named
+correction (`WORKFLOW.md` § Ownership Matrix); a pass carries at most 25 entries.
+`test-2` tests what the editor still refuses (shell, web, delegation, question), and
+`source_or_rule` is not asserted by the old recordings. The issue's original
+acceptance criteria no longer match the agent.
 
 **`test-2`'s zero-shell / zero-web result is compliance, not enforcement** — the same CLI
 caveat as #70/#71, repeated in each spec's `notes`.
@@ -291,34 +292,28 @@ Two things the issue asked for are **not** covered, deliberately and visibly:
   planted-defect note *and* `verdict: clean` on a clean control note, but the epic fixes
   every spoke agent at exactly three tests. The control is dropped rather than smuggled
   into another test's verdict assertion. `test-3` therefore grades the defect note only.
-- **The severity band change.** The roster standardises on `rs-review-severity`'s S1–S5
-  matrix with labels (Critical/Major/Moderate/Minor/Nitpick); `reviewer.md` still uses an
-  unlabelled, *type-bound* S1–S4. Moving to the standard re-anchors bands from type to
-  impact, so it changes the agent, the loop-validation skill, the section `AGENTS.md`
-  files and every fixture — a change of its own, not a rename. #71 tests the current
-  contract.
+- **The severity band change.** `REVIEW.md` owns the S1–S5 bands the five facets
+  read; `rs-review-severity` is the code-lane matrix. The retired `reviewer.md` used
+  an unlabelled, *type-bound* S1–S4; that record is kept only for #71.
 
-**The report schema's known gaps**, recorded rather than asserted, because fixing them
-means editing `reviewer.md`:
+**The report schema's status**, recorded rather than asserted:
 
-- `verdict` conflates two axes, and the failure mode is the opposite of the obvious
-  one. A report can hold confirmed findings *and* an unresolvable one at the same time;
-  the contract does not say which wins. Measured on `test-2`'s redesigned fixture, the
-  reviewer chose `needs_recheck` **5 times in 10** and `issues` the other 5 — with the
-  same finding, the same evidence and the same upstream settling in every run. The
-  verdict is not being derived from the report; it is a coin flip on an under-specified
-  rule. `test-2`'s acceptance criterion ("`needs_recheck` in all 10 runs") is therefore
-  **not met**, and cannot be met by fixture design alone.
-- `needs_recheck` carries no pointer to the finding that caused it.
-- There is no per-finding `status`, yet `loop-validation` promises the reviewer marks an
-  unreachable source `unverifiable` rather than `live`. That promise is unrepresentable,
-  and therefore untestable.
-- Findings have no `id`, so `editor.md`'s requirement that the editor account for every
-  finding cannot be verified.
-- `evidence` is a free string, though the editor's citation rule is typed (source URL /
-  `./repo/path` / `AGENTS.md` rule). The editor has to re-derive what it should copy.
-- `overlap: []` cannot distinguish "no siblings were supplied" from "siblings compared,
-  no duplication". `test-2` works around it by supplying none and asserting emptiness.
+Fixed in this contract revision:
+
+- `verdict` is deterministic: `needs_recheck` outranks `issues`, and
+  `fix_hint: "needs-human"` is a per-finding marker.
+- `needs_recheck` has a pointer: the finding carries
+  `fix_hint: "needs-human"`, and merge copies it into `unresolved`.
+- `overlap: []` is paired with a non-blocking `unresolved` item when no
+  comparison scope was supplied, so the two states are distinguishable.
+
+Still open:
+
+- There is no per-finding `status`; `fix_hint: "needs-human"` is the marker, and
+  `loop-validation` says `needs_recheck` rather than `unverifiable`.
+- Findings have no `id`; the editor accounts by file/change, not by id.
+- `evidence` is a free string; the editor copies it verbatim and maps it to a
+  source/rule only when it matches.
 
 ## Findings that affect how results should be read
 
@@ -328,29 +323,24 @@ the agents and the CLI, not the harness, but they change what a green test means
 1. **`opencode run` falls back to a Go-gated default model.** Omitting `--model` fails
    with `403 — An active OpenCode Go subscription is required to use Go models`: with no
    agent at all, with an agent, and whatever that agent declares. Passing `--model` works.
-   So the harness always passes it, defaulting to the roster's own
-   `opencode/deepseek-v4.1-flash`, which the base subscription serves.
+   So the harness always passes it, defaulting to `opencode/deepseek-v4.1-flash`,
+   which the base subscription serves; the agents declare
+   `deepseek/deepseek-flash`.
 2. **The agent's declared `model` is not applied on this path.** A model id that is
    servable via `--model` still returns that same 403 when it is the only thing in the
    agent's `model:` field. `.opencode/agents/*.md` `model:` values are declarations the
    CLI does not consult.
-3. **Permission frontmatter is not enforced on this path either.** The roster declares a
-   v1-style map (`permission:` with `bash: deny`, `edit: deny`, `question: deny`,
-   `task: {"*": deny}`). Rewriting a workspace copy to `bash: allow` — and separately to
-   the v2 `permissions:` rule-list form — still left the agent with no shell tool. What
-   the agent *says* about its own guardrails comes from the prose in its body, not from an
-   applied permission.
-4. **The 14 agent definitions are v1-shaped.** The v2 docs say not to use legacy
-   top-level fields such as `temperature`, `permission`, `tools`, `prompt` or `maxSteps`,
-   and specify `permissions` as an ordered list of `{action, resource, effect}`. These
-   files use `temperature:`, `reasoningEffort:` and the `permission:` map.
-5. **The terminal tool is named `shell`, not `bash`.** Across the 30 worker recordings of
-   #70 the tool names are `read`, `glob`, `write` and `shell`; `bash` appears **zero**
-   times. The roster's prose and frontmatter say `bash: deny`, so a deny-list written as
-   `["bash", …]` checks a name the runtime never emits and silently passes. #70's worker
-   specs still carry the stale name — harmless there, because `7196a8d` granted the worker
-   a terminal — but the #71 reviewer specs deny **both** `shell` and `bash`. Any future
-   deny-list must name `shell`.
+3. **Permission frontmatter is not enforced on the `opencode run` path.** The ten
+   non-rs agents now use the v2 `permissions:` ordered list; a workspace copy with
+   `shell: allow` and the v2 list still left the agent with no shell tool. What the
+   agent *says* about its own guardrails comes from the prose, not from an applied
+   permission. A real subagent launch through `subagent` is untested.
+4. **The roster has 18 agent files.** The ten non-rs files audited here use the v2
+   `permissions:` list with `{action, resource, effect}`. The older v1 map
+   (`permission:`, `bash`, `task`) is history, not the current shape.
+5. **The terminal tool is named `shell`, not `bash`.** The worker now denies `shell`;
+   a deny-list written as `["bash", …]` checks a name the runtime never emits and
+   silently passes. Any future deny-list must name `shell`.
 
 Taken together: a test that invokes `opencode run --agent <name>` may be exercising the
 CLI's defaults rather than the agent under test. **Untested:** whether a real subagent
@@ -366,10 +356,12 @@ per-agent tests would need to be launched by the hub rather than by `opencode ru
   via `child_env()`; an inherited `PWD` silently redirects runs into the *calling*
   repository, where the agent writes to the real checkout and the footprint comes back
   empty — turning every path assertion into a silent pass.
-- **Model.** The harness passes `--model` explicitly, defaulting to the roster's own
-  `opencode/deepseek-v4.1-flash`, which the base subscription serves; override with
-  `--model`. Omitting it is not an option — see the findings above.
+- **Model.** The harness passes `--model` explicitly, defaulting to
+  `opencode/deepseek-v4.1-flash`, which the base subscription serves; the agents
+  declare `deepseek/deepseek-flash`. Override with `--model`. Omitting it is not an
+  option — see the findings above.
 - **Recorded, not gated.** Responses are stored and scored; nothing fails a build yet.
   Wiring pass/fail gating is out of scope for the epic.
-- **`cluster-worker` can call `question`**, which stalls a non-interactive run. The
-  per-run timeout (`--timeout`, default 600 s) catches it and records the run as failed.
+- **`cluster-worker` denies `question`**, so it should not stall a non-interactive
+  run. If a run stalls, check the model/runtime; the contract denies the tool. The
+  per-run timeout (`--timeout`, default 600 s) still records a stalled run as failed.

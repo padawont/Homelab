@@ -40,7 +40,7 @@ worker -> reviewer-* (5, parallel) -> hub merge -> editor   (repeat, max 10)
 | Step | Subagent | Focus |
 |---|---|---|
 | Producer | `worker` | Drafts/repairs the file from the hub's brief — **skipped in validation** (the file already exists; `N = 1` review) |
-| Reviewers | `reviewer-source`, `reviewer-accuracy`, `reviewer-scope`, `reviewer-structure`, `reviewer-overlap` | One facet per type, launched in parallel; each returns the same JSON envelope with only its own key populated |
+| Reviewers | `reviewer-*` | One facet per type, launched in parallel; the roster is `./.opencode/REVIEW.md` § The Five Facets, and each returns the same JSON envelope with only its own key populated |
 | Merge | `runesmith` (hub) | Concatenates the facet reports into one five-key report and applies the verdict precedence |
 | Editor | `editor` | Confirmed findings only, each citing source/rule |
 
@@ -66,11 +66,13 @@ and posts them per loop and in the final report. No spoke launches another spoke
   restate them.
 - All five type keys are **always present** in the merged report, even when
   empty. Every finding carries `severity`, `issue`, `evidence`, and `fix_hint`.
-- `verdict` precedence: any S1/S2 finding → `issues`; otherwise any
-  `needs_recheck` → `needs_recheck`; otherwise any finding → `issues`;
-  otherwise `clean`. The precedence lives in `REVIEW.md`, not here.
-- Judge `overlap` only against the sibling drafts the hub supplies — never
-  reach across lanes, batches, or the wider repo.
+- `verdict` is read, never recomputed: `./.opencode/REVIEW.md` § Verdict Precedence
+  owns it. Do not paraphrase the order — restating it is how the S1/S2-first
+  misreading entered this skill.
+- Judge `overlap` only against the comparison scope the hub supplies — never reach
+  across lanes, batches, or the wider repo. With none supplied it returns `[]`
+  plus a non-blocking `unresolved` item: that is coverage, not a defect, and it
+  must be carried into the final report (§ Report).
 - Read-only (`edit: deny`); never edits, never delegates, never asks the human.
 - Ambiguous or conflicting sources → `needs_recheck`; never guess.
 
@@ -83,8 +85,8 @@ and posts them per loop and in the final report. No spoke launches another spoke
   repo-relative path) or a **rule** from the relevant AGENTS.md — never
   silently.
 - Output status, one per finding: `applied`, `deferred`, `unresolved`.
-- A finding without evidence is not confirmed: report it as `unresolved` with
-  `source_or_rule: "none — no citable source"`, never apply it.
+- A finding without evidence is not confirmed: report it in `questions:`, never
+  apply it.
 - No `webfetch` — verification is the reviewer facets' job.
 - **Ambiguity is reported, never resolved by guessing.** `question` is denied
   for the editor; escalation is the hub's call, not the editor's.
@@ -126,7 +128,8 @@ finding (wrong URL, unclear claim, conflict):
 | Case | Behavior |
 |---|---|
 | Empty / invalid target list | Stop and ask the user — never invent targets |
-| URL can't be fetched | `reviewer-source` records a `source` finding and, if it cannot be settled without a guess, `verdict: needs_recheck` — never `live` |
+| URL returns 404 / DNS failure | Dead: `reviewer-source` files `source` S1 |
+| URL returns 403 / 5xx / times out | Indeterminate, not dead: `fix_hint: "needs-human"`, verdict `needs_recheck` — never `live`, never S1 |
 | Editor can't cite a fix | Report `unresolved`/`deferred` → hub decides → hub asks the user |
 | All-clean from loop 1 | Still run to the 7-loop early-stop question |
 

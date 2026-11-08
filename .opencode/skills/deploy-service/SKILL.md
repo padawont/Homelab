@@ -5,9 +5,9 @@ description: >
   (node-main, 192.168.111.7). Trigger when the user asks to deploy, install,
   upgrade, or update a service, container, or helm chart on the cluster.
   Finds the service's Implementation overview.md and follows its documented
-  deployment steps. Creating/mutating steps run in runesmith (or by the human
-  following the doc); cluster-worker may run only the whitelisted verify,
-  rollback and restart subset.
+  deployment steps. Creating/mutating steps are human-run following the doc;
+  runesmith does not hold those verbs. cluster-worker may run only the
+  whitelisted verify, rollback and restart subset.
 ---
 
 # deploy-service
@@ -22,15 +22,17 @@ Run the steps in order.
 ## Guardrails (non-negotiable)
 
 - **Two separate execution modes**:
-  - **Mode A — create/mutate**: `runesmith` (or the human following the doc)
-    runs discovery, manifest generation, `helm install`/`upgrade` and `kubectl
-    apply`. These verbs are outside `cluster-worker`'s whitelist, so it never
-    runs them.
+  - **Mode A — create/mutate**: the human, following this doc, runs discovery,
+    manifest generation, `helm install`/`upgrade` and `kubectl apply`. `runesmith`
+    does not hold these verbs. They are outside `cluster-worker`'s whitelist, so it
+    never runs them.
   - **Mode B — verify/rollback/restart**: `cluster-worker`, only from a
     committed plan in the service's Implementation folder and only its
     whitelisted verbs (`kubectl get`/`describe`/`logs`, `rollout undo`/
-    `restart`, `helm status`/`history`/`rollback`, `ssh` transport).
-  - No other agent runs this skill: `spec-writer` has bash denied.
+    `restart`/`status`, `helm status`/`history`/`list`/`rollback`, `ssh`
+    transport).
+  - No other agent besides `cluster-worker` runs this skill: `spec-writer` has shell
+    denied.
 - **Follow the Implementation doc**: deployment MUST follow the steps in the
   service's `05_Implementations/node-main/{service}/overview.md`. Do not
   improvise the procedure.
@@ -39,8 +41,8 @@ Run the steps in order.
   documented target is node-main k3s.
 - **Read-only before deploy**: discovery and checks use inspection commands
   only (`kubectl get/describe/logs`, `helm list`, `helm show values`). Nothing
-  mutates cluster state until `runesmith` has confirmed the deploy plan with
-  the user and committed it.
+  mutates cluster state until the human has confirmed the deploy plan and
+  committed it; `runesmith` may put the question, but it does not run the change.
 - **No secrets in the repo**: never hardcode passwords, tokens, or keys. Pull
   from env vars or existing Secrets. Never write secrets to a file or commit
   them.
@@ -83,8 +85,9 @@ Run the steps in order.
 
 ### Step 3 — Deploy (follow the Implementation doc)
 
-- Execute exactly the deployment steps from the service's `overview.md`
-  (Helm install/upgrade or kubectl apply, with the documented versions).
+- The human executes exactly the deployment steps from the service's `overview.md`
+  (Helm install/upgrade or kubectl apply, with the documented versions);
+  `runesmith` does not run them.
 - Do not use `latest`; use the versions pinned in the doc.
 - If the doc references a chart or manifests file, use those exact sources.
 
@@ -105,23 +108,27 @@ rollout undo` yourself. Hand it to `cluster-worker` (Flow B — see
 {
   "plan_id": "{service}-rollback",
   "plan_source": "./05_Implementations/node-main/{service}/rollback.md",
-  "steps": ["..."],
+  "step_section": "## Rollback steps",
   "step_range": "1-6",
   "dry_run": false
 }
 ```
 
-Set `dry_run: false` for the rollback itself. A `dry_run: true` launch inspects
-and reports only, so a rollback plan submitted with it never mutates anything —
-use `true` only for the pre-flight verification launch, then re-launch the same
-plan with `false` to execute.
+Set `dry_run: false` for the rollback itself. A `dry_run: true` launch is an
+inspect-only run: it reports and mutates nothing. It is not the pre-flight target
+check every executing run does first; that check is described in
+`./.opencode/agents/cluster-worker.md` § Pre-Flight & Step Budget. Re-launch the
+same plan with `false` to execute.
 
 - `cluster-worker` is limited to the whitelisted revert verbs
   (`kubectl rollout undo` / `helm rollback`) plus read-only inspection; it
   dry-runs first and refuses the whole plan if any step falls outside its
   whitelist. `runesmith` is the only agent that asks the human: a
   `cluster-worker` that needs a decision returns a refusal with
-  `escalate_to: "runesmith"`.
+  `escalate_to: "runesmith"`. A whitelisted step that runs and fails is a
+  `failed` payload, not a refusal: `state_after` reports what ran, the chain
+  stops, and no worker resumes on its own
+  (`./.opencode/agents/cluster-worker.md` § Failed).
 - The **hub** launches `cluster-worker` and chains it — this skill never spawns
   it. The rollback path must exist in `rollback.md` before launch.
 

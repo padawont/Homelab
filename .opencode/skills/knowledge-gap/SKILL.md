@@ -79,25 +79,29 @@ lack hosting detail.
 ```
 1. SCAN     (phase skill)        claims cited only online -> candidates
 2. LOCATE   (main)               concept -> 02_Knowledge/technologies/<category>/<topic>/
-3. INSPECT  (inspection agent)   per candidate/folder -> one finding record
+3. INSPECT  (main agent)         per candidate/folder -> one finding record
 4. REPORT   (main)               standardized, issue-ready records
 5. FILE     (main, confirmed)    epic or single issue
 ```
 
 ### INSPECT
 
-- Launch the **inspection agent** — `reviewer-scope`. Its frontmatter sets
-  `edit: deny` and `webfetch: deny`, so read-only is permission-enforced and it
-  cannot reach the web; inspection needs neither. One agent per candidate, or
-  batch per topic folder, all in parallel.
-- Give each agent: the concept, the online URL it came from, the target
-  category folder, and the findings table above.
-- **Mapping:** the facet's `scope` findings map onto G1–G7 (scope covers
-  placement, depth, and homelab fit); the note's existence/size/staleness
-  checks stay in the LOCATE step. Its JSON `evidence`/`fix_hint` become this
-  skill's `evidence`/`fix` fields.
-- It returns one record per candidate — `covered` drops the candidate. It never
-  edits, never fetches the web, never guesses.
+The inspection runs here, in the main agent, against the G1–G7 table above.
+
+- No review facet is launched. `reviewer-scope` reviews an *existing target file*
+  for placement and depth (`./.opencode/agents/reviewer-scope.md`); a concept with
+  no note has no target, and G1–G7 is this skill's taxonomy, not a facet
+  criterion. Handing that agent a concept, a URL and this table asks it to review
+  something its contract has no input for and no key to report.
+- Read only. Inspection reads existing notes and writes nothing; the guardrail is
+  this skill's own (§ Guardrails).
+- One pass per candidate: locate the folder, list what is in it, read the notes
+  that could scope the concept, and take the G-code from the table above. Record
+  `covered` — and drop the candidate — when an adequate note exists.
+- Nothing is fetched. The online URL identifies the fact; it is never re-read here.
+- No guessing: a folder you cannot find, a note whose scope you cannot decide, or a
+  concept matching two categories is `needs-human`, not a G-code picked to be
+  decisive.
 
 ## Standard report
 
@@ -122,7 +126,7 @@ knowledge_gap:
     - "./03_Research/agones-adoption/overview.md"
   evidence: "no cert-manager folder; 10 incidental mentions only"
   advisory: ["status: draft", "last_audit_date 2026-08-22 = 34 days"]
-  fix: create-note | extend-note | re-audit | needs-human
+  fix: create-note | extend-note | re-audit | needs-human   # ./.opencode/REVIEW.md § Fix Hints
 ```
 
 Issue-ready block (fill per gap, from `Templates/tasks/issue.md`):
@@ -201,8 +205,8 @@ Filing is a GitHub write, not a note write — the audit never edits
 ## Guardrails
 
 - **Read-only on notes** — never create, edit, or delete a note.
-- **Inspection agent is read-only** — launch `reviewer-scope` (`edit: deny`,
-  `webfetch: deny`); never use a writable general agent for inspection.
+- **Inspection is read-only** — it reads notes and writes nothing. Never edit a
+  note from this skill, and never hand the inspection to an agent that may.
 - **No fabrication** — report only what is on disk; every gap carries evidence.
 - **No guessing** — ambiguity → `needs-human`.
 - **Confirm before filing** — no issue without the user's parent epic; dedupe.

@@ -251,9 +251,11 @@ report** and whose write is a **diff**, so #72 added two more harness pieces:
 - **The JSON change report.** `editor.md` returns a JSON object — `changes` plus
   `questions` — the same shape family the reviewer uses. `extract_json_object()` strips a
   fence or surrounding prose when the spec sets `expect_json`, so `changes_shape` reads a
-  dict: a non-empty `changes` list whose entries carry `file`, `change`,
-  `source_or_rule` and `status`, with
-  `questions` always present. It is JSON and not YAML for a concrete reason — in the first
+  dict: a non-empty `changes` list whose entries carry `file`, `change` and `status`,
+  with `questions` always present. `source_or_rule` is contract-required on
+  review-triggered entries but is deliberately not asserted here — the #72 recordings
+  predate that rule (`EDITOR_CHANGE_FIELDS` in `tests/harness/prompts.py`). It is JSON
+  and not YAML for a concrete reason — in the first
   YAML version a value containing `: ` (e.g. `` Added `last_audit_date: 2026-10-21` ``)
   broke the parse in 3 of 30 runs. `question_raised` (used by `test-2`) requires the
   refusal case to land as an entry in `questions`, not in prose.

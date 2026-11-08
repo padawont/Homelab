@@ -712,8 +712,9 @@ EDITOR_ROLE_JSON = "02_Knowledge/technologies/services/homepage/services.json"
 # source_or_rule is required on review-triggered entries ("hub brief" for a hub
 # correction); the #72 recordings predate that rule and do not assert it.
 # EDITOR_CHANGE_FIELDS stays at the minimal shape those recordings satisfy.
+# editor.md also permits `unresolved`, so accept it even though no recording uses it.
 EDITOR_CHANGE_FIELDS = ["file", "change", "status"]
-EDITOR_CHANGE_STATUSES = ["applied", "deferred"]
+EDITOR_CHANGE_STATUSES = ["applied", "deferred", "unresolved"]
 
 # editor.md Negative Constraints: no shell, no web, no delegation, no question. The
 # runtime names the terminal `shell` (#71 finding: `bash` never appears in a recorded

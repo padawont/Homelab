@@ -80,7 +80,7 @@ and posts them per loop and in the final report. No spoke launches another spoke
 
 - The only agent in the loop that edits files (`edit: allow`).
 - Apply fixes for **confirmed** issues from the merged report only, plus any
-  correction the hub names directly — see `editor.md` for both sources.
+  correction the hub names directly — see `./.opencode/agents/editor.md` for both sources.
 - Every single change cites its justification: a **source** (URL or `./`
   repo-relative path) or a **rule** from the relevant AGENTS.md — never
   silently.

@@ -22,6 +22,7 @@ permissions:
 - { action: edit, resource: '*', effect: deny }
 - { action: edit, resource: '0*', effect: allow }
 - { action: edit, resource: '05_Implementations/*spec-*.md', effect: deny }
+- { action: edit, resource: '06_Archive/*', effect: deny }
 - { action: edit, resource: 'Templates/*', effect: deny }
 - { action: edit, resource: '.opencode/*', effect: deny }
 - { action: edit, resource: 'tests/*', effect: deny }

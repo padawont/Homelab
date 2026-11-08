@@ -544,8 +544,8 @@ def changes_shape(
 
     Every entry must carry every named field as a non-empty value, and -- when a status
     set is given -- a ``status`` within it. ``editor.md`` requires ``file``, ``change``
-    and ``status`` on every entry; ``source_or_rule`` is optional and deliberately not
-    asserted here.
+    and ``status`` on every entry and ``source_or_rule`` on review-triggered entries;
+    that field is deliberately not asserted here because the #72 recordings predate it.
     """
 
     required = list(fields)

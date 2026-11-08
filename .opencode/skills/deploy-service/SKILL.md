@@ -122,8 +122,8 @@ same plan with `false` to execute.
 
 - `cluster-worker` is limited to the whitelisted revert verbs
   (`kubectl rollout undo` / `helm rollback`) plus read-only inspection; it
-  dry-runs first and refuses the whole plan if any step falls outside its
-  whitelist. `runesmith` is the only agent that asks the human: a
+  pre-flights the target first and refuses the whole plan if any step falls
+  outside its whitelist. `runesmith` is the only agent that asks the human: a
   `cluster-worker` that needs a decision returns a refusal with
   `escalate_to: "runesmith"`. A whitelisted step that runs and fails is a
   `failed` payload, not a refusal: `state_after` reports what ran, the chain
@@ -141,7 +141,8 @@ After a successful verified deploy, update the implementation records under
   per `05_Implementations/AGENTS.md` (frontmatter, kebab-case, ≤150 lines).
 - Ensure `rollback.md` documents how to revert this deploy safely.
 - If the folder does not exist yet, create it from
-  `./Templates/implementations/service.md` and `rollback.md`.
+  `./Templates/implementations/service.md` and
+  `./Templates/implementations/rollback.md`.
 - These are repo writes: the hub routes them to `worker` (draft/update) and
   `editor` (confirmed fixes), never a direct edit by this skill.
 

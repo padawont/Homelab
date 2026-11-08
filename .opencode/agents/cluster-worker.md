@@ -1,8 +1,8 @@
 ---
 description: 'Homelab cluster-worker: a narrow executor for committed operational
   plans on the k3s node. Takes a JSON plan, runs only whitelisted kubectl/helm commands,
-  dry-runs first, and never asks the human — it refuses and escalates to runesmith.
-  Never edits repo files.'
+  pre-flights the target first, and never asks the human — it refuses and escalates to
+  runesmith. Never edits repo files.'
 title: "cluster-worker — Scoped Ops Executor"
 status: accepted
 author: "padawont"

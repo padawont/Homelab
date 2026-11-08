@@ -588,7 +588,7 @@ def test_retired_reviewer_specs_are_not_registered():
 
 
 def test_reviewer_specs_are_registered_and_wired():
-    """#71's three retired reviewer specs keep their rules wired.
+    """#71's three retired reviewer specs keep their rules wired."""
     reviewer_specs = REVIEWER_SPECS
     assert {spec.test_id for spec in reviewer_specs} == {
         "test-1-dispatch",
@@ -632,11 +632,12 @@ def test_reviewer_specs_are_registered_and_wired():
 
 
 def test_reviewer_deny_list_names_the_tool_the_cli_actually_exposes():
-    """#70 lesson: the terminal tool is `shell`; `bash` never appears in a trajectory."""
+    """#70 lesson: the terminal tool is `shell`; `bash` never appears in a trajectory.
+    Delegation is exposed as `subagent` (formerly `task`)."""
     for spec in REVIEWER_SPECS:
         assert "shell" in spec.forbidden_tools
         assert "edit" in spec.forbidden_tools
-        assert "task" in spec.forbidden_tools
+        assert "subagent" in spec.forbidden_tools
         assert "question" in spec.forbidden_tools
 
 
@@ -817,7 +818,7 @@ def test_editor_specs_are_registered_and_wired():
 def test_editor_deny_list_names_the_tools_the_cli_actually_exposes():
     """#70/#71 lesson: the terminal is `shell`, and the web tools are `webfetch`/`websearch`."""
     for spec in specs_for("editor"):
-        for tool in ("shell", "webfetch", "websearch", "task", "question"):
+        for tool in ("shell", "webfetch", "websearch", "subagent", "question"):
             assert tool in spec.forbidden_tools
 
 

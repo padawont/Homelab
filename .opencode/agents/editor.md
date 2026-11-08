@@ -59,6 +59,10 @@ permissions:
 - { action: shell, resource: '*&&*', effect: deny }
 - { action: shell, resource: '* | *', effect: deny }
 - { action: shell, resource: '*|*', effect: deny }
+- { action: shell, resource: '*--kubeconfig*', effect: deny }
+- { action: shell, resource: '*--kube-context*', effect: deny }
+- { action: shell, resource: '*--context*', effect: deny }
+- { action: shell, resource: '*--server*', effect: deny }
 - { action: shell, resource: "*\n*", effect: deny }
 - { action: execute, resource: '*', effect: deny }
 - { action: subagent, resource: '*', effect: deny }

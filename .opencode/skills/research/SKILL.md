@@ -93,7 +93,9 @@ next step.
 
 ### Reviewer (`reviewer-source`)
 
-- Behavior: verify the citations in the written file — every citation slot in
+- Behavior: verify the citations in the target file — the written file, or a
+  planned path that does not exist yet when this skill runs before `implement`
+  (`./.opencode/agents/reviewer-source.md` § Role) — every citation slot in
   `./.opencode/agents/reviewer-source.md` § Loading the Rules live, authoritative,
   and actually saying what's claimed. The hub does the KB check and the
   one-source fetch; this skill does not hand fetching to `reviewer-source`.

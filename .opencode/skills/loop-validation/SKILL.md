@@ -67,8 +67,8 @@ and posts them per loop and in the final report. No spoke launches another spoke
 - All five type keys are **always present** in the merged report, even when
   empty. Every finding carries `severity`, `issue`, `evidence`, and `fix_hint`.
 - `verdict` is read, never recomputed: `./.opencode/REVIEW.md` § Verdict Precedence
-  owns it, and a `needs_recheck` outranks `issues` there. Do not paraphrase the
-  order — restating it is how the S1/S2-first misreading entered this skill.
+  owns it. Do not paraphrase the order — restating it is how the S1/S2-first
+  misreading entered this skill.
 - Judge `overlap` only against the comparison scope the hub supplies — never reach
   across lanes, batches, or the wider repo. With none supplied it returns `[]`
   plus a non-blocking `unresolved` item: that is coverage, not a defect, and it

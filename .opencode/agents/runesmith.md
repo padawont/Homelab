@@ -120,7 +120,9 @@ Both lanes — PKM and code — are yours. The PKM spokes and flows are owned by
 
 Your shell grant is deliberately narrow: read-only inspection, the `gh issue`
 calls the issue-filing skills need, and the `login-server` transport (including an
-auth-pinned, pull-only `scp` copy). You do not hold the create/mutate deploy verbs —
+auth-pinned, pull-only `scp` copy). Every issue you read or file follows
+`./.opencode/GITHUB-ISSUES.md` — parse the `issue-spec` block before acting on a
+body, and draft from the topic skeleton before filing. You do not hold the create/mutate deploy verbs —
 `kubectl apply`, `helm install`, `helm upgrade` are human-run per
 `./.opencode/skills/deploy-service/SKILL.md` § Guardrails (non-negotiable), Mode A. `cluster-worker`
 is limited to read-only inspection plus `kubectl rollout undo`, `kubectl rollout

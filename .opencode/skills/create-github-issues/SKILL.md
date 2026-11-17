@@ -1,150 +1,57 @@
 ---
 name: create-github-issues
 description: >
-  Creates GitHub epics and pipeline sub-issues for the Homelab PKM using the gh
-  CLI. Use when creating an epic, a pipeline issue (idea / knowledge / research
-  / adr / proposal / projects / implementation), or native sub-issues on the
-  RunicEngines/knowledge-base repo. Use ONLY when creating GitHub issues, never
-  for writing notes.
+  Files GitHub epics and pipeline sub-issues for the Homelab PKM using the gh CLI.
+  Use when creating an epic or a sub-issue (idea / knowledge / knowledge-audit /
+  research / proposal / adr / implementation / chore) on the
+  RunicEngines/knowledge-base repo. Structure is owned by
+  ./.opencode/GITHUB-ISSUES.md; this skill only carries the plumbing. Never for
+  writing notes.
 ---
 
 # create-github-issues
 
-Plan and create GitHub epics and pipeline sub-issues on
-`RunicEngines/knowledge-base` using the `gh` CLI. Native parent/child links use
-`gh issue create --parent <number>` (requires gh >= 2.94). Every sub-issue is
-drafted from `Templates/tasks/issue.md` and filled from the per-topic spec
-below.
+Filing plumbing for issues on `RunicEngines/knowledge-base`. **Read
+`./.opencode/GITHUB-ISSUES.md` first** — it owns the `issue-spec` block, the slot
+order, the nine topic skeletons, the read/write protocols, and the legacy path
+mapping. This skill restates none of that.
 
 > [!IMPORTANT]
-> Issues and epics live in `RunicEngines/knowledge-base`. The `padawont/Homelab`
-> repo holds only notes. Every `gh` command below MUST include
-> `--repo RunicEngines/knowledge-base`.
-
-## The content pipeline
-
-```
-Idea → Knowledge → Research → ADR → Implementation
-                                  └──► Archive
-Proposal = how-we-work; Projects/Tasks = registry index updates
-```
-
-## Per-topic spec
-
-| Topic | Label | Template(s) | Frontmatter | Review focus |
-|---|---|---|---|---|
-| Idea | `idea` | `Templates/ideas/idea.md` | title, status, author, date, tags, technologies, related_ideas | `structure`, `scope` |
-| Knowledge | `knowledge` | `Templates/knowledge/note.md` | title, status, author, date, tags, sources[{url,title}], last_audit_date, related_docs | `source`, `structure` |
-| Research | `research` | `Templates/research/overview.md` + `alternatives.md` + `alternative.md` | title, status, author, date, tags, sources[{knowledge}], references[{url,title}], last_audit_date | `source`, `overlap` |
-| ADR | `adr` | `Templates/adr/adr.md` | adr, title, author, status, topic, technology, date, date-proposed, replaces, replaced-by, history, sources, references, related_docs | `scope`, `structure`, `accuracy` |
-| Proposal | `proposal` | — | change-log style | `structure` |
-| Projects | — | projects registry index | chore template | — |
-| Implementation | — | `Templates/implementations/service.md` + `rollback.md` | title, status, author, date, tags, technologies, related_docs, references, node | `accuracy`, `structure`; `cluster-worker` (rollback) |
-
-> [!NOTE]
-> The review-focus column is emphasis only, never a reduced set. Every topic's
-> drafted content gets **all five facets** — `worker` writes, then
-> `loop-validation` runs `reviewer-* → merge → editor` (`./.opencode/REVIEW.md`
-> § The Five Facets). The named facets are where a defect of that topic most
-> often lands, so the hub reads their findings first; it still launches all
-> five, and it never treats an unnamed facet as out of scope.
-
-### Knowledge atomic breakdown (required)
-
-Knowledge sub-issues MUST decompose the topic into multiple single-concept
-notes before drafting — never a single "mega note" or 2-3 broad files.
-
-- One concept per file (e.g. install, operations, secrets, upgrades, migration
-  each get their own note).
-- Target 3–8 notes per sub-issue; each ≤150 lines (frontmatter included).
-- List EVERY planned note file in the sub-issue body: Topic Hierarchy section
-  with a one-line concept next to each file, plus In Scope bullets.
-- Follow-up concept not fitting an existing note → its own new file, never
-  appended to a near-limit one.
+> Issues live in `RunicEngines/knowledge-base`; the content they describe lives in
+> `padawont/Homelab`. Every `gh` command below carries `--repo RunicEngines/knowledge-base`.
 
 ## Workflow
 
-1. Ask the user for the epic objective and scope; map it onto the pipeline
-   (which stages are in scope → which topics → which labels).
-2. Draft the epic body from the epic template; confirm the `KB sections
-   covered` checklist.
-3. Create the epic:
-   `gh issue create --title "Epic: {Title}" --body-file epic.md --label epic --repo RunicEngines/knowledge-base`.
-4. For each in-scope stage, draft a sub-issue body from the sub-issue template,
-   filled per the per-topic spec. Sources must be links (absolute URLs or `./`
-   repo-relative paths); acceptance criteria must be topic-specific per the
-   per-topic acceptance table below. For Knowledge sub-issues, decompose the
-   topic into single-concept atomic notes first and enumerate each in In Scope
-   + Topic Hierarchy (per the Knowledge atomic breakdown rule).
-5. Create each sub-issue:
-   `gh issue create --title "{Topic}: {Title}" --body-file {id}.md --label {label} --parent {epic-number} --repo RunicEngines/knowledge-base`.
-6. Verify the epic nests the sub-issues:
-   `gh issue view {epic-number} --json subIssues --repo RunicEngines/knowledge-base`.
+1. **Read the contract.** Pick the topic from the request, then copy that topic's
+   skeleton from `./.opencode/GITHUB-ISSUES.md` § Skeletons.
+2. **Draft the body** with real `outputs` (`./`-rooted paths inside this repo) and
+   real `sources` (absolute URL or `./` path). Write it under
+   `.runesmith/*/pipeline/{n}.md` — the hub's only writable path.
+3. **Self-check** against the contract's write protocol: block keys present, title
+   prefix matches the topic, labels from `./AGENTS.md`, every acceptance item
+   checkable.
+4. **Create**, then **verify** the parent and re-parse the fence.
+5. **Report** the issue number and the `outputs` list back to the human.
 
-## Epic template
-
-```markdown
-## Objective
-## Description
-## KB sections covered
-## Out of Scope
-## Sources
-## Acceptance Criteria
-```
-
-## Sub-issue template (from Templates/tasks/issue.md)
-
-```markdown
-## Objective
-## Description
-## In Scope
-## Out of Scope
-## Provenance
-## Assumptions
-## Good Examples
-## Bad Examples
-## Topic Hierarchy
-## Sources
-## Summary
-## Instructions
-## Acceptance Criteria
-## Parent
-#{epic-number}
-```
-
-## Per-topic acceptance criteria
-
-| Topic | Core acceptance criteria |
-|---|---|
-| Idea | status `accepted`; ready to promote to Knowledge |
-| Knowledge | 3–8 atomic notes, one concept per file, each ≤150 lines (frontmatter included); every planned note enumerated in the issue (In Scope + Topic Hierarchy); valid frontmatter; every `sources[]` URL live; `last_audit_date` set; passes knowledge review |
-| Research | `overview.md` + ≥3 `alternative.md` files; ≥1 knowledge/online source; detailed enough to write the ADR directly |
-| ADR | filename `{issue}-{kebab}.md`; `adr` = issue number; ≥2 mermaid diagrams; links to Research; `draft → accepted` gated on review |
-| Proposal | change-log entry recorded |
-| Implementation | `overview.md` + `rollback.md` + nixos flake dir (`05_Implementations/node-main/nixos/`); flake with `nixosConfigurations` + deploy target; rollback verified |
-
-## Source rules
-
-- Every issue must cite real links — absolute URLs for online sources, `./`
-  repo-relative paths for KB docs. Never prose-only sources.
-- Acceptance criteria are always topic-specific and verifiable — never generic
-  boilerplate.
-- A Knowledge sub-issue bundling multiple concepts into one file, or listing
-  notes without per-file concepts, must be revised before creation.
-
-## gh CLI reference
+## Commands
 
 | Command | Purpose |
 |---|---|
-| `gh issue create --title "Epic: …" --body-file epic.md --label epic --repo RunicEngines/knowledge-base` | Create epic |
-| `gh issue create --title "Knowledge: …" --body-file k1.md --label knowledge --parent {epic-number} --repo RunicEngines/knowledge-base` | Create sub-issue |
+| `gh issue create --title "Epic: {name}" --body-file {path} --label epic --repo RunicEngines/knowledge-base` | Create an epic |
+| `gh issue create --title "{Prefix}: {name}" --body-file {path} --label {label} --parent {epic} --repo RunicEngines/knowledge-base` | Create a sub-issue |
 | `gh issue view {n} --json number,title,labels,parent,subIssues,body --repo RunicEngines/knowledge-base` | Read structure |
+| `gh issue list --state open --search "{concept}" --repo RunicEngines/knowledge-base` | Dedupe before filing |
 
-`gh issue edit` and `gh label list` are **not** on the hub's granted surface
-(`./.opencode/agents/runesmith.md` holds `issue list`, `issue view` and
-`issue create` only), so they are human-run steps. `--body-file` needs a real
-path: a human shell may write anywhere, while the hub may write a body only
-under `.runesmith/*/pipeline/`.
+## Guardrails
 
-Author from `git config user.name`; dates ISO 8601 (`YYYY-MM-DD`); kebab-case
-titles.
+- `gh issue edit` and `gh label list` are **not** on the hub's granted surface
+  (`./.opencode/agents/runesmith.md` holds `issue list`, `issue view`, `issue create`
+  only), so edits and label changes are human-run steps.
+- `--body-file` needs a real path: a human shell may write anywhere, while the hub
+  may write a body only under `.runesmith/*/pipeline/`.
+- Never paste a body inline; never file without a `parent` unless the issue is an epic.
+- Knowledge work must decompose into atomic notes — one concept per file, ≤150 lines
+  (`./AGENTS.md` § Atomic File Rule) — and every planned note appears in `outputs`.
+- An issue whose content belongs to another repo is out of scope; see the contract
+  § Out of scope.
+- Author from `git config user.name`; dates ISO 8601.

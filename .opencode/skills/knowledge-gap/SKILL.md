@@ -129,33 +129,27 @@ knowledge_gap:
   fix: create-note | extend-note | re-audit | needs-human   # ./.opencode/REVIEW.md § Fix Hints
 ```
 
-Issue-ready block (fill per gap, from `Templates/tasks/issue.md`):
+Issue-ready body — structure owned by `./.opencode/GITHUB-ISSUES.md`, so start from
+the `knowledge` block and skeleton there, filled from the finding row:
 
-```markdown
-## Objective
-Back the {concept} dependency of {stage artifact}.
-
-## Description
-{stage} needed {fact} but could only cite {online url}. Inspection of
-{folder_inspected} found {finding}.
-
-## In Scope
-- {note_planned} — {one-line concept}
-
-## Topic Hierarchy
-- {each planned note}: {one-line concept}
-
-## Sources
-- {online url} (what it covers)
-- {stage artifact} (the dependency)
-
-## Acceptance Criteria
-- every planned note <=150 lines, status accepted, live sources[], last_audit_date set
-- the stage artifact's claims now cite the note instead of the URL
-
-## Parent
-#{parent}
+```yaml issue-spec
+topic: knowledge
+stage: knowledge
+epic: {epic-number}
+labels: [knowledge]
+outputs:
+  - ./02_Knowledge/technologies/{category}/{topic}/{concept}.md
+sources:
+  - {online url the stage had to cite}
+  - {stage artifact that needed the fact}
 ```
+
+Slots to fill: `## Objective` (back the {concept} dependency of {stage artifact}),
+`## Description` ({stage} needed {fact} but could only cite {online url}; inspection
+of {folder_inspected} found {finding}), `## In Scope`, `## Out of Scope`,
+`## Instructions`, `## Provenance`, `## Assumptions`, `## Topic Hierarchy`,
+`## Acceptance Criteria` (every planned note ≤150 lines, `sources[]` live,
+`last_audit_date` set, the stage artifact now cites the note), `## Parent`.
 
 Table view:
 
@@ -176,9 +170,9 @@ Propose, then confirm at filing:
 ## GitHub issue filing (after confirmation)
 
 Issues live in `RunicEngines/knowledge-base`; notes live here. Read
-`create-github-issues` for issue structure only. Write each body to
-`.runesmith/*/pipeline/{id}.md` — the hub's only writable path — and pass that
-path to `--body-file`.
+`./.opencode/GITHUB-ISSUES.md` for issue structure and `create-github-issues` for
+the `gh` plumbing. Write each body to `.runesmith/*/pipeline/{id}.md` — the hub's
+only writable path — and pass that path to `--body-file`.
 
 1. Present the table and WAIT. The user picks the gaps and supplies the
    **parent epic** number (or names the stage's issue). Never file without one.

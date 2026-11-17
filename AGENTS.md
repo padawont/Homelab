@@ -27,7 +27,8 @@ Personal Knowledge Management system for my homelab.
 
 Tooling lives at the repo root and is not PKM content: `devbox.json` (dev shell and
 `test` script), `pyproject.toml` (pytest configuration), `tests/` (roster conformance
-harness), and `./.opencode/` (agent definitions and workflow).
+harness), and `./.opencode/` (agent definitions and workflow, plus the issue contract
+`./.opencode/GITHUB-ISSUES.md`).
 
 ## When to Load Subfolder AGENTS.md
 
@@ -87,7 +88,8 @@ values; see `./Templates/AGENTS.md` § Conventions.
   include a line limit, live in `./06_Archive/AGENTS.md` § Conventions)
 - `AGENTS.md` files and `./.opencode/agents/*.md` take the 50–250 line range instead of
   150, counted the same way
-- `./.opencode/WORKFLOW.md` and `./.opencode/REVIEW.md` are exempt from the line limit
+- `./.opencode/WORKFLOW.md`, `./.opencode/REVIEW.md` and `./.opencode/GITHUB-ISSUES.md`
+  are exempt from the line limit
 
 ## Status Lifecycle
 
@@ -103,6 +105,7 @@ Each section owns its status values and transitions — see the section's AGENTS
 | PR workflow | draft → tests pass → review → merge |
 | Merge strategy | Squash merge (default); merge commits or rebase merge by exception |
 | Code review | Code/tooling changes: at least 1 approving review, all threads resolved. PKM notes: their section's convention (e.g. `./01_Ideas/AGENTS.md`) |
+| Issues | structure per `./.opencode/GITHUB-ISSUES.md` — `issue-spec` block first, fixed slot order, per-topic skeleton, `./`-rooted outputs |
 | Labels (this repo, `padawont/Homelab`) | `adr`, `area: python`, `area: tools`, `bug`, `configs`, `dagger`, `deployment`, `devspace`, `documentation`, `duplicate`, `enhancement`, `epic`, `good first issue`, `help wanted`, `implementation`, `invalid`, `knowledge`, `question`, `research`, `testing`, `wontfix` |
 | Labels (issue repo, `RunicEngines/knowledge-base`) | `adr`, `area: adr`, `area: ci-cd`, `area: data-transport`, `area: databases`, `area: okf`, `area: openchoreo`, `area: python`, `area: storage`, `area: tools`, `area: typescript`, `blocked`, `bug`, `documentation`, `duplicate`, `enhancement`, `epic`, `fast-track`, `good first issue`, `help wanted`, `idea`, `implementation`, `invalid`, `knowledge`, `org`, `proposal`, `question`, `research`, `won't do`, `wontfix` — `idea` and `proposal` exist, so no pre-creation step is needed |
 | Tests | `devbox run test` (pytest) must pass before merge; no hosted CI is configured |

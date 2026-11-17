@@ -26,7 +26,6 @@ Section purpose is owned by `./AGENTS.md` § Repository Structure (row `Template
 | ADR | `./Templates/adr/adr.md` | `./04_ADRs/` |
 | Implementation overview | `./Templates/implementations/service.md` | `./05_Implementations/` |
 | Implementation rollback | `./Templates/implementations/rollback.md` | `./05_Implementations/` |
-| GitHub Issue | `./Templates/tasks/issue.md` | Creating new GitHub issues |
 | Cluster spec | `./Templates/specs/cluster.md` | `./05_Implementations/` as `spec-cluster.md` |
 | Service stack spec | `./Templates/specs/service-stack.md` | `./05_Implementations/` as `spec-service-stack.md` |
 | Topology spec | `./Templates/specs/topology.md` | `./05_Implementations/` as `spec-topology.md` |
@@ -40,10 +39,9 @@ Section purpose is owned by `./AGENTS.md` § Repository Structure (row `Template
 | A research question | `./Templates/research/overview.md` | `./03_Research/<topic>/overview.md` |
 | The list of options considered | `./Templates/research/alternatives.md` | `./03_Research/<topic>/alternatives.md` |
 | One option's write-up | `./Templates/research/alternative.md` | `./03_Research/<topic>/alternative-<name>.md` |
-| A decision | `./Templates/adr/adr.md` | `./04_ADRs/<NNNN>-<slug>.md` |
+| A decision | `./Templates/adr/adr.md` | `./04_ADRs/<issue>-<slug>.md` |
 | A deployable service | `./Templates/implementations/service.md` | `./05_Implementations/<node>/<service>/overview.md` |
 | How to undo that deploy | `./Templates/implementations/rollback.md` | `./05_Implementations/<node>/<service>/rollback.md` |
-| A GitHub sub-task | `./Templates/tasks/issue.md` | Issue body |
 | Observed cluster state | `./Templates/specs/cluster.md` | `./05_Implementations/<node>/<service>/spec-cluster.md` |
 | Observed topology | `./Templates/specs/topology.md` | `./05_Implementations/<node>/<service>/spec-topology.md` |
 | Observed service stack | `./Templates/specs/service-stack.md` | `./05_Implementations/<node>/<service>/spec-service-stack.md` |
@@ -57,14 +55,11 @@ Each template bound to a pipeline section takes that section's frontmatter as sp
 the section's own AGENTS.md § Frontmatter (required); this file does not restate the field
 lists. The section → AGENTS.md mapping is owned by `./AGENTS.md` § Repository Structure.
 
-### Issue template frontmatter
+### Issue bodies
 
-`./Templates/tasks/issue.md` belongs to no section — it fills a GitHub issue body, so its
-fields are not derived from a section AGENTS.md:
-
-| Template | Fields |
-|---|---|
-| `./Templates/tasks/issue.md` | `title`, `issue_number`, `status`, `labels`, `created_at`, `epic` |
+Issues are not PKM content and take no template from this folder. Every issue
+body follows `./.opencode/GITHUB-ISSUES.md` — the `issue-spec` block, the slot
+order, and the per-topic skeletons own that shape.
 
 ## Conventions
 

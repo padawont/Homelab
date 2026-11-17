@@ -41,6 +41,15 @@ launched as a subagent. On the `opencode run` CLI path they are not applied
 its agent file, not on the block. Do not treat a stated `deny` as enforced
 outside the subagent path.
 
+## Issue Contract
+
+Every issue read or filed follows `./.opencode/GITHUB-ISSUES.md` — the canonical
+home of the `issue-spec` block, the four-question slot order, the per-topic
+skeletons, the read/write protocols, and the legacy path mapping. No skill,
+template, or agent restates issue structure; they link to it. Filing plumbing
+(the `gh` commands and their grants) is
+`./.opencode/skills/create-github-issues/SKILL.md`.
+
 ## Topology
 
 ```

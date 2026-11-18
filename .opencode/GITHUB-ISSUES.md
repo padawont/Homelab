@@ -5,7 +5,7 @@ author: "padawont"
 date: 2026-11-17
 tags: []
 sources: []
-last_audit_date: 2026-11-17
+last_audit_date: 2026-11-18
 related_docs: []
 ---
 
@@ -37,8 +37,9 @@ never has to understand the topic before finding the answer.
 
 ## Slot order
 
-Every issue body is the `issue-spec` block followed by H2 headings in this
-order. A topic uses the slots it needs; the relative order never changes.
+Every issue body is the `issue-spec` block, then the H1 title line, then the H2
+headings below in this order. A topic uses the slots it needs; the relative order
+never changes.
 
 ```text
 ## Objective
@@ -67,8 +68,8 @@ order. A topic uses the slots it needs; the relative order never changes.
 ```
 
 `## Summary` and `## Execution roster` are optional extras kept for house
-consistency. `## Parent` always repeats the native parent number, or `—` for an
-epic.
+consistency. `## Parent` repeats the native parent number; an epic omits it — the
+epic is the parent.
 
 ## The `issue-spec` block
 
@@ -90,14 +91,14 @@ sources:
 | Key | Type | Rule |
 |---|---|---|
 | `topic` | enum | one of the nine topics in § Topic anatomy |
-| `stage` | enum | `idea`, `knowledge`, `research`, `adr`, `implementation`, or `epic` when the issue spans several stages |
-| `epic` | int or `null` | must equal the native parent; `null` only for an epic |
+| `stage` | enum | `idea`, `knowledge`, `research`, `proposal`, `adr`, `implementation`, or `epic` when the issue spans several stages |
+| `epic` | int or `null` | must equal the native parent; `null` only when there is no native parent — an epic, or a standalone chore |
 | `labels` | list | topic label first, then `area: *`; every value from `./AGENTS.md` § Git Guidelines |
-| `outputs` | list | `./`-rooted paths under `01_Ideas/`–`05_Implementations/` or `Templates/`; `[]` is legal only for an epic; `<placeholder>` segments allowed |
+| `outputs` | list | `./`-rooted paths under `01_Ideas/`–`05_Implementations/` or `Templates/`; `[]` only for an epic or a proposal; `<placeholder>` segments allowed |
 | `sources` | list | absolute URLs or `./` repo paths; never prose; `[]` only for an epic with no cited basis |
 
 ADR outputs use the issue number: `./04_ADRs/<issue>-<slug>.md`
-(`./04_ADRs/AGENTS.md` § Frontmatter — the number is the issue number).
+(`./04_ADRs/AGENTS.md` § Conventions — the number is the issue number).
 
 ## Topic anatomy
 
@@ -383,7 +384,7 @@ sources:
 
 Given an issue number:
 
-1. `gh issue view {n} --json number,title,labels,parent,body`.
+1. Read the issue with `gh issue view` (filing skill § Commands).
 2. Parse the `issue-spec` fence. Validate `epic` against `parent.number`, each
    label against `./AGENTS.md`, and each `outputs` root against this repo.
 3. **No fence** — reconstruct the four answers from the topic anatomy and the
@@ -397,11 +398,9 @@ Given an issue number:
 1. Draft the body from the topic skeleton, with real `outputs` and `sources`.
 2. Self-check: block keys present, title prefix matches the topic, labels valid,
    every `./` path inside an allowed root, every acceptance item checkable.
-3. File:
-   `gh issue create --title "{Prefix}: {name}" --body-file {path} --label {label} --parent {epic} --repo RunicEngines/knowledge-base`
-   with the body written under `.runesmith/*/pipeline/`.
-4. Verify: `gh issue view {n} --json body,labels,parent` — re-parse the fence and
-   confirm the parent.
+3. File it with the create command in `./.opencode/skills/create-github-issues/SKILL.md`
+   § Commands, using the body path its § Guardrails requires.
+4. Verify with the same read command: re-parse the fence and confirm the parent.
 
 ## Sources and naming
 
@@ -420,7 +419,7 @@ guess:
 | Legacy path | Homelab path |
 |---|---|
 | `knowledge/technology/<a>/<b>/x.md` | `./02_Knowledge/technologies/<a>/<b>/x.md` |
-| `knowledge/tooling/<a>/<b>/x.md` | `./02_Knowledge/technologies/tools/<a>/<b>/x.md` |
+| `knowledge/tooling/<a>/<b>/x.md` | `./02_Knowledge/technologies/tools/<a>/<b>-<x>.md` — the layout caps at three folder levels, so the legacy `<b>` folds into the filename (`./02_Knowledge/AGENTS.md` § File system layout) |
 | `knowledge/.../README.md` | `.../overview.md` |
 | `ideas/<topic>/` | `./01_Ideas/<topic>/` |
 | `research/<topic>/` | `./03_Research/<topic>/` |
@@ -441,8 +440,8 @@ Homelab terms.
 
 ## Retrofit
 
-Old bodies reach this contract in two reviewable batches, drafted under
-`.runesmith/*/pipeline/` and applied by the human:
+Old bodies reach this contract in two reviewable batches, drafted per the filing
+skill's § Guardrails and applied by the human:
 
 1. **Mechanical** — paths map by § Legacy mapping, `outputs` derive from the
    body, headings reorder. Emits `body/{n}.md`, a report, `apply.sh`, and
@@ -450,8 +449,8 @@ Old bodies reach this contract in two reviewable batches, drafted under
 2. **Agent read** — bodies that never name their files: a worker names real
    Homelab outputs or flags the issue.
 
-Nothing is posted by an agent: `gh issue edit` is human-run. A batch is done
-when every re-fetched body parses and the exception list is explicit.
+Nothing is posted by an agent; the filing skill's § Guardrails owns that split. A
+batch is done when every re-fetched body parses and the exception list is explicit.
 
 ## Drift
 

@@ -5,14 +5,14 @@ author: "padawont"
 date: 2026-11-03
 tags: []
 sources: []
-last_audit_date: 2026-11-03
+last_audit_date: 2026-11-18
 related_docs: []
 ---
 
 # AGENTS.md — Templates
 
 Section purpose is owned by `./AGENTS.md` § Repository Structure (row `Templates/`).
-`06_Archive/` has none — see `./06_Archive/AGENTS.md`.
+`06_Archive/` takes no template — see `./06_Archive/AGENTS.md`.
 
 ## Template inventory
 
@@ -46,8 +46,8 @@ Section purpose is owned by `./AGENTS.md` § Repository Structure (row `Template
 | Observed topology | `./Templates/specs/topology.md` | `./05_Implementations/<node>/<service>/spec-topology.md` |
 | Observed service stack | `./Templates/specs/service-stack.md` | `./05_Implementations/<node>/<service>/spec-service-stack.md` |
 
-Paths, and the division of labour between `overview.md`/`rollback.md` and `spec-*.md`:
-`./05_Implementations/AGENTS.md` § File system layout and § Spec files.
+Paths, and the division of labour between `overview.md`/`rollback.md` and `spec-*.md`,
+are owned by `./05_Implementations/AGENTS.md` § File system layout and § Spec files.
 
 ## Frontmatter by section
 
@@ -57,15 +57,13 @@ lists. The section → AGENTS.md mapping is owned by `./AGENTS.md` § Repository
 
 ### Issue bodies
 
-Issues are not PKM content and take no template from this folder. Every issue
-body follows `./.opencode/GITHUB-ISSUES.md` — the `issue-spec` block, the slot
-order, and the per-topic skeletons own that shape.
+No template here feeds an issue body. See `./.opencode/GITHUB-ISSUES.md`.
 
 ## Conventions
 
 - Templates use YAML frontmatter with placeholder values — for example `""` (empty field),
-  `[]` (empty list), `YYYY-MM-DD` (date), `NNNN` (ADR number) and `{number}` (issue number),
-  plus body placeholders such as `{Title}`, `{name}`, `{topic}`, `{type}`,
+  `[]` (empty list), `YYYY-MM-DD` (date) and `NNNN` (ADR number),
+  plus body placeholders such as `{Title}`, `{name}`, `{topic}`,
   `{Service Name}`, `{Cluster Name}` and `{Selected / Rejected — reason}`
 - Exception: `./Templates/research/alternatives.md` and
   `./Templates/research/alternative.md` are body-only snippets with no frontmatter — when
@@ -75,4 +73,4 @@ order, and the per-topic skeletons own that shape.
 - Use `<!-- comment -->` blocks as instructions — strip these when copying
 - Editing rules: `./AGENTS.md` § General Conventions
 - Archive handling: `./06_Archive/AGENTS.md` § Conventions
-- Keep templates in sync with AGENTS.md conventions
+- Keep templates in sync with `./AGENTS.md` § General Conventions

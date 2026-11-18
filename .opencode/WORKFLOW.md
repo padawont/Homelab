@@ -5,7 +5,7 @@ author: "padawont"
 date: 2026-11-03
 tags: []
 sources: []
-last_audit_date: 2026-11-03
+last_audit_date: 2026-11-18
 related_docs: []
 ---
 
@@ -43,12 +43,8 @@ outside the subagent path.
 
 ## Issue Contract
 
-Every issue read or filed follows `./.opencode/GITHUB-ISSUES.md` — the canonical
-home of the `issue-spec` block, the four-question slot order, the per-topic
-skeletons, the read/write protocols, and the legacy path mapping. No skill,
-template, or agent restates issue structure; they link to it. Filing plumbing
-(the `gh` commands and their grants) is
-`./.opencode/skills/create-github-issues/SKILL.md`.
+Every issue read or filed follows `./.opencode/GITHUB-ISSUES.md`. The `gh`
+commands live in `./.opencode/skills/create-github-issues/SKILL.md`.
 
 ## Topology
 
@@ -163,7 +159,7 @@ Every spoke owns its own return schema; nothing is restated here.
 | 7 consecutive clean rounds | Ask the human: keep / stop all / just this file |
 | A lane blocked | Other lanes continue; batch reports partial |
 | `cluster-worker` `status: "refused"` | Stop the chain; report the refusal payload — shape owned by `./.opencode/agents/cluster-worker.md` § Refusal. No step inside `step_range` was dispatched. |
-| `cluster-worker` `status: "failed"` | Stop the chain; report the failed payload — shape owned by § Failed of the same file. Part of the slice ran; `state_after` is the report, and no worker resumes automatically. |
+| `cluster-worker` `status: "failed"` | Stop the chain; report the failed payload — shape owned by `./.opencode/agents/cluster-worker.md` § Failed. Part of the slice ran; `state_after` is the report, and no worker resumes automatically. |
 | `status: "completed"` + `chain_complete: true` | Chain ends successfully — no next worker is launched; report the final `state_after` |
 | `status: "completed"` + `chain_complete: false` | Launch the next worker with `next_worker_input` |
 
@@ -178,11 +174,11 @@ report — the decision channels are:
 
 - **PKM lane** — `blocked:`, `questions:`, `status: "refused"`, or a
   `verdict: needs_recheck` report, with `escalate_to: "runesmith"` where the contract
-  carries it. `needs_recheck` is the review lane's channel: a facet or merged verdict of
-  `needs_recheck` names a finding nothing on hand settles, and it reaches the human even
-  when confirmed S1–S2 findings are present (`./.opencode/REVIEW.md` § Verdict
-  Precedence). The editor's `questions:` and the worker's `blocked:` are this channel
-  under their own contracts' names, not alternatives to it.
+  carries it. `needs_recheck` is the review lane's channel: a facet returns that
+  verdict, or the merge does, when a finding has nothing on hand to settle it
+  (`./.opencode/REVIEW.md` § Verdict Precedence). The editor's `questions:` and the
+  worker's `blocked:` are this channel under their own contracts' names, not
+  alternatives to it.
 - **rs-* lane** — a `needs_input` payload: `recipient: runesmith`, `source`
   (the specialist to relaunch), and `questions[]` carrying `id`, `question`,
   `context`, and `blocking`; emitted per `./.opencode/skills/rs-ask-human/SKILL.md`,
@@ -190,8 +186,8 @@ report — the decision channels are:
 
 `runesmith` puts the question to the human and relaunches. This section is
 canonical for the rule: the per-section Agent Behaviour rows
-(`./02_Knowledge/AGENTS.md`, `./04_ADRs/AGENTS.md` § Agent Behaviour) link here
-rather than define the channel themselves, and the same applies to any other
+(§ Agent Behaviour in `./02_Knowledge/AGENTS.md` and `./04_ADRs/AGENTS.md`) link
+here rather than define the channel themselves, and the same applies to any other
 file that still restates it.
 
 ## Ownership Matrix
@@ -218,8 +214,8 @@ table rather than a property of any single spoke:
 - **Create vs change.** The human runs the committed plan's create/mutate verbs —
   `kubectl apply`, `helm install`, `helm upgrade` — per `./.opencode/skills/deploy-service/SKILL.md`
   § Guardrails (non-negotiable), Mode A; `runesmith` does not hold them.
-  `cluster-worker` runs Mode B only,
-  the whitelist in `./.opencode/agents/cluster-worker.md` § Command Whitelist. The matrix
+  `cluster-worker` runs Mode B only, per the whitelist in
+  `./.opencode/agents/cluster-worker.md` § Command Whitelist. The matrix
   is where this split is stated.
 - **Deletion has exactly one executor: `editor`.** `worker` never deletes
   (`./.opencode/agents/worker.md` § Negative Constraints), `runesmith` never deletes,

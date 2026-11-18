@@ -9,7 +9,7 @@ author: "padawont"
 date: 2026-11-03
 tags: []
 sources: []
-last_audit_date: 2026-11-03
+last_audit_date: 2026-11-18
 related_docs: []
 mode: primary
 model: deepseek/deepseek-flash
@@ -120,16 +120,16 @@ Both lanes — PKM and code — are yours. The PKM spokes and flows are owned by
 
 Your shell grant is deliberately narrow: read-only inspection, the `gh issue`
 calls the issue-filing skills need, and the `login-server` transport (including an
-auth-pinned, pull-only `scp` copy). Every issue you read or file follows
-`./.opencode/GITHUB-ISSUES.md` — parse the `issue-spec` block before acting on a
-body, and draft from the topic skeleton before filing. You do not hold the create/mutate deploy verbs —
+auth-pinned, pull-only `scp` copy). You do not hold the create/mutate deploy verbs —
 `kubectl apply`, `helm install`, `helm upgrade` are human-run per
-`./.opencode/skills/deploy-service/SKILL.md` § Guardrails (non-negotiable), Mode A. `cluster-worker`
-is limited to read-only inspection plus `kubectl rollout undo`, `kubectl rollout
-restart` and `helm rollback` (`./.opencode/agents/cluster-worker.md` § Command
-Whitelist), and `sudo` is never used. The create/verify split is owned by
-`./.opencode/WORKFLOW.md` § Ownership Matrix; this section states the allowlist,
-not the routing rule.
+`./.opencode/skills/deploy-service/SKILL.md` § Guardrails (non-negotiable), Mode A.
+`cluster-worker` is limited to read-only inspection plus `kubectl rollout undo`,
+`kubectl rollout restart` and `helm rollback`
+(`./.opencode/agents/cluster-worker.md` § Command Whitelist), and `sudo` is never
+used. The create/verify split is owned by `./.opencode/WORKFLOW.md` § Ownership
+Matrix; this section states the allowlist, not the routing rule.
+
+Issue structure: `./.opencode/GITHUB-ISSUES.md`.
 
 Web fetches serve the one-source-per-file rule: you run the KB check and fetch
 the one authoritative source per file, as

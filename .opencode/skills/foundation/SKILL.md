@@ -41,9 +41,10 @@ issue so `research` can consume the plan passed in chat.
    (repo-relative paths) and gaps in a status table. Downstream stages get
    a single `follow-up` line each — no TODOs, no plan sections.
 3. Missing sub-issue check — if this stage lacks its GitHub issue, WAIT-ONLY:
-   print ready-to-paste sub-issue info (title, body, parent epic, dependency
-   order — draft from `./.opencode/GITHUB-ISSUES.md` § Skeletons, never run gh),
-   then pause until the user confirms filing in another session.
+   print ready-to-paste sub-issue info (title, body, parent epic — draft from
+   `./.opencode/GITHUB-ISSUES.md` § Skeletons; dependency order from
+   `./AGENTS.md` § Dependency Rules; never run gh), then pause until the user
+   confirms filing in another session.
 4. Candidate source — list ONE official docs or GitHub URL per planned
    file. Do NOT webfetch — verification is research's job.
 5. Broad TODO — one main todo for this stage.

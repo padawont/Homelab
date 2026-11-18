@@ -105,7 +105,7 @@ The inspection runs here, in the main agent, against the G1–G7 table above.
 
 ## Standard report
 
-Emit the YAML record, an issue-ready markdown block, and the table.
+Emit the YAML record, the issue-ready body outline, and the table.
 
 ```yaml
 knowledge_gap:
@@ -129,27 +129,17 @@ knowledge_gap:
   fix: create-note | extend-note | re-audit | needs-human   # ./.opencode/REVIEW.md § Fix Hints
 ```
 
-Issue-ready body — structure owned by `./.opencode/GITHUB-ISSUES.md`, so start from
-the `knowledge` block and skeleton there, filled from the finding row:
+Issue-ready body — take the `knowledge` block and skeleton from
+`./.opencode/GITHUB-ISSUES.md` § Skeletons and fill it from the finding row:
 
-```yaml issue-spec
-topic: knowledge
-stage: knowledge
-epic: {epic-number}
-labels: [knowledge]
-outputs:
-  - ./02_Knowledge/technologies/{category}/{topic}/{concept}.md
-sources:
-  - {online url the stage had to cite}
-  - {stage artifact that needed the fact}
-```
-
-Slots to fill: `## Objective` (back the {concept} dependency of {stage artifact}),
-`## Description` ({stage} needed {fact} but could only cite {online url}; inspection
-of {folder_inspected} found {finding}), `## In Scope`, `## Out of Scope`,
-`## Instructions`, `## Provenance`, `## Assumptions`, `## Topic Hierarchy`,
-`## Acceptance Criteria` (every planned note ≤150 lines, `sources[]` live,
-`last_audit_date` set, the stage artifact now cites the note), `## Parent`.
+- `outputs` — every planned note path the gap names, one per note
+- `sources` — the online URL the stage had to cite, and the stage artifact that
+  needed the fact
+- `## Objective` — back the {concept} dependency of {stage artifact}
+- `## Description` — {stage} needed {fact} but could only cite {online url};
+  inspection of {folder_inspected} found {finding}
+- `## Acceptance Criteria` — the stage artifact now cites the note instead of the
+  URL
 
 Table view:
 
@@ -163,28 +153,25 @@ Propose, then confirm at filing:
 - **single** — one note needed (`missing-note`, `too-small`, `thin`, `stale`,
   `no-homelab-info`, `no-hosting-info` on an existing note) → one `Knowledge:`
   issue.
-- **epic** — a whole category or 3–8 atomic notes needed (`missing-folder`) →
-  an epic plus its `Knowledge:` sub-issues, per the `create-github-issues`
-  atomic-breakdown rule.
+- **epic** — a whole category or several atomic notes needed (`missing-folder`) →
+  an epic plus its `Knowledge:` sub-issues, one per atomic note; the contract's
+  knowledge `outputs` rule sets how many notes a sub-issue carries
+  (`./.opencode/GITHUB-ISSUES.md` § Topic anatomy).
 
 ## GitHub issue filing (after confirmation)
 
-Issues live in `RunicEngines/knowledge-base`; notes live here. Read
-`./.opencode/GITHUB-ISSUES.md` for issue structure and `create-github-issues` for
-the `gh` plumbing. Write each body to `.runesmith/*/pipeline/{id}.md` — the hub's
-only writable path — and pass that path to `--body-file`.
+Read `./.opencode/GITHUB-ISSUES.md` for structure and `create-github-issues` for
+the commands. Write each body where the hub may write it
+(`./.opencode/agents/runesmith.md` § Negative Constraints) and pass that path to
+`--body-file`.
 
 1. Present the table and WAIT. The user picks the gaps and supplies the
    **parent epic** number (or names the stage's issue). Never file without one.
-2. Dedupe:
-   `gh issue list --state open --search "{concept}" --repo RunicEngines/knowledge-base`.
-   Skip tracked concepts; report the existing number instead.
-3. File single:
-   `gh issue create --title "Knowledge: {title}" --body-file {id}.md --label knowledge --parent {epic-number} --repo RunicEngines/knowledge-base`
-4. File epic: create the epic (`--label epic`), then each sub-issue with
-   `--label knowledge --parent {new-epic-number}`.
-5. Verify nesting:
-   `gh issue view {epic-number} --json subIssues --repo RunicEngines/knowledge-base`
+2. Dedupe with the list command in `create-github-issues` § Commands. Skip
+   tracked concepts; report the existing number instead.
+3. File the single issue, or the epic and then its sub-issues, with the create
+   commands in that skill.
+4. Verify nesting with its read command.
 
 Filing is a GitHub write, not a note write — the audit never edits
 `02_Knowledge/`.

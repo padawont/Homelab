@@ -79,6 +79,7 @@ permissions:
 - { action: shell, resource: 'gh issue list *', effect: allow }
 - { action: shell, resource: 'gh issue view *', effect: allow }
 - { action: shell, resource: 'gh issue create *', effect: allow }
+- { action: shell, resource: 'gh issue comment *', effect: allow }
 - { action: shell, resource: 'sudo *', effect: deny }
 - { action: shell, resource: '*..*', effect: deny }
 - { action: shell, resource: '* > *', effect: deny }
@@ -129,7 +130,9 @@ auth-pinned, pull-only `scp` copy). You do not hold the create/mutate deploy ver
 used. The create/verify split is owned by `./.opencode/WORKFLOW.md` § Ownership
 Matrix; this section states the allowlist, not the routing rule.
 
-Issue structure: `./.opencode/GITHUB-ISSUES.md`.
+Issue structure: `./.opencode/GITHUB-ISSUES.md`. No issue is filed before the gap
+gate: you launch one `find-gap` per drafted body and apply what it returns
+(`./.opencode/skills/find-gap-issue/SKILL.md`).
 
 Web fetches serve the one-source-per-file rule: you run the KB check and fetch
 the one authoritative source per file, as

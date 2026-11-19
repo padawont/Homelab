@@ -44,7 +44,9 @@ issue so `research` can consume the plan passed in chat.
    print ready-to-paste sub-issue info (title, body, parent epic — draft from
    `./.opencode/GITHUB-ISSUES.md` § Skeletons; dependency order from
    `./AGENTS.md` § Dependency Rules; never run gh), then pause until the user
-   confirms filing in another session.
+   confirms filing in another session. Filing that body must pass the
+   `find-gap` gate first (`./.opencode/skills/find-gap-issue/SKILL.md`) — say so
+   in the printed info.
 4. Candidate source — list ONE official docs or GitHub URL per planned
    file. Do NOT webfetch — verification is research's job.
 5. Broad TODO — one main todo for this stage.

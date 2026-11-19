@@ -4,7 +4,9 @@ These tests pin the parts an agent depends on: that each of the nine topics has 
 anatomy row and a skeleton, that the skeleton's title prefix and label match the row,
 that every skeleton carries the `issue-spec` block with its required keys, that every
 heading sits in the canonical slot order, that every example path lands inside this
-repo, and that the labels exist in `./AGENTS.md`.
+repo, and that the labels exist in `./AGENTS.md`. The last four pin the gap gate: its
+agent, its skill, the gate's place before the filing step, and the one `gh` verb the
+hub gained for it.
 
 They are offline: nothing here calls `gh`, reads the network, or spends money.
 """
@@ -19,6 +21,9 @@ import pytest
 ROOT = Path(__file__).resolve().parents[1]
 CONTRACT = ROOT / ".opencode" / "GITHUB-ISSUES.md"
 AGENTS = ROOT / "AGENTS.md"
+FIND_GAP_AGENT = ROOT / ".opencode" / "agents" / "find-gap.md"
+FIND_GAP_SKILL = ROOT / ".opencode" / "skills" / "find-gap-issue" / "SKILL.md"
+RUNESMITH = ROOT / ".opencode" / "agents" / "runesmith.md"
 
 TOPICS = (
     "epic",
@@ -102,6 +107,39 @@ def sections(text: str) -> dict[str, str]:
     if current is not None:
         found[current] = "\n".join(body)
     return found
+
+
+def h2_section(text: str, name: str) -> str:
+    """Return the body of one level-2 section, ignoring headings inside fences."""
+    collected: list[str] = []
+    collecting = False
+    marker: str | None = None
+    for line in text.splitlines():
+        if not collecting:
+            if line.strip() == f"## {name}":
+                collecting = True
+            continue
+        if marker is not None:
+            if line.strip() == marker:
+                marker = None
+            collected.append(line)
+            continue
+        opener = FENCE_OPEN.match(line)
+        if opener:
+            marker = opener.group(1)
+            collected.append(line)
+            continue
+        if line.startswith("## "):
+            break
+        collected.append(line)
+    return "\n".join(collected)
+
+
+def frontmatter(text: str) -> str:
+    """Return the YAML between the leading `---` delimiters."""
+    parts = text.split("---", 2)
+    assert len(parts) == 3, "file has no frontmatter block"
+    return parts[1]
 
 
 @pytest.fixture(scope="module")
@@ -254,3 +292,70 @@ def test_issue_template_is_retired():
         and "Templates/tasks/issue.md" in path.read_text(encoding="utf-8", errors="ignore")
     ]
     assert offenders == [], f"stale references to the retired template: {offenders}"
+
+
+def test_find_gap_agent_is_a_read_only_subagent():
+    agent = read(FIND_GAP_AGENT)
+    head = frontmatter(agent)
+    assert "mode: subagent" in head
+    assert "model: deepseek/deepseek-flash" in head
+    for verb in ("read", "glob", "grep"):
+        assert re.search(rf"action: {verb},\s+resource: '\*',\s+effect: allow", head), (
+            f"find-gap.md does not allow {verb}"
+        )
+    for verb in (
+        "external_directory",
+        "edit",
+        "webfetch",
+        "websearch",
+        "question",
+        "shell",
+        "subagent",
+    ):
+        assert re.search(rf"action: {verb},\s+resource: '\*',\s+effect: deny", head), (
+            f"find-gap.md does not deny {verb}"
+        )
+    assert "## Output Contract" in agent
+    assert '"verdict": "clean | gaps"' in agent
+    assert '"proposal"' in agent and '"blocking"' in agent
+
+
+def test_find_gap_skill_exists_and_defers_launching_to_the_hub():
+    skill = read(FIND_GAP_SKILL)
+    head = frontmatter(skill)
+    assert re.search(r"^name: find-gap-issue$", head, re.MULTILINE)
+    assert "effect: allow" not in head, "the skill must not grant itself a launch"
+    assert "runesmith" in skill, "the skill must name the hub as the launcher"
+    assert "before an issue is filed" in skill
+
+
+def test_write_protocol_runs_the_gap_gate_before_filing(contract: str):
+    steps: list[str] = []
+    for line in h2_section(contract, "Write protocol").splitlines():
+        if re.match(r"^\d+\. ", line.strip()):
+            steps.append(line.strip())
+        elif steps and line.startswith("  ") and line.strip():
+            steps[-1] += " " + line.strip()
+    assert len(steps) >= 5, f"write protocol should chain draft → gate → file → comment: {steps}"
+
+    def index_of(fragment: str, where: str) -> int:
+        for index, step in enumerate(steps):
+            if fragment in step:
+                return index
+        raise AssertionError(f"§ Write protocol has no {where} step: {steps}")
+
+    gate = index_of("find-gap", "gap gate")
+    filing = index_of("create-github-issues", "filing")
+    comment = index_of("omment the gaps", "accepted-gap comment")
+    assert gate < filing, "the gap gate must run before the filing step"
+    assert filing < comment, "the accepted-gap comment must follow the filing step"
+    assert "find-gap-issue" in steps[gate]
+
+
+def test_runesmith_may_comment_but_not_edit_or_close_an_issue():
+    head = frontmatter(read(RUNESMITH))
+    assert re.search(
+        r"action: shell,\s+resource: 'gh issue comment \*',\s+effect: allow", head
+    ), "runesmith.md does not grant `gh issue comment *`"
+    assert "gh issue edit" not in head
+    assert "gh issue close" not in head

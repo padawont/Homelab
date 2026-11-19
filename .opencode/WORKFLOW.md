@@ -21,14 +21,19 @@ skills and `runesmith` execute — not the agents themselves (see
 **No spoke spawns another spoke.** Only `runesmith` holds `subagent: allow`; every
 handoff goes through it, and it is the only agent that speaks to the human.
 Two lanes run under it: the PKM pipeline (the spokes `worker`, `editor`,
-`cluster-worker`, `spec-writer`, plus the five reviewer facets) and the code
-pipeline (the `rs-*` specialists).
+`cluster-worker`, `spec-writer`, the hub-launched `find-gap` gate, plus the five
+reviewer facets) and the code pipeline (the `rs-*` specialists).
 
 Fan-out and merge are `runesmith`-only, and this section is their canonical home:
 no facet, worker, editor, `spec-writer` or `cluster-worker` launches another
 agent's facet set or merges facet reports. Other files link to § Coordination
 Rule for that rule rather than restating it; the facet roster itself is owned by
 `./.opencode/REVIEW.md` (§ The Five Facets).
+
+`find-gap` joins that fan-out: a batch of drafted issue bodies runs as one lane
+per draft, and the gate's order and rules are owned by
+`./.opencode/skills/find-gap-issue/SKILL.md`. It reads, reports and stops — it
+never edits, never files and never comments.
 
 **Code lane.** The `rs-*` roster and its per-stage dispatch are owned by
 `./.opencode/skills/rs-implementation-pipeline/SKILL.md` § Stage Dispatch Loop.
@@ -145,6 +150,7 @@ Every spoke owns its own return schema; nothing is restated here.
 | Spoke | Contract | Owner |
 |---|---|---|
 | `worker` | `handoff:` block (`done` / `next` / `blocked`) | `./.opencode/agents/worker.md` |
+| `find-gap` | gap report JSON — `gaps` with a literal `proposal`, `unresolved`, `verdict` | `./.opencode/agents/find-gap.md` § Output Contract |
 | `reviewer-*` | `./.opencode/agents/reviewer-*.md` (the one key each populates); envelope shape per `./.opencode/REVIEW.md` § Facet Report | `./.opencode/agents/reviewer-*.md` for the facet rules; `./.opencode/REVIEW.md` § Facet Report for the shape |
 | merged review report | `./.opencode/REVIEW.md` § Merged Report | `./.opencode/REVIEW.md` |
 | `editor` | `changes:` report | `./.opencode/agents/editor.md` |

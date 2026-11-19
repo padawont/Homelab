@@ -398,9 +398,14 @@ Given an issue number:
 1. Draft the body from the topic skeleton, with real `outputs` and `sources`.
 2. Self-check: block keys present, title prefix matches the topic, labels valid,
    every `./` path inside an allowed root, every acceptance item checkable.
-3. File it with the create command in `./.opencode/skills/create-github-issues/SKILL.md`
-   § Commands, using the body path its § Guardrails requires.
-4. Verify with the same read command: re-parse the fence and confirm the parent.
+3. Gap gate: the hub launches one `find-gap` per drafted body before anything is
+   filed, and applies the proposals it returns
+   (`./.opencode/skills/find-gap-issue/SKILL.md` § Workflow).
+4. File it with the create command in `./.opencode/skills/create-github-issues/SKILL.md`
+   § Commands, using the body path its § Guardrails requires, then verify with the
+   same read command: re-parse the fence and confirm the parent.
+5. Comment the gaps the gate reported and the human accepted as one comment on the
+   created issue — the record of what the body deliberately does not carry.
 
 ## Sources and naming
 
